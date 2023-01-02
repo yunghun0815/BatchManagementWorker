@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.company.myapp.dao.IBatchDao">
+  
+  <select id="getTotalGroupNum" resultType="int">
+    select count(*) from bat_grp
+  </select>
+  
+  <select id="getBatGrpListByPage" parameterType="Pager" resultType="BatGrp">
+  	SELECT b.bat_grp_id, 
+    	   b.bat_grp_nm, 
+    	   b.bat_grp_dsc, 
+    	   b.host_id, 
+    	   h.host_nm, h.host_ip, h.host_pt, b.auto_excn_yn, b.cron 
+      from (select rownum as bat_grp_id, bat_grp_nm, bat_grp_dsc, host_id, auto_excn_yn, cron 
+              from(select bat_grp_id, bat_grp_nm, bat_grp_dsc, host_id, auto_excn_yn, cron 
+                     from bat_grp order by bat_grp_id desc) where rownum &lt;= #{endRowNo})
+                      b left outer join host h on b.host_id=h.host_id where b.use_yn='Y' 
+                     
+  </select>
+  
+  <select id="getBatGrpDetail" parameterType="String" resultType="BatGrp">
+    
+  </select>
+  <insert id="insertBatchGroup"></insert>
+  <update id="updateBatchGroup"></update>
+  <update id="deleteBatchGroup"></update>
+  <select id="searchBatGrp"></select>
+</mapper>
