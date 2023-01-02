@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.company.myapp.dto.HostDto;
-import com.company.myapp.dto.PagerDto;
+import com.company.myapp.dto.Host;
+import com.company.myapp.dto.Pager;
 import com.company.myapp.service.IHostService;
 
 @RequestMapping("/host")

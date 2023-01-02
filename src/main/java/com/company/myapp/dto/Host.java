@@ -12,7 +12,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class HostDto {
+public class Host {
 	private String hostId;			// PK -> HOST + 8자리 숫자
 	private String hostIp;			// 호스트 아이피
 	private String hostPt;			// 호스트 포트
