@@ -14,7 +14,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * 호스트 테이블 DTO
+ * 호스트 DTO
  * @author 정영훈
  * 
  */
