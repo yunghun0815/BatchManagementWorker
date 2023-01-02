@@ -1,5 +1,76 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.company.myapp">
+<mapper namespace="com.company.myapp.dao.HostDao">
+
+	<select id="getHostCount" parameterType="com.company.myapp.dto.Host" resultType="int">
+		SELECT COUNT(*)
+		FROM HOST
+	</select>
+
+	<select id="getHostList" parameterType="Pager" resultType="Host">
+		SELECT 	rnum, 	   			
+				host_id as hostId, 
+				host_ip as hostIp, 
+				host_pt as hostPt, 
+				host_nm as hostNm, 
+				use_yn as useYn, 
+				last_mdfr_nm as lastMdfrNm, 
+				last_mdfcn_dttm as lastMdfcnDttm
+		FROM (
+		  SELECT ROWNUM as rnum, host_id, host_ip, host_pt, host_nm, use_yn, last_mdfr_nm, last_mdfcn_dttm
+		  FROM (
+		  	SELECT 
+	   			host_id,
+				host_ip,
+				host_pt, 
+				host_nm, 
+				use_yn, 
+				last_mdfr_nm, 
+				last_mdfcn_dttm
+			FROM
+				host
+		    ORDER BY host_id
+		  )
+		  WHERE rownum &lt;= #{endRowNo}  
+		)
+		WHERE rnum &gt;= #{startRowNo}
+	</select>
 	
+	<select id="getHostDetail" parameterType="String" resultType="Host">
+		SELECT 
+			host_id as hostId, 
+			host_ip as hostIp, 
+			host_pt as hostPt, 
+			host_nm as hostNm, 
+			use_yn as useYn, 
+			last_mdfr_nm as lastMdfrNm, 
+			last_mdfcn_dttm as lastMdfcnDttm
+		FROM
+			host
+		WHERE 
+			host_id = #{hostId}			
+	</select>
+	
+	<insert id="insertHost" parameterType="Host">
+		INSERT INTO HOST(host_id, host_ip, host_pt, host_nm, last_mdfr_nm, last_mdfcn_dttm)
+		VALUES('HOST'||LPAD(SEQ_HOST.NEXTVAL, 8, '0'), #{hostIp}, #{hostPt}, #{hostNm}, 'admin', sysdate)
+	</insert>
+	
+	<update id="updateHost" parameterType="Host">
+		UPDATE 
+			host
+		SET 
+			host_id = #{hostId},
+			host_ip = #{hostIp},
+			host_pt = #{hostPt},
+			host_nm = #{hostNm},
+			last_mdfcn_dttm = sysdate
+		WHERE
+			host_id = #{hostId}
+	</update>
+	
+	<delete id="deleteHost" parameterType="String">
+		DELETE FROM host
+		WHERE host_id = #{hostId}
+	</delete>
 </mapper>

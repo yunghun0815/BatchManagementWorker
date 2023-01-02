@@ -8,7 +8,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Setter
 @Getter
-public class PagerDto {
+public class Pager {
 	private int totalRows;		//전체 행수
 	private int totalPageNo;	//전체 페이지 수
 	private int totalGroupNo;	//전체 그룹 수
@@ -19,11 +19,10 @@ public class PagerDto {
 	private int groupNo;		//현재 그룹 번호
 	private int rowsPerPage;	//페이지당 행 수 
 	private int startRowNo;		//페이지의 시작 행 번호(1, ..., n)
-	private int startRowIndex;	//페이지의 시작 행 인덱스(0, ..., n-1) for mysql
 	private int endRowNo;		//페이지의 마지막 행 번호
 	private int endRowIndex;	//페이지의 마지막 행 인덱스
 
-	public PagerDto(int rowsPerPage, int pagesPerGroup, int totalRows, int pageNo) {
+	public Pager(int rowsPerPage, int pagesPerGroup, int totalRows, int pageNo) {
 		this.rowsPerPage = rowsPerPage;
 		this.pagesPerGroup = pagesPerGroup;
 		this.totalRows = totalRows;
@@ -43,7 +42,6 @@ public class PagerDto {
 		if(groupNo == totalGroupNo) endPageNo = totalPageNo;
 		
 		startRowNo = (pageNo - 1) * rowsPerPage + 1;
-		startRowIndex = startRowNo - 1;
 		endRowNo = pageNo * rowsPerPage;
 		endRowIndex = endRowNo - 1; 
 	}
