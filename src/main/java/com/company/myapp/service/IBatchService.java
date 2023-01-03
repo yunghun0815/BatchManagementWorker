@@ -9,19 +9,22 @@ public interface IBatchService {
 
 	public int getTotalGroupNum();
 	
-	public List<BatGrp> getBatchGroupList(Pager pager);
+	public List<BatGrp> getBatGrpList(Pager pager);
 	
-	public BatGrp getBatchGroupDetail(String grpId);
+	public BatGrp getBatGrpDetail(String grpId);
 
-	public void insertBatchGroup(BatGrp vo);
-	public void updateBatchGroup(BatGrp vo);
-	public void deleteBatchGroup(String grpId);
+	public void insertBatGrp(BatGrp vo);
+	public void updateBatGrp(BatGrp vo);
+	public void deleteBatGrp(String grpId);
 
 	public boolean checkJob(String grpId);
 	public void startJob(String grpId);
 	public void stopJob(String grpId);
 
-	public List<BatGrp> searchBatGrp(String keyword);
-	public List<BatGrp> searchBatGrp(String keyword, List<String> checkBox);
+	public List<BatGrp> searchBatGrp(Pager pager, String keyword, List<String> filtering);
+
+	public int getTotalSearchNum(String keyword, List<String> filtering);
+	
+	public List<BatGrp> getBatGrpList();
 
 }

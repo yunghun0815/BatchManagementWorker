@@ -23,45 +23,33 @@ public class BatchService implements IBatchService {
 	}
 
 	@Override
-	public List<BatGrp> getBatchGroupList(Pager pager) {
+	public List<BatGrp> getBatGrpList(Pager pager) {
 		// TODO Auto-generated method stub
 		List<BatGrp> batGrpList = batchDao.getBatGrpListByPage(pager);
 		return batGrpList;
 	}
 
 	@Override
-	public BatGrp getBatchGroupDetail(String grpId) {
+	public BatGrp getBatGrpDetail(String grpId) {
 		BatGrp batGrp = batchDao.getBatGrpDetail(grpId);
 		
 		return batGrp;
 	}
 
 	@Override
-	public void insertBatchGroup(BatGrp vo) {
+	public void insertBatGrp(BatGrp vo) {
 		batchDao.insertBatchGroup(vo);
 
 	}
 
 	@Override
-	public void updateBatchGroup(BatGrp vo) {
+	public void updateBatGrp(BatGrp vo) {
 		batchDao.updateBatchGroup(vo);
 	}
 
 	@Override
-	public void deleteBatchGroup(String grpId) {
+	public void deleteBatGrp(String grpId) {
 		batchDao.deleteBatchGroup(grpId);
-	}
-
-	@Override
-	public List<BatGrp> searchBatGrp(String keyword) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<BatGrp> searchBatGrp(String keyword, List<String> checkBox) {
-		// TODO Auto-generated method stub
-		return batchDao.searchBatGrp(keyword, checkBox);
 	}
 
 	
@@ -80,6 +68,26 @@ public class BatchService implements IBatchService {
 	public void stopJob(String grpId) {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public List<BatGrp> searchBatGrp(Pager pager, String keyword, List<String> filtering) {
+		System.out.println(filtering.getClass().getName());
+		List<BatGrp> resultList = batchDao.searchBatGrp(pager, keyword, filtering);
+		return resultList;
+	}
+
+	@Override
+	public int getTotalSearchNum(String keyword, List<String> filtering) {
+		// TODO Auto-generated method stub
+		System.out.println(filtering.getClass().getName());
+		return batchDao.getTotalSearchNum(keyword, filtering);
+	}
+
+	@Override
+	public List<BatGrp> getBatGrpList() {
+		// TODO Auto-generated method stub
+		return batchDao.getBatGrpList();
 	}
 
 }

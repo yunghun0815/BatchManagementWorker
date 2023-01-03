@@ -3,27 +3,163 @@
 <mapper namespace="com.company.myapp.dao.IBatchDao">
   
   <select id="getTotalGroupNum" resultType="int">
-    select count(*) from bat_grp
+    SELECT count(*) FROM bat_grp
   </select>
   
   <select id="getBatGrpListByPage" parameterType="Pager" resultType="BatGrp">
-  	SELECT b.bat_grp_id, 
-    	   b.bat_grp_nm, 
-    	   b.bat_grp_dsc, 
-    	   b.host_id, 
-    	   h.host_nm, h.host_ip, h.host_pt, b.auto_excn_yn, b.cron 
-      from (select rownum as bat_grp_id, bat_grp_nm, bat_grp_dsc, host_id, auto_excn_yn, cron 
-              from(select bat_grp_id, bat_grp_nm, bat_grp_dsc, host_id, auto_excn_yn, cron 
-                     from bat_grp order by bat_grp_id desc) where rownum &lt;= #{endRowNo})
-                      b left outer join host h on b.host_id=h.host_id where b.use_yn='Y' 
-                     
+  	SELECT b.rnum,
+  		   b.bat_grp_id as batGrpId, 
+    	   b.bat_grp_nm as batGrpNm, 
+    	   b.bat_grp_dsc as batGrpDsc, 
+    	   b.host_id as hostId, 
+    	   h.host_nm as hostNm, 
+    	   h.host_ip as hostIp, 
+    	   h.host_pt as hostPt, 
+    	   b.auto_excn_yn as autoExcnYn, 
+    	   b.cron as cron,
+    	   b.cron_dsc as cronDsc
+	FROM ( 
+	  SELECT ROWNUM as rnum, bat_grp_id, bat_grp_nm, bat_grp_dsc, host_id, auto_excn_yn, cron, cron_dsc, use_yn 
+      FROM ( 
+      	SELECT 
+      		bat_grp_id, 
+      		bat_grp_nm, 
+      		bat_grp_dsc, 
+      		host_id, 
+      		auto_excn_yn, 
+      		cron,
+      		cron_dsc,
+      		use_yn
+        FROM 
+        	bat_grp 
+        ORDER BY bat_grp_id desc
+        ) 
+      WHERE rownum &lt;= #{endRowNo}
+    ) b LEFT OUTER JOIN host h ON b.host_id=h.host_id 
+	WHERE b.use_yn='Y' and b.rnum &gt;= #{startRowNo}
   </select>
   
   <select id="getBatGrpDetail" parameterType="String" resultType="BatGrp">
-    
+  	SELECT b.bat_grp_id as batGrpId, 
+    	   b.bat_grp_nm as batGrpNm, 
+    	   b.bat_grp_dsc as batGrpDsc, 
+    	   b.host_id as hostId, 
+    	   h.host_nm as hostNm, 
+    	   h.host_ip as hostIp, 
+    	   h.host_pt as hostPt, 
+    	   b.auto_excn_yn as autoExcnYn, 
+    	   b.cron as cron,
+    	   b.cron_dsc as cronDsc
+    FROM bat_grp b LEFT OUTER JOIN host h ON b.host_id=h.host_id 
+    WHERE b.use_yn='Y' and b.bat_grp_id=#{grpId}
   </select>
-  <insert id="insertBatchGroup"></insert>
-  <update id="updateBatchGroup"></update>
-  <update id="deleteBatchGroup"></update>
-  <select id="searchBatGrp"></select>
+  
+  
+  <insert id="insertBatchGroup" parameterType="BatGrp">
+  	INSERT INTO bat_grp(bat_grp_id, bat_grp_nm, bat_grp_dsc, host_id, auto_excn_yn, cron, cron_dsc, last_mdfr_nm, last_mdfcn_dttm) 
+  	VALUES('BGR'||LPAD(SEQ_BAT_GROUP.NEXTVAL, 8, '0'), #{batGrpNm}, #{batGrpDsc}, #{hostId}, #{autoExcnYn}, #{cron}, #{cronDsc}, 'admin', sysdate)
+  </insert>
+  
+  <update id="updateBatchGroup" parameterType="BatGrp">
+  	UPDATE 
+  		bat_grp
+  	SET
+  		bat_grp_nm = #{batGrpNm}, 
+    	bat_grp_dsc = #{batGrpDsc}, 
+    	host_id = #{hostId}, 
+    	auto_excn_yn = #{autoExcnYn}, 
+    	cron = #{cron},
+    	cron_dsc = #{cronDsc},
+    	last_mdfr_nm = 'admin',
+    	last_mdfcn_dttm = sysdate
+  	WHERE bat_grp_id = #{batGrpId}
+  </update>
+  <update id="deleteBatchGroup" parameterType="String">
+  	UPDATE
+  		bat_grp
+  	SET
+  		use_yn = 'N'
+  	WHERE bat_grp_id = #{grpId}
+  </update>
+
+  <select id="searchBatGrp" parameterType="map" resultType="BatGrp">
+  	SELECT b.rnum,
+  		   b.bat_grp_id as batGrpId, 
+    	   b.bat_grp_nm as batGrpNm, 
+    	   b.bat_grp_dsc as batGrpDsc, 
+    	   b.host_id as hostId, 
+    	   h.host_nm as hostNm, 
+    	   h.host_ip as hostIp, 
+    	   h.host_pt as hostPt, 
+    	   b.auto_excn_yn as autoExcnYn, 
+    	   b.cron as cron,
+    	   b.cron_dsc as cronDsc
+	FROM ( 
+	  SELECT ROWNUM as rnum, bat_grp_id, bat_grp_nm, bat_grp_dsc, host_id, auto_excn_yn, cron, cron_dsc, use_yn 
+      FROM ( 
+      	SELECT 
+      		bat_grp_id, 
+      		bat_grp_nm, 
+      		bat_grp_dsc, 
+      		host_id, 
+      		auto_excn_yn, 
+      		cron,
+      		cron_dsc,
+      		use_yn
+        FROM 
+        	bat_grp 
+        ORDER BY bat_grp_id desc
+        ) 
+      WHERE rownum &lt;= #{pager.endRowNo}
+    ) b LEFT OUTER JOIN host h ON b.host_id=h.host_id 
+	WHERE b.use_yn='Y' and b.rnum &gt;= #{pager.startRowNo} 
+		and <foreach item="item" index="index" collection="filtering" separator="or" open="(" close=")">
+  			<choose>
+				<when test="item == 'ID'.toString()">
+					b.bat_grp_id like '%'||#{keyword}||'%'
+				</when>
+				<when test="item == 'NAME'.toString()">
+					b.bat_grp_nm like '%'||#{keyword}||'%'
+				</when>
+				<when test="item == 'DSC'.toString()">
+					b.bat_grp_dsc like '%'||#{keyword}||'%'
+				</when>
+				<when test="item == 'HNM'.toString()">
+					h.host_nm like '%'||#{keyword}||'%'
+				</when>
+				<when test="item == 'HPT'.toString()">
+					h.host_pt like '%'||#{keyword}||'%'
+				</when>
+			</choose>
+  		</foreach>
+  </select>
+  
+  <select id="getTotalSearchNum" parameterType="map" resultType="int">
+  	SELECT COUNT(*) 
+  		FROM bat_grp b LEFT OUTER JOIN host h 
+  			ON b.host_id=h.host_id  
+  		WHERE b.use_yn='Y' and <foreach item="item" index="index" collection="filtering" separator="or">
+  			<choose>
+				<when test="item == 'ID'.toString()">
+					b.bat_grp_id like '%'||#{keyword}||'%'
+				</when>
+				<when test="item == 'NAME'.toString()">
+					b.bat_grp_nm like '%'||#{keyword}||'%'
+				</when>
+				<when test="item == 'DSC'.toString()">
+					b.bat_grp_dsc like '%'||#{keyword}||'%'
+				</when>
+				<when test="item == 'HNM'.toString()">
+					h.host_nm like '%'||#{keyword}||'%'
+				</when>
+				<when test="item == 'HPT'.toString()">
+					h.host_pt like '%'||#{keyword}||'%'
+				</when>
+			</choose>
+  		</foreach>
+  </select>
+  
+  <select id="getBatGrpList" resultType="BatGrp">
+  	SELECT * FROM bat_grp
+  </select>
 </mapper>
