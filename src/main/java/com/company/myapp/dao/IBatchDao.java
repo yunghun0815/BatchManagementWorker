@@ -2,9 +2,12 @@ package com.company.myapp.dao;
 
 import java.util.List;
 
+import org.apache.ibatis.annotations.Mapper;
+
 import com.company.myapp.dto.BatGrp;
 import com.company.myapp.dto.Pager;
 
+@Mapper
 public interface IBatchDao {
 
 	public int getTotalGroupNum();

@@ -27,12 +27,16 @@ public class HostController {
 	@Autowired
 	IHostService hostService;
 	
+	/**
+	 * 호스트 관리 페이지
+	 * @param pageNo 페이지 번호
+	 */
 	@GetMapping("")
-	public String hostList(@RequestParam(defaultValue = "1") int pageNo, Model model) {
+	public String getHostList(@RequestParam(defaultValue = "1") int pageNo, Model model) {
 		
-		int hostCount = hostService.getHostCount();
+		int hostSize = hostService.getHostCount();
 		
-		Pager pager = new Pager(10, 5, hostCount, pageNo);
+		Pager pager = new Pager(10, 5, hostSize, pageNo);
 		
 		List<Host> hostList = hostService.getHostList(pager);
 		
@@ -43,14 +47,24 @@ public class HostController {
 		return "host/host";
 	}
 	
+	/**
+	 * 호스트 상세 정보
+	 * @param hostId 호스트 아이디
+	 */
 	@ResponseBody
 	@GetMapping("/detail")
-	public Host hostDetail(String hostId) {
+	public Host getHostDetail(String hostId) {
 		Host host = hostService.getHostDetail(hostId);
 		
 		return host;
 	}
 	
+	/**
+	 * 호스트 저장 
+	 * @param hostNm 호스트명
+	 * @param hostIp 호스트 아이피
+	 * @param hostPt 호스트 포트
+	 */
 	@ResponseBody
 	@PostMapping("/insert")
 	public List<ObjectError> insertHost(@ModelAttribute("host") @Valid Host host, BindingResult result) {
@@ -62,6 +76,13 @@ public class HostController {
 		return null;
 	}
 	
+	/**
+	 * 호스트 수정
+	 * @param hostId 호스트 아이디
+	 * @param hostNm 호스트명
+	 * @param hostIp 호스트 아이피
+	 * @param hostPt 호스트 포트
+	 */
 	@ResponseBody
 	@PostMapping("/update")
 	public List<ObjectError> updateHost(@ModelAttribute("host") @Valid Host host, BindingResult result) {
@@ -72,6 +93,10 @@ public class HostController {
 		return null;
 	}
 	
+	/**
+	 * 호스트 삭제 
+	 * @param hostId
+	 */
 	@ResponseBody
 	@PostMapping("/delete")
 	public void deleteHost(String hostId) {

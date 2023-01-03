@@ -7,7 +7,7 @@ import lombok.Setter;
 
 /**
  * 배치 프로그램 DTO
- * @author 정영훈
+ * @author 김나영
  * 
  */
 @Getter

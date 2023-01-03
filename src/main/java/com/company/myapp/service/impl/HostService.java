@@ -24,6 +24,11 @@ public class HostService implements IHostService{
 	}
 	
 	@Override
+	public List<Host> getHostList() {
+		return hostDao.getHostList();
+	}
+	
+	@Override
 	public List<Host> getHostList(Pager pager) {
 		return hostDao.getHostList(pager);
 	}
@@ -47,6 +52,12 @@ public class HostService implements IHostService{
 	public void deleteHost(String hostId) {
 		hostDao.deleteHost(hostId);
 	}
+
+	@Override
+	public Host getHostByBatGrpId(String batGrpId) {
+		return hostDao.getHostByBatGrpId(batGrpId);
+	}
+
 
 
 }

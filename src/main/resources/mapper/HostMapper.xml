@@ -3,19 +3,29 @@
 <mapper namespace="com.company.myapp.dao.HostDao">
 
    <select id="getHostCount" parameterType="com.company.myapp.dto.Host" resultType="int">
-      SELECT COUNT(*)
-      FROM HOST
+      SELECT count(*) FROM host
    </select>
-
+	
+   <select id="getHostList" resultType="Host">
+   	  SELECT 
+  		host_id as hostId,
+  		host_ip as hostIp,
+  		host_pt as hostPt,
+  		host_nm as hostNm
+   	  FROM
+   	  	host	
+   </select>
+	
    <select id="getHostList" parameterType="Pager" resultType="Host">
-      SELECT    rnum,                
-            host_id as hostId, 
-            host_ip as hostIp, 
-            host_pt as hostPt, 
-            host_nm as hostNm, 
-            use_yn as useYn, 
-            last_mdfr_nm as lastMdfrNm, 
-            last_mdfcn_dttm as lastMdfcnDttm
+      SELECT    
+   		rnum,                
+        host_id as hostId, 
+        host_ip as hostIp, 
+        host_pt as hostPt, 
+        host_nm as hostNm, 
+        use_yn as useYn, 
+        last_mdfr_nm as lastMdfrNm, 
+        last_mdfcn_dttm as lastMdfcnDttm
       FROM (
         SELECT ROWNUM as rnum, host_id, host_ip, host_pt, host_nm, use_yn, last_mdfr_nm, last_mdfcn_dttm
         FROM (
@@ -29,7 +39,9 @@
             last_mdfcn_dttm
          FROM
             host
-          ORDER BY host_id
+         WHERE 
+            use_yn = 'Y'
+         ORDER BY host_id
         )
         WHERE rownum &lt;= #{endRowNo}  
       )
@@ -60,7 +72,6 @@
       UPDATE 
          host
       SET 
-         host_id = #{hostId},
          host_ip = #{hostIp},
          host_pt = #{hostPt},
          host_nm = #{hostNm},
@@ -69,8 +80,27 @@
          host_id = #{hostId}
    </update>
    
-   <delete id="deleteHost" parameterType="String">
-      DELETE FROM host
+   <update id="deleteHost" parameterType="String">
+      UPDATE 
+      	host
+      SET 
+      	use_yn = 'N'	
       WHERE host_id = #{hostId}
-   </delete>
+   </update>
+   
+   <select id="getHostByBatGrpId" parameterType="String" resultType="Host">
+      SELECT DISTINCT
+      	h.host_id as hostId, 
+      	h.host_nm as hostNm, 
+      	h.host_ip as hostIp,
+      	h.host_pt as hostPt 		
+      FROM 
+      	host h
+      JOIN
+      	bat_grp bg
+      ON
+      	h.host_id = bg.host_id
+      WHERE			
+      	bg.bat_grp_id = #{batGrpId}
+   </select>
 </mapper>

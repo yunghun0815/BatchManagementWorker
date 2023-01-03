@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.company.myapp.dao.ILogDao">
+
+	<select id="getBatGrpLogCount" resultType="int">
+		SELECT count(*)	FROM bat_grp_log	
+	</select>
+	
+	<select id="getBatPrmLogCount" resultType="int">
+		SELECT count(*)	FROM bat_prm_log
+	</select>
+	
+	<select id="getBatGrpLogList" parameterType="Pager" resultType="BatGrpLog">
+		SELECT 
+		    rnum,
+		    bat_grp_log_id as batGrpLogId,
+		    bat_grp_rty_cnt as batGrpRtyCnt,
+		    bat_grp_id as batGrpId,
+		    bat_grp_st_cd as batGrpStCd,
+		    bat_bgng_dt as batBgngDt,
+		    bat_end_dt as batEndDt,
+		    last_mdfr_nm as lastMdfrNm,
+		    last_mdfcn_dttm as lastMdfcnDttm
+		FROM (
+		    SELECT 
+		        ROWNUM as rnum, bat_grp_log_id, bat_grp_rty_cnt, bat_grp_id, 
+		        bat_grp_st_cd, bat_bgng_dt, bat_end_dt, last_mdfr_nm, last_mdfcn_dttm
+		    FROM (
+		        SELECT 
+		            bat_grp_log_id, bat_grp_rty_cnt, bat_grp_id, 
+		            bat_grp_st_cd, bat_bgng_dt, bat_end_dt, last_mdfr_nm, last_mdfcn_dttm
+		        FROM 
+		            bat_grp_log 
+		        WHERE 
+		            (bat_grp_log_id, bat_grp_rty_cnt)
+		        IN 
+		            (SELECT bat_grp_log_id, MAX(bat_grp_rty_cnt) FROM bat_grp_log GROUP BY (bat_grp_log_id))
+		        ORDER BY 
+		        	bat_grp_log_id DESC
+		    )
+		    WHERE rownum &lt;= #{endRowNo}  
+		)
+		WHERE rnum &gt;= #{startRowNo} 
+	</select>  
+	  
+	<select id="getBatPrmLogList" parameterType="Pager" resultType="BatPrmLog">
+		SELECT 
+			rnum,
+			bat_grp_log_id as batGrpLogId,
+			bat_grp_rty_cnt as batGrpRtyCnt,
+			bat_prm_id as batPrmId,
+			param,
+			bat_prm_st_cd as batPrmStCd,
+			rslt_msg as rsltMsg,
+			bat_bgng_dt as batBgngDt,
+			bat_end_dt as batEndDt,
+			excn_ord as excnOrd,
+			last_mdfr_nm as lastMdfrNm,
+			last_mdfcn_dttm as lastMdfcnDttm
+		FROM (
+			SELECT 
+				ROWNUM as rnum, bat_grp_log_id, bat_grp_rty_cnt, bat_prm_id, param, bat_prm_st_cd
+				rslt_msg, bat_bgng_dt, bat_end_dt, excn_ord, last_mdfr_nm, last_mdfcn_dttm
+			FROM (
+				SELECT 
+					bat_grp_log_id, bat_grp_rty_cnt, bat_prm_id, param, bat_prm_st_cd
+					rslt_msg, bat_bgng_dt, bat_end_dt, excn_ord, last_mdfr_nm, last_mdfcn_dttm
+				FROM
+					bat_prm_log
+				ORDER BY 
+					last_mdfcn_dttm DESC					
+			)
+			WHERE rownum &lt;= #{endRowNo}				
+		)
+		WHERE rnum &gt;= #{startRowNo}		
+	</select>
+	 
+	<select id="getBatPrmLogListByBatGrpLogId" parameterType="map" resultType="BatPrmLog">
+		SELECT
+			bat_grp_log_id as batGrpLogId,
+			bat_grp_rty_cnt as batGrpRtyCnt,
+			bat_prm_id as batPrmId,
+			param,
+			bat_prm_st_cd as batPrmStCd,
+			rslt_msg as rsltMsg,
+			bat_bgng_dt as batBgngDt,
+			bat_end_dt as batEndDt,
+			excn_ord as excnOrd,
+			last_mdfr_nm as lastMdfrNm,
+			last_mdfcn_dttm as lastMdfcnDttm
+		FROM 
+			bat_prm_log
+		WHERE
+			bat_grp_log_id = #{batGrpLogId}		
+	</select>
+	 
+	<select id="getBatGrpLogDetail" parameterType="map" resultType="BatGrpLog">
+		SELECT
+		    bat_grp_log_id as batGrpLogId,
+		    bat_grp_rty_cnt as batGrpRtyCnt,
+		    bat_grp_id as batGrpId,
+		    bat_grp_st_cd as batGrpStCd,
+		    bat_bgng_dt as batBgngDt,
+		    bat_end_dt as batEndDt,
+		    last_mdfr_nm as lastMdfrNm,
+		    last_mdfcn_dttm as lastMdfcnDttm
+		FROM
+			bat_grp_log
+		WHERE
+			bat_grp_log_id = #{batGrpLogId}
+		AND
+			bat_grp_rty_cnt = #{batGrpRtyCnt}		  
+	</select> 
+	  
+	<select id="getBatPrmLogDetail" parameterType="map" resultType="BatPrmLog">
+		SELECT
+			bat_grp_log_id as batGrpLogId,
+			bat_grp_rty_cnt as batGrpRtyCnt,
+			bat_prm_id as batPrmId,
+			param,
+			bat_prm_st_cd as batPrmStCd,
+			rslt_msg as rsltMsg,
+			bat_bgng_dt as batBgngDt,
+			bat_end_dt as batEndDt,
+			excn_ord as excnOrd,
+			last_mdfr_nm as lastMdfrNm,
+			last_mdfcn_dttm as lastMdfcnDttm
+		FROM
+			bat_prm_log
+		WHERE
+			bat_grp_log_id = #{batGrpLogId}
+		AND 
+			bat_grp_rty_cnt = #{batGrpRtyCnt}
+		AND 
+			bat_prm_id = #{batPrmId}	
+	</select>
+	
+	<insert id="insertBatGrpLog" parameterType="BatGrpLog">
+		<selectKey keyProperty="batGrpLogId" resultType="String" order="BEFORE">
+			SELECT 'BGL'||LPAD(SEQ_BAT_GRP_LOG.NEXTVAL, 8, '0') FROM DUAL
+		</selectKey>
+	
+		ISNERT INTO bat_grp_log(
+			bat_grp_log_id, bat_grp_rty_cnt, bat_grp_id, bat_grp_st_cd, 
+        	bat_bgng_dt, last_mdfr_nm, last_mdfcn_dttm
+		)
+		VALUES(
+			#{batGrpLogId}, #{batGrpRtyCnt}, #{batGrpId}, #{batGrpStCd},
+			sysdate, 'system', sysdate			
+		)
+	</insert>
+	  
+	<insert id="insertBatPrmLog" parameterType="BatPrmLog">
+		INSERT INTO bat_prm_log(
+			bat_grp_log_id, bat_grp_rty_cnt, bat_prm_id, param, bat_prm_st_cd
+			excn_ord, last_mdfr_nm, last_mdfcn_dttm
+		)
+		VALUES(
+			#{batGrpLogId}, #{batGrpRtyCnt}, #{batPrmId}, #{param}, #{batPrmStCd},
+			#{excnOrd}, 'system', sysdate
+		)
+	</insert>  
+	
+	<update id="updateBatGrpLog" parameterType="BatGrpLog">
+		UPDATE 
+			bat_grp_log
+		SET
+			bat_prm_st_cd = #{batPrmStCd},
+			bat_end_dt = #{batEndDt},
+			last_mdfcn_dttm = sysdate
+		WHERE
+			bat_grp_log_id = #{batGrpLogId}
+		AND
+			bat_grp_rty_cnt = #{batGrpRtyCnt}			
+	</update>
+	
+	<update id="updateBatPrmLog" parameterType="BatPrmLog">
+		UPDATE 
+			bat_prm_log
+		SET
+			bat_prm_st_cd = #{batPrmStCd},
+			rslt_msg = #{rsltMsg},
+			bat_bgng_dt = #{batBgngDt},
+			bat_end_dt = #{batEndDt},
+			last_mdfcn_dttm = sysdate
+		WHERE
+			bat_grp_log_id = #{batGrpLogId}
+		AND
+			bat_grp_rty_cnt = #{batGrpRtyCnt}
+		AND
+			bat_prm_id = #{batPrmId}							
+	</update>
+</mapper>

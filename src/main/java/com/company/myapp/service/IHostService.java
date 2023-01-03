@@ -11,6 +11,8 @@ public interface IHostService {
 
 	int getHostCount();
 	
+	List<Host> getHostList();
+	
 	List<Host> getHostList(Pager pager);
 
 	void insertHost(Host host);
@@ -20,5 +22,6 @@ public interface IHostService {
 	void updateHost(Host host);
 
 	void deleteHost(String hostId);
-
+	
+	Host getHostByBatGrpId(String batGrpId);
 }

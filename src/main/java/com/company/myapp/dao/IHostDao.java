@@ -9,7 +9,9 @@ import com.company.myapp.dto.Pager;
 
 @Mapper
 public interface IHostDao {
-
+	
+	List<Host> getHostList();
+	
 	List<Host> getHostList(Pager pager);
 
 	int insertHost(Host host);
@@ -21,5 +23,9 @@ public interface IHostDao {
 	int updateHost(Host host);
 
 	int deleteHost(String hostId);
+
+	Host getHostByBatGrpId(String batGrpId);
+
+	
 
 }
