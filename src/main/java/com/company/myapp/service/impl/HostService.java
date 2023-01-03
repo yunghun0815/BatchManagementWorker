@@ -7,7 +7,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.company.myapp.dao.HostDao;
+import com.company.myapp.dao.IHostDao;
 import com.company.myapp.dto.Host;
 import com.company.myapp.dto.Pager;
 import com.company.myapp.service.IHostService;
@@ -16,7 +16,7 @@ import com.company.myapp.service.IHostService;
 public class HostService implements IHostService{
 
 	@Autowired
-	HostDao hostDao;
+	IHostDao hostDao;
 	
 	@Override
 	public int getHostCount() {

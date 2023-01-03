@@ -8,7 +8,7 @@ import com.company.myapp.dto.Host;
 import com.company.myapp.dto.Pager;
 
 @Mapper
-public interface HostDao {
+public interface IHostDao {
 
 	List<Host> getHostList(Pager pager);
 
