@@ -41,19 +41,23 @@ public class BatchController {
 //		return "main2";
 //	}
 	@GetMapping("")
-	public String getBatchGroupList(@RequestParam(defaultValue = "1") int pageNo, Model model) {
+	public String home() {
+		return "main";
+	}
+	@GetMapping("/group")
+	public String getBatGrpList(@RequestParam(defaultValue = "1") int pageNo, Model model) {
 		
 		//데이터의 전체 행수 가져온 후 페이징 처리
 		int totalRows = batchService.getTotalGroupNum();
 		Pager pager = new Pager(5, 5, totalRows, pageNo);
 		
 		//현재 페이지에 맞는 데이터 가져오기
-		List<BatGrp> batGrpList = batchService.getBatchGroupList(pager);
+		List<BatGrp> batGrpList = batchService.getBatGrpList(pager);
 		
 		model.addAttribute("pager", pager);
 		model.addAttribute("batGrpList", batGrpList);
 		
-		return "batchManagment";
+		return "group/batchManagment";
 	}
 	
 	/**
@@ -62,27 +66,38 @@ public class BatchController {
 	 * @param model
 	 * @return
 	 */
-	@ResponseBody
-	@GetMapping("/detail")
-	public BatGrp getBatchGroupDetail(@RequestParam(value="grpId") String grpId, Model model) {
-		BatGrp batGrp = batchService.getBatchGroupDetail(grpId);
-		
-		return batGrp;
+//	@ResponseBody
+//	@GetMapping("/group/detail")
+//	public BatGrp getBatGrpDetail(@RequestParam(value="grpId") String grpId, Model model) {
+//		BatGrp batGrp = batchService.getBatGrpDetail(grpId);
+//		
+//		return batGrp;
+//	}
+	@GetMapping("/group/detail")
+	public String getBatGrpDetail(@RequestParam(value="grpId") String grpId, Model model) {
+		BatGrp batGrp = batchService.getBatGrpDetail(grpId);
+		model.addAttribute("grp", batGrp);
+		return "group/groupDetail";
 	}
 	
-	@PostMapping("/insert")
-	public void insertBatchGroup(BatGrp vo) {
-		batchService.insertBatchGroup(vo);
+	
+	@PostMapping("/group/insert")
+	public String insertBatGrp(BatGrp vo) {
+		System.out.println(vo);
+		//vo.setCronDsc("");
+		batchService.insertBatGrp(vo);
+		return "redirect:/batch";
 	}
 	
-	@PostMapping("/update")
-	public void updateBatchGroup(BatGrp vo) {
-		batchService.updateBatchGroup(vo);
+	@PostMapping("/group/update")
+	public void updateBatGrp(BatGrp vo) {
+		batchService.updateBatGrp(vo);
 	}
 	
-	@PostMapping("/delete")
-	public void deleteBatchGroup(String grpId) {
-		batchService.deleteBatchGroup(grpId);
+	@GetMapping("/group/delete")
+	public String deleteBatGrp(String grpId) {
+		batchService.deleteBatGrp(grpId);
+		return "redirect:/batch/group";
 	}
 	
 	/**
@@ -102,18 +117,26 @@ public class BatchController {
 	 * @param checkBox 검색할 컬럼
 	 * @return
 	 */
-	@ResponseBody
-	@PostMapping("/search")
-	public List<BatGrp> searchBatGrp(@RequestParam(value="keyword") String keyword,
-			                             @RequestParam List<String> checkBox){
-		List<BatGrp> searchResult = new ArrayList<BatGrp>();
-		if(checkBox.get(0).equals("all")) {
-			searchResult = batchService.searchBatGrp(keyword);
-		}else {
-			searchResult = batchService.searchBatGrp(keyword, checkBox);	
-		}
+	@GetMapping("/group/search")
+	public String searchBatGrp(@RequestParam(defaultValue = "1") int pageNo, 
+			                          @RequestParam(value="keyword") String keyword,
+			                             @RequestParam List<String> filtering, Model model){
 		
-		return searchResult;
+		//데이터의 전체 행수 가져온 후 페이징 처리
+		int totalRows = batchService.getTotalSearchNum(keyword, filtering);
+		Pager pager = new Pager(5, 5, totalRows, pageNo);
+
+		List<BatGrp> searchResult = batchService.searchBatGrp(pager, keyword, filtering);	
+		
+		model.addAttribute("pager", pager);
+		model.addAttribute("batGrpList", searchResult);
+		return "group/batchManagment";
 	}
+
 	
+	@GetMapping("/searchPage")
+	public String searchBatGrp(){
+		
+		return "group/search";
+	}
 }

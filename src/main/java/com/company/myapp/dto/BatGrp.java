@@ -24,5 +24,11 @@ public class BatGrp {
 	private char useYn;
 	private String lastMdfrNm;
 	private Date lastMdfcnDttm;
+	
+	private String hostNm;
+	private String hostIp;
+	private String hostPt;
+	
+	private String cronDsc;
 
 }
