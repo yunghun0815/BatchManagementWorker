@@ -8,16 +8,16 @@
   
   <select id="getBatGrpListByPage" parameterType="Pager" resultType="BatGrp">
   	SELECT b.rnum,
-  		   b.bat_grp_id as batGrpId, 
-    	   b.bat_grp_nm as batGrpNm, 
-    	   b.bat_grp_dsc as batGrpDsc, 
-    	   b.host_id as hostId, 
-    	   h.host_nm as hostNm, 
-    	   h.host_ip as hostIp, 
-    	   h.host_pt as hostPt, 
-    	   b.auto_excn_yn as autoExcnYn, 
-    	   b.cron as cron,
-    	   b.cron_dsc as cronDsc
+  		   b.bat_grp_id as "batGrpId", 
+    	   b.bat_grp_nm as "batGrpNm", 
+    	   b.bat_grp_dsc as "batGrpDsc", 
+    	   b.host_id as "hostId", 
+    	   h.host_nm as "hostNm", 
+    	   h.host_ip as "hostIp", 
+    	   h.host_pt as "hostPt", 
+    	   b.auto_excn_yn as "autoExcnYn", 
+    	   b.cron as "cron",
+    	   b.cron_dsc as "cronDsc"
 	FROM ( 
 	  SELECT ROWNUM as rnum, bat_grp_id, bat_grp_nm, bat_grp_dsc, host_id, auto_excn_yn, cron, cron_dsc, use_yn 
       FROM ( 
@@ -40,27 +40,27 @@
   </select>
   
   <select id="getBatGrpDetail" parameterType="String" resultType="BatGrp">
-  	SELECT b.bat_grp_id as batGrpId, 
-    	   b.bat_grp_nm as batGrpNm, 
-    	   b.bat_grp_dsc as batGrpDsc, 
-    	   b.host_id as hostId, 
-    	   h.host_nm as hostNm, 
-    	   h.host_ip as hostIp, 
-    	   h.host_pt as hostPt, 
-    	   b.auto_excn_yn as autoExcnYn, 
-    	   b.cron as cron,
-    	   b.cron_dsc as cronDsc
+  	SELECT b.bat_grp_id as "batGrpId", 
+    	   b.bat_grp_nm as "batGrpNm", 
+    	   b.bat_grp_dsc as "batGrpDsc", 
+    	   b.host_id as "hostId", 
+    	   h.host_nm as "hostNm", 
+    	   h.host_ip as "hostIp", 
+    	   h.host_pt as "hostPt", 
+    	   b.auto_excn_yn as "autoExcnYn", 
+    	   b.cron as "cron",
+    	   b.cron_dsc as "cronDsc"
     FROM bat_grp b LEFT OUTER JOIN host h ON b.host_id=h.host_id 
     WHERE b.use_yn='Y' and b.bat_grp_id=#{grpId}
   </select>
   
   
-  <insert id="insertBatchGroup" parameterType="BatGrp">
+  <insert id="insertBatGrp" parameterType="BatGrp">
   	INSERT INTO bat_grp(bat_grp_id, bat_grp_nm, bat_grp_dsc, host_id, auto_excn_yn, cron, cron_dsc, last_mdfr_nm, last_mdfcn_dttm) 
   	VALUES('BGR'||LPAD(SEQ_BAT_GROUP.NEXTVAL, 8, '0'), #{batGrpNm}, #{batGrpDsc}, #{hostId}, #{autoExcnYn}, #{cron}, #{cronDsc}, 'admin', sysdate)
   </insert>
   
-  <update id="updateBatchGroup" parameterType="BatGrp">
+  <update id="updateBatGrp" parameterType="BatGrp">
   	UPDATE 
   		bat_grp
   	SET
@@ -74,26 +74,27 @@
     	last_mdfcn_dttm = sysdate
   	WHERE bat_grp_id = #{batGrpId}
   </update>
-  <update id="deleteBatchGroup" parameterType="String">
+  <update id="deleteBatGrp" parameterType="String">
   	UPDATE
   		bat_grp
   	SET
   		use_yn = 'N'
+    	last_mdfcn_dttm = sysdate
   	WHERE bat_grp_id = #{grpId}
   </update>
 
   <select id="searchBatGrp" parameterType="map" resultType="BatGrp">
   	SELECT b.rnum,
-  		   b.bat_grp_id as batGrpId, 
-    	   b.bat_grp_nm as batGrpNm, 
-    	   b.bat_grp_dsc as batGrpDsc, 
-    	   b.host_id as hostId, 
-    	   h.host_nm as hostNm, 
-    	   h.host_ip as hostIp, 
-    	   h.host_pt as hostPt, 
-    	   b.auto_excn_yn as autoExcnYn, 
-    	   b.cron as cron,
-    	   b.cron_dsc as cronDsc
+  		   b.bat_grp_id as "batGrpId", 
+    	   b.bat_grp_nm as "batGrpNm", 
+    	   b.bat_grp_dsc as "batGrpDsc", 
+    	   b.host_id as "hostId", 
+    	   h.host_nm as "hostNm", 
+    	   h.host_ip as "hostIp", 
+    	   h.host_pt as "hostPt", 
+    	   b.auto_excn_yn as "autoExcnYn", 
+    	   b.cron as "cron",
+    	   b.cron_dsc as "cronDsc"
 	FROM ( 
 	  SELECT ROWNUM as rnum, bat_grp_id, bat_grp_nm, bat_grp_dsc, host_id, auto_excn_yn, cron, cron_dsc, use_yn 
       FROM ( 
@@ -160,6 +161,68 @@
   </select>
   
   <select id="getBatGrpList" resultType="BatGrp">
-  	SELECT * FROM bat_grp
+  	SELECT bat_grp_id as "batGrpId"
+  			bat_grp_nm as "batGrpNm"
+  			bat_grp_dsc as "batGrpDsc"
+  	 FROM bat_grp
+  	 WHERE use_yn='Y'
   </select>
+  
+  <select id="getBatPrmList" parameterType="String" resultType="BatPrm">
+  	SELECT bat_prm_id as "batPrmId",
+  			bat_prm_nm as "batPrmNm",
+  			path,
+  			excn_ord as "excnOrd",
+  			param,
+  			param_dsc as "paramDsc"
+	FROM bat_prm
+	WHERE use_yn='Y' and bat_grp_id = #{grpId}
+	ORDER BY excn_ord
+  </select>
+  
+  <select id="getBatPrmDetail" parameterType="String" resultType="BatPrm">
+  	SELECT bat_prm_id as "batPrmId",
+  			bat_grp_id as "batGrpId"
+  			bat_prm_nm as "batPrmNm",
+  			path,
+  			excn_ord as "excnOrd",
+  			param,
+  			param_dsc as "paramDsc"
+	FROM bat_prm
+	WHERE use_yn='Y' and bat_prm_id = #{prmId}
+  </select>
+  <insert id="insertBatPrm" parameterType="BatPrm">
+  	INSERT INTO bat_prm(bat_prm_id, bat_grp_id, bat_prm_nm, path, excn_ord, param, param_dsc, last_mdfr_nm, last_mdfcn_dttm)
+  	VALUES ('PRM'||LPAD(SEQ_BAT_PRM.NEXTVAL, 8, '0'), #{batGrpId}, #{batPrmNm}, #{path}, #{excnOrd}, #{param}, #{paramDsc}, 'admin', sysdate)
+  </insert>
+  <update id="updateBatPrm" parameterType="BatPrm">
+  	UPDATE 
+  		bat_prm
+  	SET
+		bat_grp_id = #{batGrpId}
+		bat_prm_nm = #{batPrmNm},
+		path = #{path},
+		excn_ord = #{excnOrd},
+		param = #{param},
+		param_dsc = #{paramDsc},
+  		last_mdfcn_dttm = sysdate
+	WHERE
+		bat_prm_id = #{batPrmId}
+  </update>
+  <update id="deleteBatPrm" parameterType="String">
+  	UPDATE
+  		bat_prm
+  	SET
+  		use_yn = 'N'
+  		last_mdfcn_dttm = sysdate
+  	WHERE bat_prm_id = #{batPrmId}
+  </update>
+  <update id="sortByRownum" parameterType="String">
+  	UPDATE
+  		(SELECT ROWNUM, b.*
+  		FROM bat_prm b)
+  	SET
+  		b.excn_ord = ROWNUM
+  	WHERE bat_grp_id = #{batgrpId}
+  </update>
 </mapper>

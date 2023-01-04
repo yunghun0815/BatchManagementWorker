@@ -11,6 +11,16 @@
 <head>
 <meta charset="EUC-KR">
 <title>Insert title here</title>
+<script type="text/javascript">
+function batPrmList(grp){
+	const grpId = grp.closest("#groupId").text();
+	alert(grpId);
+	
+	//$.ajax({
+	//	url: "/batch/program?grpId=" + grpId
+	//});
+}
+</script>
 </head>
 <body>
 <table border=1>
@@ -25,8 +35,8 @@
 		<th class="text-center button-td">삭제하기</th>
 	</tr>
 	<c:forEach var="item" items="${ batGrpList}">
-		<tr>
-			<td>${item.batGrpId}</td>
+		<tr onclick="batPrmList(this)">
+			<td id="groupId">${item.batGrpId}</td>
 			<td>${item.batGrpNm }</td>
 			<td>${item.batGrpDsc }</td>
 			<td>${item.hostNm}</td>

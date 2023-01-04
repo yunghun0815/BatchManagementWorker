@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.company.myapp.dao.IBatchDao;
 import com.company.myapp.dto.BatGrp;
+import com.company.myapp.dto.BatPrm;
 import com.company.myapp.dto.Pager;
 import com.company.myapp.service.IBatchService;
 
@@ -38,18 +39,18 @@ public class BatchService implements IBatchService {
 
 	@Override
 	public void insertBatGrp(BatGrp vo) {
-		batchDao.insertBatchGroup(vo);
+		batchDao.insertBatGrp(vo);
 
 	}
 
 	@Override
 	public void updateBatGrp(BatGrp vo) {
-		batchDao.updateBatchGroup(vo);
+		batchDao.updateBatGrp(vo);
 	}
 
 	@Override
 	public void deleteBatGrp(String grpId) {
-		batchDao.deleteBatchGroup(grpId);
+		batchDao.deleteBatGrp(grpId);
 	}
 
 	
@@ -86,8 +87,35 @@ public class BatchService implements IBatchService {
 
 	@Override
 	public List<BatGrp> getBatGrpList() {
-		// TODO Auto-generated method stub
 		return batchDao.getBatGrpList();
+	}
+
+	
+	
+	@Override
+	public List<BatPrm> getBatPrmList(String grpId) {
+		return batchDao.getBatPrmList(grpId);
+	}
+
+	@Override
+	public BatPrm getBatPrmDetail(String prmId) {
+		return batchDao.getBatPrmDetail(prmId);
+	}
+
+	@Override
+	public void insertBatPrm(BatPrm vo) {
+		batchDao.insertBatPrm(vo);
+	}
+
+	@Override
+	public void deleteBatPrm(String prmId, String grpId) {
+		batchDao.deleteBatPrm(prmId);
+		batchDao.sortByRownum(grpId);
+	}
+
+	@Override
+	public void updateBatPrm(BatPrm vo) {
+		batchDao.updateBatPrm(vo);
 	}
 
 }

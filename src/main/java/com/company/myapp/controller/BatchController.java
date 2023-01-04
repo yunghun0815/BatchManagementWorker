@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.company.myapp.dto.BatGrp;
+import com.company.myapp.dto.BatPrm;
 import com.company.myapp.dto.Pager;
 import com.company.myapp.service.IBatchService;
 
@@ -139,4 +140,39 @@ public class BatchController {
 		
 		return "group/search";
 	}
+	
+	@ResponseBody
+	@GetMapping("/program")
+	public List<BatPrm> getBatPrmList(@RequestParam(value="grpId")String grpId){
+		List<BatPrm> batPrmList = batchService.getBatPrmList(grpId);
+		return batPrmList;
+	}
+	
+	@ResponseBody
+	@GetMapping("/program/detail")
+	public BatPrm getBatPrmDetail(@RequestParam(value="prmId")String prmId) {
+		return batchService.getBatPrmDetail(prmId);
+	}
+	
+	@ResponseBody
+	@GetMapping("/program/delete")
+	public List<BatPrm> deleteBatPrm(@RequestParam(value="prmId")String prmId,
+										@RequestParam(value="grpId")String grpId) {
+		batchService.deleteBatPrm(prmId, grpId);
+		return batchService.getBatPrmList(grpId);
+	}
+	
+	@ResponseBody
+	@PostMapping("/program/insert")
+	public String insertBatPrm(BatPrm vo) {
+		batchService.insertBatPrm(vo);
+		return "redirect:/batch/group";
+	} 
+	
+	@ResponseBody
+	@PostMapping("/program/update")
+	public List<BatPrm> updateBatPrm(BatPrm vo) {
+		batchService.updateBatPrm(vo);
+		return batchService.getBatPrmList(vo.getBatGrpId());
+	} 
 }
