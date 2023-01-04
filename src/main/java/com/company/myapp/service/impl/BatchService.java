@@ -109,6 +109,7 @@ public class BatchService implements IBatchService {
 
 	@Override
 	public void deleteBatPrm(String prmId, String grpId) {
+		System.out.println(grpId);
 		batchDao.deleteBatPrm(prmId);
 		batchDao.sortByRownum(grpId);
 	}

@@ -17,11 +17,38 @@
 	href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"
 	rel="stylesheet">
 
+<script type="text/javascript">
+function changePath(obj){
+	
+	document.getElementById('file').value=document.selection.createRange().text.toString();
+    alert(document.getElementById('file').value)
+}
+function readURL(input) {
+    if (input.files && input.files[0]) {
+        var reader = new FileReader(); //파일을 읽기 위한 FileReader객체 생성
+        reader.onload = function (e) {
+        //파일 읽어들이기를 성공했을때 호출되는 이벤트 핸들러
+            $('#productImg').attr('src', e.target.result);
+            //이미지 Tag의 SRC속성에 읽어들인 File내용을 지정
+            //(아래 코드에서 읽어들인 dataURL형식)
+        }                   
+        reader.readAsDataURL(input.files[0]);
+        //File내용을 읽어 dataURL형식의 문자열로 저장
+    }
+}//readURL()--
 
+</script>
 <title>Insert title here</title>
 </head>
 <body>
 <a href="<c:url value='/batch/group'/>">배치그룹보기</a>
 <a href="<c:url value='/batch/searchPage'/>">배치그룹검색</a>
+
+<form action="#" method="GET" id="fform">
+<input type="file" id="file" value="" name="file" onchange="this.select(); document.getElementById('file_path').value=document.selection.createRange().text.toString();">
+<input type="hidden" value="" name="path">
+<button type="submit">제출</button>
+</form>
+<span class="a"></span>
 </body>
 </html>

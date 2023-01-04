@@ -74,7 +74,6 @@ public class BatchServer {
 	public void shutDown() throws IOException {
 		log.info("[서버] 종료");
 		threadPool.shutdown();
-		serverSocket.close();
 	}
 	
 	/**

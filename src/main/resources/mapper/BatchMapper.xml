@@ -182,7 +182,7 @@
   
   <select id="getBatPrmDetail" parameterType="String" resultType="BatPrm">
   	SELECT bat_prm_id as "batPrmId",
-  			bat_grp_id as "batGrpId"
+  			bat_grp_id as "batGrpId",
   			bat_prm_nm as "batPrmNm",
   			path,
   			excn_ord as "excnOrd",
@@ -213,16 +213,22 @@
   	UPDATE
   		bat_prm
   	SET
-  		use_yn = 'N'
+  		use_yn = 'N',
+  		excn_ord = 0,
   		last_mdfcn_dttm = sysdate
   	WHERE bat_prm_id = #{batPrmId}
   </update>
   <update id="sortByRownum" parameterType="String">
-  	UPDATE
-  		(SELECT ROWNUM, b.*
-  		FROM bat_prm b)
-  	SET
-  		b.excn_ord = ROWNUM
-  	WHERE bat_grp_id = #{batgrpId}
+  	UPDATE 
+  		bat_prm a
+	SET
+		a.excn_ord = 	
+			(SELECT c.rnum 
+			FROM (SELECT ROWNUM as rnum, b.* 
+     				FROM bat_prm b 
+     				WHERE b.use_yn = 'Y' and b.bat_grp_id = #{grpId}
+     				ORDER BY b.excn_ord) c
+     		WHERE a.bat_prm_id=c.bat_prm_id)
+	WHERE a.use_yn = 'Y' and a.bat_grp_id = #{grpId}
   </update>
 </mapper>
