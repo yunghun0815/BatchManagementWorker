@@ -78,7 +78,7 @@ public class BatchServer {
 	}
 	
 	/**
-	 * Agent 서버 연결 및 Json 데이터 전송
+	 * Agent 서버 연결 및 JSON 데이터 전송
 	 * @param host 아이피, 포트
 	 * @param json 넘길 json 형식 객체 
 	 */
@@ -92,6 +92,7 @@ public class BatchServer {
 			dos.writeUTF(json.toString());
 			dos.flush();
 			dos.close();
+			socket.close();
 			
 			
 		}catch(Exception e) {

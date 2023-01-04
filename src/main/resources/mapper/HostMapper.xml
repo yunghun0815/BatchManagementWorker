@@ -16,7 +16,7 @@
    	  	host	
    </select>
 	
-   <select id="getHostList" parameterType="Pager" resultType="Host">
+   <select id="getHostListByPage" parameterType="Pager" resultType="Host">
       SELECT    
    		rnum,                
         host_id as hostId, 

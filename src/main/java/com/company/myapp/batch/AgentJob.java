@@ -78,7 +78,6 @@ public class AgentJob implements Job{
 			jsonObject.put("path", batPrm.getPath());
 			jsonObject.put("param", batPrm.getParam());
 			jsonObject.put("batGrpLogId", batGrpLog.getBatGrpId());
-			jsonObject.put("batGrpId", batPrm.getBatGrpId());
 			jsonObject.put("batPrmId", batPrm.getBatPrmId());
 			jsonObject.put("batGrpRtyCnt", 0);
 			jsonObject.put("excnOrd", batPrm.getExcnOrd());
