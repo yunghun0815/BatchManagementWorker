@@ -9,8 +9,22 @@
 <!DOCTYPE html>
 <html>
 <head>
+<script src="https://code.jquery.com/jquery-3.6.2.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js" ></script>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet">
 <meta charset="EUC-KR">
 <title>Insert title here</title>
+<script type="text/javascript">
+function batPrmList(grp){
+	const grpId = $(grp).children("#groupId").text();
+	
+	$.ajax({
+		url: "/batch/program?grpId=" + grpId;
+	
+				
+	});
+}
+</script>
 </head>
 <body>
 <table border=1>
@@ -25,8 +39,8 @@
 		<th class="text-center button-td">삭제하기</th>
 	</tr>
 	<c:forEach var="item" items="${ batGrpList}">
-		<tr>
-			<td>${item.batGrpId}</td>
+		<tr onclick="batPrmList(this)">
+			<td id="groupId">${item.batGrpId}</td>
 			<td>${item.batGrpNm }</td>
 			<td>${item.batGrpDsc }</td>
 			<td>${item.hostNm}</td>

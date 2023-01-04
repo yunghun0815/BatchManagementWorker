@@ -14,6 +14,7 @@ import lombok.Setter;
 @Setter
 public class BatPrm {
 	private String batPrmId;
+	private String batPrmNm;
 	private String batGrpId;
 	private String path;
 	private int excnOrd;
