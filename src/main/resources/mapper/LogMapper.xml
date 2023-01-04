@@ -140,7 +140,7 @@
 			SELECT 'BGL'||LPAD(SEQ_BAT_GRP_LOG.NEXTVAL, 8, '0') FROM DUAL
 		</selectKey>
 	
-		ISNERT INTO bat_grp_log(
+		INSERT INTO bat_grp_log(
 			bat_grp_log_id, bat_grp_rty_cnt, bat_grp_id, bat_grp_st_cd, 
         	bat_bgng_dt, last_mdfr_nm, last_mdfcn_dttm
 		)
@@ -152,7 +152,7 @@
 	  
 	<insert id="insertBatPrmLog" parameterType="BatPrmLog">
 		INSERT INTO bat_prm_log(
-			bat_grp_log_id, bat_grp_rty_cnt, bat_prm_id, param, bat_prm_st_cd
+			bat_grp_log_id, bat_grp_rty_cnt, bat_prm_id, param, bat_prm_st_cd,
 			excn_ord, last_mdfr_nm, last_mdfcn_dttm
 		)
 		VALUES(

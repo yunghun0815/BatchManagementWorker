@@ -2,6 +2,8 @@ package com.company.myapp.dto;
 
 import java.sql.Date;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,6 +12,7 @@ import lombok.Setter;
  * @author 정영훈
  *
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 @Setter
 @Getter
 public class BatPrmLog {

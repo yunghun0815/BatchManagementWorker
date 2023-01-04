@@ -48,17 +48,19 @@ public class BatchServer {
 		
 		// 서버소켓 생성 및 포트 바인딩
 		serverSocket = new ServerSocket(50000);
-		
 		// 작업 스레드 생성
 		threadPool.execute(new Runnable() {
 			
 			@Override
 			public void run() {
+				// 서버소켓이 열려있으면 실행
 				while(true) {
 					try {
 						// 연결 수락 및 메세지 처리 메소드 호출
-						Socket socket = serverSocket.accept();
-						receiveMessage(socket);
+						if(!serverSocket.isClosed()) {
+							Socket socket = serverSocket.accept();
+							receiveMessage(socket);
+						}
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
@@ -73,8 +75,8 @@ public class BatchServer {
 	 */
 	public void shutDown() throws IOException {
 		log.info("[서버] 종료");
-		threadPool.shutdown();
 		serverSocket.close();
+		threadPool.shutdown();
 	}
 	
 	/**
@@ -88,7 +90,7 @@ public class BatchServer {
 			Socket socket = new Socket(host.getHostIp(), host.getHostPt());
 			DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
 			
-			// Agent 서버로 jsonString 전송
+			// Agent 서버로 데이터 전송 후 연결 종료
 			dos.writeUTF(json.toString());
 			dos.flush();
 			dos.close();
@@ -124,7 +126,7 @@ public class BatchServer {
 					//List<BatPrmLog> log = mapper.readValue(data, new TypeReference<List<BatPrmLog>>() {});
 					
 					// 마지막 순번일 경우 그룹 로그 업데이트
-					if(json.get("last").equals("Y")) {
+					if(json.get("lastYn").equals("Y")) {
 						
 						// 받은 결과가 속한 그룹 로그 선언
 						BatGrpLog batGrpLog = logService.getBatGrpLogDetail(batPrmLog.getBatGrpLogId(), batPrmLog.getBatGrpRtyCnt());
