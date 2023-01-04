@@ -12,7 +12,7 @@ public interface IHostDao {
 	
 	List<Host> getHostList();
 	
-	List<Host> getHostList(Pager pager);
+	List<Host> getHostListByPage(Pager pager);
 
 	int insertHost(Host host);
 

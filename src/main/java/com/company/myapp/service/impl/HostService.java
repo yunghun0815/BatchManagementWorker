@@ -30,7 +30,7 @@ public class HostService implements IHostService{
 	
 	@Override
 	public List<Host> getHostList(Pager pager) {
-		return hostDao.getHostList(pager);
+		return hostDao.getHostListByPage(pager);
 	}
 
 	@Override
