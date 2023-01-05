@@ -8,6 +8,7 @@ import java.net.Socket;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -84,7 +85,7 @@ public class BatchServer {
 	 * @param host 아이피, 포트
 	 * @param json 넘길 json 형식 객체 
 	 */
-	public void sendMessage(Host host, JSONObject json) {
+	public void sendMessage(Host host, JSONArray json) {
 		try {
 			// 소켓 생성 및 Agent 서버 연결 요청
 			Socket socket = new Socket(host.getHostIp(), host.getHostPt());
@@ -113,24 +114,21 @@ public class BatchServer {
 			public void run() {
 				try {
 					DataInputStream dis = new DataInputStream(socket.getInputStream());
-					
+					log.info("데이터 받음");
 					// Agent 서버에서 넘어온 결과 DTO에 저장
 					String data = dis.readUTF();
 					JSONObject json = new JSONObject(data);
 					ObjectMapper mapper = new ObjectMapper();
 					BatPrmLog batPrmLog = mapper.readValue(data, BatPrmLog.class);
-					
+					log.info(batPrmLog.toString());
 					// 프로그램 로그 DB에 저장
 					logService.updateBatPrmLog(batPrmLog);
-					
-					//List<BatPrmLog> log = mapper.readValue(data, new TypeReference<List<BatPrmLog>>() {});
 					
 					// 마지막 순번일 경우 그룹 로그 업데이트
 					if(json.get("lastYn").equals("Y")) {
 						
 						// 받은 결과가 속한 그룹 로그 선언
 						BatGrpLog batGrpLog = logService.getBatGrpLogDetail(batPrmLog.getBatGrpLogId(), batPrmLog.getBatGrpRtyCnt());
-						
 						// 그룹 로그의 상태코드, 배치 종료 일자를 업데이트
 						batGrpLog.setBatGrpStCd(batPrmLog.getBatPrmStCd());
 						batGrpLog.setBatEndDt(batPrmLog.getBatEndDt());

@@ -165,7 +165,7 @@
 		UPDATE 
 			bat_grp_log
 		SET
-			bat_prm_st_cd = #{batPrmStCd},
+			bat_grp_st_cd = #{batGrpStCd},
 			bat_end_dt = #{batEndDt},
 			last_mdfcn_dttm = sysdate
 		WHERE
