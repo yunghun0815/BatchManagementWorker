@@ -110,6 +110,7 @@ public class AgentJob implements Job{
 		batGrpLog.setBatGrpRtyCnt(rtyCnt);
 		batGrpLog.setBatGrpId(batGrpId); 
 		batGrpLog.setBatGrpStCd(BatchStatusCode.RUNNING.getCode());
+
 		logService.insertRtyBatGrpLog(batGrpLog); // 저장 쿼리 실행될 때 PK를 selectKey로 DTO에 SET 시킴
 
 		// 첫 번째 프로그램 로그에 '실행중' 저장하기 위해 변수 선언
@@ -147,5 +148,6 @@ public class AgentJob implements Job{
 	      Host host = hostService.getHostByBatGrpId(batGrpId); 
 	      // Agent 서버와 통신 및 JSON 객체 전송
 	      batchServer.sendMessage(host, jsonArray);
+
 	}
 }

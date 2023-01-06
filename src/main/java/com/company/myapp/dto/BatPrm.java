@@ -4,12 +4,14 @@ import java.sql.Date;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 /**
  * 배치 프로그램 DTO
  * @author 김나영
  * 
  */
+@ToString
 @Getter
 @Setter
 public class BatPrm {

@@ -2,14 +2,19 @@ package com.company.myapp.dto;
 
 import java.sql.Date;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 /**
  * 배치 프로그램 로그 DTO
  * @author 정영훈
  *
  */
+@ToString
+@JsonIgnoreProperties(ignoreUnknown = true)
 @Setter
 @Getter
 public class BatPrmLog {
