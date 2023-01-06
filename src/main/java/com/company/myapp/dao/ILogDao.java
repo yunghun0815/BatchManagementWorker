@@ -44,4 +44,5 @@ public interface ILogDao {
 	List<BatPrmLog> getRtyPrmListByLogIdNCnt(@Param(value="logId")String logId, @Param(value="rty")int rty);
 
 	List<BatGrpLog> getRtyBatGrpLogListByLogId(String batGrpLogId);
+
 }

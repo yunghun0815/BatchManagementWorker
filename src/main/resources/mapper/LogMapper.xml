@@ -264,4 +264,6 @@
 		AND
 			bat_grp_rty_cnt = #{rty}		
 	</select>
+	
+
 </mapper>

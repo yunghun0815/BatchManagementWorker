@@ -16,11 +16,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.company.myapp.batch.AgentJob;
+import com.company.myapp.batch.BatchStatusCode;
 import com.company.myapp.dao.IBatchDao;
 import com.company.myapp.dao.ILogDao;
 import com.company.myapp.dto.BatGrp;
 import com.company.myapp.dto.BatGrpLog;
+import com.company.myapp.dto.BatPrm;
 import com.company.myapp.dto.BatPrmLog;
+import com.company.myapp.service.IBatchService;
 import com.company.myapp.service.IJobService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -32,7 +35,7 @@ public class JobService implements IJobService {
 	@Autowired
 	Scheduler scheduler;
 	@Autowired
-	BatchService batchService;
+	IBatchService batchService;
 	@Autowired
 	IBatchDao batchDao;
 	@Autowired
@@ -52,18 +55,20 @@ public class JobService implements IJobService {
 
 	@Override
 	public void startSchedule() {
+		
 		List<BatGrp> batGrpList = batchService.getBatGrpList();
 		for(BatGrp vo: batGrpList) {
-		     if(vo.getAutoExcnYn() == 'Y' && batchService.getBatPrmList(vo.getBatGrpId()).size()!=0) {
-		        addJob(vo.getBatGrpId());
-		     }
-	     }
+			if(vo.getAutoExcnYn() == 'Y' && batchService.getBatPrmList(vo.getBatGrpId()).size()!=0) {
+				addJob(vo.getBatGrpId());
+			}
+		}
 	}
 
 	@Override
 	public void shutdownSchedule() {
 		try {
 			scheduler.pauseAll();
+			scheduler.clear();
 		}catch(SchedulerException e) {
 			log.error(e.getMessage());
 			throw new RuntimeException();
@@ -75,12 +80,37 @@ public class JobService implements IJobService {
 	public void startJob(String grpId) {
 		JobKey key = JobKey.jobKey(grpId);
 		try {
-			scheduler.resumeJob(key);
+			if(scheduler.checkExists(key)==true) {
+				addJob(grpId);
+			}else {
+				scheduler.resumeJob(key);
+			}
 			log.info(key + "를 재실행");
 		}catch(SchedulerException e) {
+			// 그룹 로그 저장
+			BatGrpLog batGrpLog = new BatGrpLog();
+			batGrpLog.setBatGrpRtyCnt(0);
+			batGrpLog.setBatGrpId(grpId); 
+			batGrpLog.setBatGrpStCd(BatchStatusCode.FAIL.getCode());
+			logDao.insertBatGrpLog(batGrpLog); // 저장 쿼리 실행될 때 PK를 selectKey로 DTO에 SET 시킴
+			
+			//프로그램 로그 저장 - 에러메시지는 첫번째 실행 프로그램에만 저장
+			List<BatPrm> batPrmList = batchService.getBatPrmList(grpId);
+			for(BatPrm batPrm : batPrmList) {
+				BatPrmLog batPrmLog = new BatPrmLog();
+				batPrmLog.setBatGrpLogId(batGrpLog.getBatGrpLogId());
+				batPrmLog.setBatGrpRtyCnt(0);
+				batPrmLog.setBatPrmId(batPrm.getBatPrmId());
+				batPrmLog.setParam(batPrm.getParam());
+				batPrmLog.setBatPrmStCd(BatchStatusCode.FAIL.getCode());
+				int excnOrd = batPrm.getExcnOrd();
+				batPrmLog.setExcnOrd(excnOrd);
+				if(excnOrd==1)
+					batPrmLog.setRsltMsg("Job 재실행 실패" + e.getMessage());
+				logDao.insertBatPrmLog(batPrmLog);
+			}
 			log.error(e.getMessage());
 			throw new RuntimeException();
-			//log저장?
 		}
 	}
 
@@ -114,6 +144,28 @@ public class JobService implements IJobService {
 			scheduler.scheduleJob(job,trigger);
 			log.info("Job 추가 완료");
 		}catch(SchedulerException e) {
+			// 그룹 로그 저장
+			BatGrpLog batGrpLog = new BatGrpLog();
+			batGrpLog.setBatGrpRtyCnt(0);
+			batGrpLog.setBatGrpId(grpId); 
+			batGrpLog.setBatGrpStCd(BatchStatusCode.FAIL.getCode());
+			logDao.insertBatGrpLog(batGrpLog); // 저장 쿼리 실행될 때 PK를 selectKey로 DTO에 SET 시킴
+
+			//프로그램 로그 저장 - 에러메시지는 첫번째 실행 프로그램에만 저장
+			List<BatPrm> batPrmList = batchService.getBatPrmList(grpId);
+			for(BatPrm batPrm : batPrmList) {
+				BatPrmLog batPrmLog = new BatPrmLog();
+				batPrmLog.setBatGrpLogId(batGrpLog.getBatGrpLogId());
+				batPrmLog.setBatGrpRtyCnt(0);
+				batPrmLog.setBatPrmId(batPrm.getBatPrmId());
+				batPrmLog.setParam(batPrm.getParam());
+				batPrmLog.setBatPrmStCd(BatchStatusCode.FAIL.getCode());
+				int excnOrd = batPrm.getExcnOrd();
+				batPrmLog.setExcnOrd(excnOrd);
+				if(excnOrd==1)
+					batPrmLog.setRsltMsg("Job 등록 실패" + e.getMessage());
+				logDao.insertBatPrmLog(batPrmLog);
+			}
 			log.error(e.getMessage());
 			throw new RuntimeException();
 		}
@@ -142,6 +194,28 @@ public class JobService implements IJobService {
 		try {
 			scheduler.rescheduleJob(oldTrigger, newTrigger);
 		}catch(SchedulerException e) {
+			// 그룹 로그 저장
+			BatGrpLog batGrpLog = new BatGrpLog();
+			batGrpLog.setBatGrpRtyCnt(0);
+			batGrpLog.setBatGrpId(vo.getBatGrpId()); 
+			batGrpLog.setBatGrpStCd(BatchStatusCode.FAIL.getCode());
+			logDao.insertBatGrpLog(batGrpLog); // 저장 쿼리 실행될 때 PK를 selectKey로 DTO에 SET 시킴
+
+			//프로그램 로그 저장 - 에러메시지는 첫번째 실행 프로그램에만 저장
+			List<BatPrm> batPrmList = batchService.getBatPrmList(vo.getBatGrpId());
+			for(BatPrm batPrm : batPrmList) {
+				BatPrmLog batPrmLog = new BatPrmLog();
+				batPrmLog.setBatGrpLogId(batGrpLog.getBatGrpLogId());
+				batPrmLog.setBatGrpRtyCnt(0);
+				batPrmLog.setBatPrmId(batPrm.getBatPrmId());
+				batPrmLog.setParam(batPrm.getParam());
+				batPrmLog.setBatPrmStCd(BatchStatusCode.FAIL.getCode());
+				int excnOrd = batPrm.getExcnOrd();
+				batPrmLog.setExcnOrd(excnOrd);
+				if(excnOrd==1)
+					batPrmLog.setRsltMsg("Job 업데이트 실패" + e.getMessage());
+				logDao.insertBatPrmLog(batPrmLog);
+			}
 			log.error(e.getMessage());
 			throw new RuntimeException();
 		}

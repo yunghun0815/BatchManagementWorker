@@ -32,6 +32,7 @@
       		use_yn
         FROM 
         	bat_grp 
+        WHERE use_yn='Y'
         ORDER BY bat_grp_id desc
         ) 
       WHERE rownum &lt;= #{endRowNo}
