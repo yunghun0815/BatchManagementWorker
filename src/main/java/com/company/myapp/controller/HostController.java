@@ -44,6 +44,7 @@ public class HostController {
 		model.addAttribute("pager", pager);
 		model.addAttribute("hostList", hostList);
 		
+		model.addAttribute("menu","host");
 		return "host/host";
 	}
 	

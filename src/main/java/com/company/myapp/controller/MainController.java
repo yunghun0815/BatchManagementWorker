@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import com.company.myapp.batch.BatchServer;
@@ -22,8 +23,8 @@ import com.company.myapp.service.impl.HostService;
 @Controller
 public class MainController {
 	@GetMapping("/")
-	public String main() {
-		
+	public String main(Model model) {
+		model.addAttribute("menu", "home");
 		return "main";
 	}
 	
@@ -116,8 +117,9 @@ public class MainController {
 	}
 	
 	@GetMapping("/sample")
-	public String sample() {
-		return "sample";
+	public String sample(Model model) {
+		model.addAttribute("menu", "sample");
+		return "header";
 	}
 	
 	@GetMapping("/test77")

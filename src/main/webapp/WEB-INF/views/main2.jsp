@@ -7,10 +7,16 @@
 <title>Insert title here</title>
 </head>
 <body>
-"${cycle}"
-"${cycle1}"
-"${cycleMF}"
-"${cycleDay}"
-"${cycleTime}"
+	<ul>
+		<c:forEach>
+			<li style="display: flex;">
+				<div></div>
+			</li>
+		</c:forEach>
+	</ul>
+	
+	<ol>
+		<li></li>
+	</ol>
 </body>
 </html>

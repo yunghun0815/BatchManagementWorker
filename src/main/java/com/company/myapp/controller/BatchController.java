@@ -69,7 +69,7 @@ public class BatchController {
 		
 		model.addAttribute("pager", pager);
 		model.addAttribute("batGrpList", batGrpList);
-		
+		model.addAttribute("menu","batch");
 		return "group/batchManagment";
 	}
 	
