@@ -32,6 +32,7 @@
       		use_yn
         FROM 
         	bat_grp 
+        WHERE use_yn='Y'
         ORDER BY bat_grp_id desc
         ) 
       WHERE rownum &lt;= #{endRowNo}
@@ -161,8 +162,8 @@
   </select>
   
   <select id="getBatGrpList" resultType="BatGrp">
-  	SELECT bat_grp_id as "batGrpId"
-  			bat_grp_nm as "batGrpNm"
+  	SELECT bat_grp_id as "batGrpId",
+  			bat_grp_nm as "batGrpNm",
   			bat_grp_dsc as "batGrpDsc"
   	 FROM bat_grp
   	 WHERE use_yn='Y'
