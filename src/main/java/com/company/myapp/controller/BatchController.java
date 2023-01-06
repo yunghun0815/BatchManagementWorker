@@ -70,6 +70,7 @@ public class BatchController {
 		model.addAttribute("pager", pager);
 		model.addAttribute("batGrpList", batGrpList);
 		System.out.println(batGrpList);
+		model.addAttribute("menu","batch");
 		return "board";
 	}
 	

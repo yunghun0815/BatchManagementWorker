@@ -33,6 +33,7 @@ public class LogController {
 		List<BatGrpLog> batGrpLogList = logService.getBatGrpLogList(pager);
 		
 		model.addAttribute("batGrpLogList", batGrpLogList);
+		model.addAttribute("menu", "log");
 		return "log/group";
 	}
 	
@@ -46,7 +47,7 @@ public class LogController {
 		List<BatPrmLog> batPrmLogList = logService.getBatPrmLogList(pager);
 		
 		model.addAttribute("batPrmLogList", batPrmLogList);
-		
+		model.addAttribute("menu", "log");
 		return "log/program";
 	}
 	
