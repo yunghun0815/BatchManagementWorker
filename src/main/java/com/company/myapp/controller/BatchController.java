@@ -69,8 +69,8 @@ public class BatchController {
 		
 		model.addAttribute("pager", pager);
 		model.addAttribute("batGrpList", batGrpList);
-		
-		return "group/batchManagment";
+		System.out.println(batGrpList);
+		return "board";
 	}
 	
 	/**

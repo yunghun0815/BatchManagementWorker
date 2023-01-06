@@ -14,8 +14,21 @@
 <script	src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
+<style type="text/css">
+.main_content{
+	width:1600px;
+	height: 700px;
+	border: 1px solid black;
+	margin:auto;
+	
+}
+.search_content{
+	width: 100%;
+	height:150px;
+	border:1px solid black;
+}
+</style>
 <script type="text/javascript">
-
 
 </script>
 <title>Insert title here</title>
@@ -31,23 +44,8 @@
 </form>
 <br>
 <br>
-<table class="group-table table table-borderless align-middle bg-white" 
-style="width:400px; height:200px; margin:auto;" border=2>
-	<tr><td>1</td>
-		<td>가</td>
-		<td>a</td></tr>
-	<tr><td>2</td>
-		<td>나</td>
-		<td>b</td></tr>
-	<tr><td>3</td>
-		<td>다</td>
-		<td>c</td></tr>
-	<tr><td>4</td>
-		<td>라</td>
-		<td>d</td></tr>
-	<tr><td>5</td>
-		<td>마</td>
-		<td>e</td></tr>
-</table>
+
+<ul></ul>
+
 </body>
 </html>
