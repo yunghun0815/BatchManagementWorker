@@ -79,7 +79,7 @@
   	UPDATE
   		bat_grp
   	SET
-  		use_yn = 'N'
+  		use_yn = 'N',
     	last_mdfcn_dttm = sysdate
   	WHERE bat_grp_id = #{grpId}
   </update>
@@ -248,4 +248,15 @@
   	WHERE
   		bat_prm_id = #{batPrmId}
   </update>
+  
+  <select id="getBatGrpIdListByHostId" parameterType="String" resultType="String">
+  	SELECT
+  		bat_grp_id as batGrpId
+  	FROM
+  		bat_grp
+  	WHERE 
+  		host_id = #{hostId}
+  	AND 
+  		use_yn = 'Y'			
+  </select>
 </mapper>

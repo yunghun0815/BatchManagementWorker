@@ -121,4 +121,10 @@ public class BatchService implements IBatchService {
 		return batchServer.getPath(host);
 	}
 
+	@Override
+	public List<String> getBatGrpIdListByHostId(String hostId) {
+		
+		return batchDao.getBatGrpIdListByHostId(hostId);
+	}
+
 }

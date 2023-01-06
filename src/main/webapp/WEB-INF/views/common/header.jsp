@@ -18,6 +18,7 @@
 $(function(){
 	// 페이지별 메뉴 색 변경
 	const menu = '${menu}';
+	console.log(menu);
  	$("#" + menu).parent().css("background-color","#13c3dc");
 	$("#" + menu).prop("src", "/image/common/nav/"+ $("#" + menu).prop("id") +".png"); 		
 	// 메뉴 마우스오버 이벤트
@@ -25,8 +26,10 @@ $(function(){
 		$(this).css("background-color","#13c3dc");
 		$(this).find(".menu-icon").prop("src", "/image/common/nav/"+ $(this).find(".menu-icon").prop("id") +".png");
 	},function(){
-		$(this).css("background-color","white");
-		$(this).find(".menu-icon").prop("src", "/image/common/nav/"+ $(this).find(".menu-icon").prop("id") +"-gray.png");
+		if($(this).find(".menu-icon").prop("id") != menu){
+			$(this).css("background-color","white");
+			$(this).find(".menu-icon").prop("src", "/image/common/nav/"+ $(this).find(".menu-icon").prop("id") +"-gray.png");
+		}
 	})
 }); 
 </script>
@@ -43,7 +46,7 @@ $(function(){
 					</a>
 				</li>		 
 				<li>
-					<a class="icon-box" href="/batch">
+					<a class="icon-box" href="/batch/group">
 						<img id="batch" class="menu-icon" src="/image/common/nav/batch-gray.png">
 					</a>
 				</li>		

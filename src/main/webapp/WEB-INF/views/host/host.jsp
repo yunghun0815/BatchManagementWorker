@@ -1,22 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
-<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
-<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
-<!DOCTYPE html>
-<html>
-<head>
-	<script src="https://code.jquery.com/jquery-3.6.2.js"></script>
-	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js" ></script>
-	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet">
-	<script type="module" src="/js/host/host.js"></script>
-	
-<meta charset="UTF-8">
-<title>Insert title here</title>
-</head>
-<body>
+   pageEncoding="UTF-8"%>
+<%@ include file="/WEB-INF/views/common/header.jsp" %>
+<script type="module" src="/js/host/host.js"></script>
+<main id="main">
 	<span data-bs-toggle="modal" data-bs-target="#insert-host-modal">호스트등록</span>
 	<ul>
 		<c:forEach var="host" items="${hostList}">
@@ -27,7 +13,9 @@
 			</li>
 		</c:forEach>
 	</ul>
-</body>
+</main>
+
+<%@ include file="/WEB-INF/views/common/footer.jsp" %>
 
 <div id="insert-host-modal" class="modal" tabindex="-1">
 	  <div class="modal-dialog">
@@ -78,4 +66,3 @@
 	    </div>
 	  </div>
 </div>
-</html>

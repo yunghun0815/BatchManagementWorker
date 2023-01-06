@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.company.myapp.dto.Host;
 import com.company.myapp.dto.Pager;
+import com.company.myapp.service.IBatchService;
 import com.company.myapp.service.IHostService;
 
 @Controller
@@ -26,6 +27,9 @@ public class HostController {
 	
 	@Autowired
 	IHostService hostService;
+	
+	@Autowired
+	IBatchService batchService;
 	
 	/**
 	 * 호스트 관리 페이지
@@ -102,5 +106,11 @@ public class HostController {
 	@PostMapping("/delete")
 	public void deleteHost(String hostId) {
 		hostService.deleteHost(hostId);
+		
+		List<String> grpIdList = batchService.getBatGrpIdListByHostId(hostId);
+		
+		for(String grpId : grpIdList) {
+			batchService.deleteBatGrp(grpId);
+		}
 	}
 }

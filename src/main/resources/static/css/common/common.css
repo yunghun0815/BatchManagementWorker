@@ -28,7 +28,7 @@
 	}
 	#lnb{
 		width: 10%;
-		padding-top: 35px;
+		padding-top: 45px;
 	}
 	#main{
 		background-color: #f8fafb;
@@ -44,7 +44,7 @@
 		display: flex;
 		flex-direction: column;
 		justify-content: center;
-		padding-bottom: 60px;
+		padding-bottom: 70px;
 	}
 	#menu-bar li{
 		text-align: center; 
