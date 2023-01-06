@@ -48,4 +48,6 @@ public interface IBatchDao {
 
 	public void sortByUsers(BatPrm pvo);
 
+	public List<String> getBatGrpIdListByHostId(String hostId);
+
 }

@@ -35,4 +35,6 @@ public interface IBatchService {
 	public void updateBatPrm(BatPrm vo);
 
 	public List<String> getAgentBatchPath(Host host);
+
+	public List<String> getBatGrpIdListByHostId(String hostId);
 }
