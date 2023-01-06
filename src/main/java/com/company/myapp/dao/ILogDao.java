@@ -33,4 +33,12 @@ public interface ILogDao {
 	void updateBatGrpLog(BatGrpLog batGrpLog);
 
 	void updateBatPrmLog(BatPrmLog batPrmLog);
+
+	int getRtyCnt(String batGrpLogId);
+
+	void insertRtyBatGrpLog(BatGrpLog rtyBatGrpLog);
+
+	List<BatPrmLog> getRtyPrmListByLogIdNCnt(@Param(value="logId")String logId, @Param(value="rty")int rty);
+
+	List<BatGrpLog> getRtyBatGrpLogListByLogId(String batGrpLogId);
 }

@@ -44,4 +44,8 @@ public interface IBatchDao {
 
 	public void sortByRownum(String grpId);
 
+	public int getLastExcnOrd(String batGrpId);
+
+	public void sortByUsers(BatPrm pvo);
+
 }

@@ -18,10 +18,6 @@ public interface IBatchService {
 	public void updateBatGrp(BatGrp vo);
 	public void deleteBatGrp(String grpId);
 
-	public boolean checkJob(String grpId);
-	public void startJob(String grpId);
-	public void stopJob(String grpId);
-
 	public List<BatGrp> searchBatGrp(Pager pager, String keyword, List<String> filtering);
 	public int getTotalSearchNum(String keyword, List<String> filtering);
 	

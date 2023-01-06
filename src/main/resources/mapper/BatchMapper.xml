@@ -231,4 +231,20 @@
      		WHERE a.bat_prm_id=c.bat_prm_id)
 	WHERE a.use_yn = 'Y' and a.bat_grp_id = #{grpId}
   </update>
+  
+  <select id="getLastExcnOrd" parameterType="String">
+  	SELECT DISTINCT LAST_VALUE(excn_ord) 
+  	OVER (PARTITION BY bat_grp_id ORDER BY bat_grp_id) 
+  	FROM bat_prm 
+	WHERE use_yn = 'Y' AND bat_grp_id = #{grpId};
+  </select>
+  
+  <update id="sortByUsers" parameterType="BatPrm">
+  	UPDATE
+  		bat_prm
+  	SET
+  		excn_ord = #{excnOrd}
+  	WHERE
+  		bat_prm_id = #{batPrmId}
+  </update>
 </mapper>

@@ -71,4 +71,10 @@ public class LogService implements ILogService {
 		public void updateBatPrmLog(BatPrmLog batPrmLog) {
 			logDao.updateBatPrmLog(batPrmLog);
 		}
+
+		@Override
+		public void insertRtyBatGrpLog(BatGrpLog rtyBatGrpLog) {
+			logDao.insertRtyBatGrpLog(rtyBatGrpLog);
+			
+		}
 }

@@ -1,6 +1,7 @@
 package com.company.myapp.dto;
 
 import java.sql.Date;
+import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -21,4 +22,6 @@ public class BatGrpLog {
 	private Date batEndDt;
 	private String lastMdfrNm;
 	private Date lastMdfcnDttm;
+	
+	private List<BatPrmLog> prmLogList;
 }

@@ -29,4 +29,6 @@ public interface ILogService {
 	void updateBatGrpLog(BatGrpLog batGrpLog); // 그룹 로그 수정
 	
 	void updateBatPrmLog(BatPrmLog batPrmLog); // 프로그램 로그 수정
+
+	void insertRtyBatGrpLog(BatGrpLog batGrpLog);
 }

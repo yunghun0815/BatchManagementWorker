@@ -190,4 +190,61 @@
 		AND
 			bat_prm_id = #{batPrmId}							
 	</update>
+	<select id="getRtyCnt" parameterType="String">
+		SELECT 
+			COUNT(*)
+		FROM
+			bat_grp_log
+		WHERE
+			bat_grp_log_id = #{batGrpLogId}
+	</select>
+	<insert id="insertRtyBatGrpLog" parameterType="BatGrpLog">
+		ISNERT INTO bat_grp_log(
+			bat_grp_log_id, bat_grp_rty_cnt, bat_grp_id, bat_grp_st_cd, 
+        	bat_bgng_dt, last_mdfr_nm, last_mdfcn_dttm
+		)
+		VALUES(
+			#{batGrpLogId}, #{batGrpRtyCnt}, #{batGrpId}, #{batGrpStCd},
+			sysdate, 'system', sysdate
+		)	
+	</insert>
+	
+	<select id="getRtyBatGrpLogListByLogId" parameterType="String" resultType="BatGrpLog">
+		SELECT
+		    bat_grp_log_id as batGrpLogId,
+		    bat_grp_rty_cnt as batGrpRtyCnt,
+		    bat_grp_id as batGrpId,
+		    bat_grp_st_cd as batGrpStCd,
+		    bat_bgng_dt as batBgngDt,
+		    bat_end_dt as batEndDt,
+		    last_mdfr_nm as lastMdfrNm,
+		    last_mdfcn_dttm as lastMdfcnDttm
+		FROM
+			bat_grp_log
+		WHERE
+			bat_grp_log_id = #{batGrpLogId}
+		AND
+			bat_grp_rty_cnt >= 1
+	</select>
+	
+	<select id="getRtyPrmListByLogIdNCnt" parameterType="map" resultType="BatPrmLog">
+		SELECT
+			bat_grp_log_id as batGrpLogId,
+			bat_grp_rty_cnt as batGrpRtyCnt,
+			bat_prm_id as batPrmId,
+			param,
+			bat_prm_st_cd as batPrmStCd,
+			rslt_msg as rsltMsg,
+			bat_bgng_dt as batBgngDt,
+			bat_end_dt as batEndDt,
+			excn_ord as excnOrd,
+			last_mdfr_nm as lastMdfrNm,
+			last_mdfcn_dttm as lastMdfcnDttm
+		FROM 
+			bat_prm_log
+		WHERE
+			bat_grp_log_id = #{logId}
+		AND
+			bat_grp_rty_cnt = #{rty}		
+	</select>
 </mapper>
