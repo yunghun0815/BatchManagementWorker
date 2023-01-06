@@ -50,31 +50,21 @@ public class BatchService implements IBatchService {
 
 	@Override
 	public void updateBatGrp(BatGrp vo) {
+		for(BatPrm pvo: vo.getPrmList()) {
+			batchDao.sortByUsers(pvo);
+		}
 		batchDao.updateBatGrp(vo);
 	}
 
 	@Override
 	public void deleteBatGrp(String grpId) {
+		List<BatPrm> batPrmList = batchDao.getBatPrmList(grpId);
+		for(BatPrm pvo: batPrmList) {
+			batchDao.deleteBatPrm(pvo.getBatPrmId());
+		}
 		batchDao.deleteBatGrp(grpId);
 	}
 
-	
-	@Override
-	public boolean checkJob(String grpId) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public void startJob(String grpId) {
-		
-	}
-
-	@Override
-	public void stopJob(String grpId) {
-		// TODO Auto-generated method stub
-
-	}
 
 	@Override
 	public List<BatGrp> searchBatGrp(Pager pager, String keyword, List<String> filtering) {
@@ -85,7 +75,6 @@ public class BatchService implements IBatchService {
 
 	@Override
 	public int getTotalSearchNum(String keyword, List<String> filtering) {
-		// TODO Auto-generated method stub
 		System.out.println(filtering.getClass().getName());
 		return batchDao.getTotalSearchNum(keyword, filtering);
 	}
@@ -109,6 +98,8 @@ public class BatchService implements IBatchService {
 
 	@Override
 	public void insertBatPrm(BatPrm vo) {
+		int ord = batchDao.getLastExcnOrd(vo.getBatGrpId());
+		vo.setExcnOrd(ord+1);
 		batchDao.insertBatPrm(vo);
 	}
 

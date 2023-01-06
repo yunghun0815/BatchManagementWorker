@@ -1,6 +1,7 @@
 package com.company.myapp.dto;
 
 import java.sql.Date;
+import java.util.List;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -30,5 +31,8 @@ public class BatGrp {
 	private String hostPt;
 	
 	private String cronDsc;
+	
+	private List<BatPrm> prmList;
+	private boolean runCheck;
 
 }

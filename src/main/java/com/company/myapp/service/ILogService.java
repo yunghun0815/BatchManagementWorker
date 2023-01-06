@@ -1,6 +1,5 @@
 package com.company.myapp.service;
 
-import java.sql.Date;
 import java.util.List;
 
 import com.company.myapp.dto.BatGrpLog;
@@ -31,6 +30,7 @@ public interface ILogService {
 	
 	void updateBatPrmLog(BatPrmLog batPrmLog); // 프로그램 로그 수정
 
-
 	BatPrmLog getBatPrmLogByFirstFail(BatGrpLog batGrpLog);
+
+	void insertRtyBatGrpLog(BatGrpLog batGrpLog);
 }

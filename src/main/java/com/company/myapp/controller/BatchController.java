@@ -11,18 +11,23 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.company.myapp.dto.BatGrp;
+import com.company.myapp.dto.BatGrpLog;
 import com.company.myapp.dto.BatPrm;
 import com.company.myapp.dto.Pager;
 import com.company.myapp.service.IBatchService;
+import com.company.myapp.service.IJobService;
 
-@RequestMapping("/batch")
 @Controller
+@RequestMapping("/batch")
 public class BatchController {
 
 	@Autowired
 	IBatchService batchService;
+	@Autowired
+	IJobService jobService;
 	
 	/**
 	 * 처음에 배치관리 메뉴로 들어갔을때
@@ -30,17 +35,6 @@ public class BatchController {
 	 *
 	 * @return 배치관리페이지
 	 */
-	
-//	@PostMapping("/test")
-//	public String test(@RequestParam String cycle, @RequestParam String cycle1, @RequestParam String cycleMF, @RequestParam String cycleDay,
-//			             @RequestParam String cycleTime, Model model) {
-//		model.addAttribute("cycle", cycle);
-//		model.addAttribute("cycle1", cycle1);
-//		model.addAttribute("cycleMF", cycleMF);
-//		model.addAttribute("cycleDay", cycleDay);
-//		model.addAttribute("cycleTime", cycleTime);
-//		return "main2";
-//	}
 	@GetMapping("")
 	public String home() {
 		return "main";
@@ -54,6 +48,10 @@ public class BatchController {
 		
 		//현재 페이지에 맞는 데이터 가져오기
 		List<BatGrp> batGrpList = batchService.getBatGrpList(pager);
+		for(BatGrp vo: batGrpList) {
+			if(jobService.checkJob(vo.getBatGrpId())==true) vo.setRunCheck(true);
+			else vo.setRunCheck(false);
+		}
 		
 		model.addAttribute("pager", pager);
 		model.addAttribute("batGrpList", batGrpList);
@@ -67,25 +65,26 @@ public class BatchController {
 	 * @param model
 	 * @return
 	 */
-//	@ResponseBody
-//	@GetMapping("/group/detail")
-//	public BatGrp getBatGrpDetail(@RequestParam(value="grpId") String grpId, Model model) {
-//		BatGrp batGrp = batchService.getBatGrpDetail(grpId);
-//		
-//		return batGrp;
-//	}
+	@ResponseBody
 	@GetMapping("/group/detail")
-	public String getBatGrpDetail(@RequestParam(value="grpId") String grpId, Model model) {
+	public BatGrp getBatGrpDetail(@RequestParam(value="grpId") String grpId, Model model) {
 		BatGrp batGrp = batchService.getBatGrpDetail(grpId);
-		model.addAttribute("grp", batGrp);
-		return "group/groupDetail";
+		List<BatPrm> batPrmList = batchService.getBatPrmList(grpId);
+		batGrp.setPrmList(batPrmList);
+		return batGrp;
 	}
+//	@GetMapping("/group/detail")
+//	public String getBatGrpDetail(@RequestParam(value="grpId") String grpId, Model model) {
+//		BatGrp batGrp = batchService.getBatGrpDetail(grpId);
+//		List<BatPrm> batPrmList = batchService.getBatPrmList(grpId);
+//		model.addAttribute("grp", batGrp);
+//		model.addAttribute("prmList", batPrmList);
+//		return "group/groupDetail";
+//	}
 	
 	
 	@PostMapping("/group/insert")
 	public String insertBatGrp(BatGrp vo) {
-		System.out.println(vo);
-		//vo.setCronDsc("");
 		batchService.insertBatGrp(vo);
 		return "redirect:/batch";
 	}
@@ -93,23 +92,15 @@ public class BatchController {
 	@PostMapping("/group/update")
 	public void updateBatGrp(BatGrp vo) {
 		batchService.updateBatGrp(vo);
+		jobService.updateJob(vo);
 	}
 	
 	@GetMapping("/group/delete")
 	public String deleteBatGrp(String grpId) {
+		jobService.pauseJob(grpId);
+		jobService.removeJob(grpId);
 		batchService.deleteBatGrp(grpId);
 		return "redirect:/batch/group";
-	}
-	
-	/**
-	 * 배치그룹별 스케쥴러 실행 체크후 실행 및 중단
-	 * @param grpId
-	 */
-	@PostMapping("/Job/{grpId}")
-	public void schedule(String grpId) {
-		boolean check = batchService.checkJob(grpId);
-		if (check == true) batchService.startJob(grpId);
-		else batchService.stopJob(grpId);
 	}
 	
 	/**
@@ -135,11 +126,11 @@ public class BatchController {
 	}
 
 	
-	@GetMapping("/searchPage")
-	public String searchBatGrp(){
-		
-		return "group/search";
-	}
+//	@GetMapping("/searchPage")
+//	public String searchBatGrp(){
+//		
+//		return "group/search";
+//	}
 	
 	@ResponseBody
 	@GetMapping("/program")
@@ -175,4 +166,64 @@ public class BatchController {
 		batchService.updateBatPrm(vo);
 		return batchService.getBatPrmList(vo.getBatGrpId());
 	} 
+	
+	/**
+	 * 배치그룹별 스케쥴러 실행 체크후 실행 및 중단
+	 * @param grpId
+	 */
+	@ResponseBody
+	@PostMapping("/Job/{grpId}")
+	public void schedule(String grpId) {
+		boolean check = jobService.checkJob(grpId);
+		if (check == true) jobService.pauseJob(grpId);
+		else jobService.startJob(grpId);
+	}
+
+	@ResponseBody
+	@PostMapping("/scheduler/start")
+	public void startSchedule() {
+		jobService.startSchedule();
+	}
+
+	@ResponseBody
+	@PostMapping("/scheduler/shutdown")
+	public void shutdownSchedule() {
+		jobService.shutdownSchedule();
+	}
+	/**
+	 * 재실행
+	 * return : 재실행 그룹vo(include 프로그램vo List)
+	 * @param batGrpLogId
+	 * @param vo : 재실행할 프로그램List를 담은 그룹vo
+	 */
+	@ResponseBody
+	@GetMapping("/retry")
+	public List<BatGrpLog> retryJob(String batGrpLogId, BatGrp vo) {
+		return jobService.retryJob(batGrpLogId, vo);
+	}
+	
+//	@ResponseBody
+//	@PostMapping("/job/start")
+//	public void startJob(String grpId) {
+//		jobService.addJob(grpId);
+//		jobService.startJob(grpId);
+//	}
+//	
+//	@ResponseBody
+//	@PostMapping("/job/pause")
+//	public void pauseJob(String grpId) {
+//		jobService.pauseJob(grpId);
+//	}
+//	
+//	@ResponseBody
+//	@PostMapping("/job/add")
+//	public void addJob(String grpId) {
+//		jobService.addJob(grpId);
+//	}
+//	
+//	@ResponseBody
+//	@PostMapping("/job/remove")
+//	public void removeJob(String grpId) {
+//		jobService.removeJob(grpId);
+//	}
 }

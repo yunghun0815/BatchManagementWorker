@@ -77,4 +77,10 @@ public class LogService implements ILogService {
 		public BatPrmLog getBatPrmLogByFirstFail(BatGrpLog batGrpLog) {
 			return logDao.getBatPrmLogByFirstFail(batGrpLog);
 		}
+		
+		@Override
+		public void insertRtyBatGrpLog(BatGrpLog rtyBatGrpLog) {
+			logDao.insertRtyBatGrpLog(rtyBatGrpLog);
+			
+		}
 }
