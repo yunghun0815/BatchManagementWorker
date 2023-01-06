@@ -14,6 +14,7 @@ import com.company.myapp.dto.BatGrpLog;
 import com.company.myapp.dto.BatPrm;
 import com.company.myapp.dto.BatPrmLog;
 import com.company.myapp.dto.Host;
+import com.company.myapp.dto.JsonDto;
 import com.company.myapp.service.IBatchService;
 import com.company.myapp.service.IHostService;
 import com.company.myapp.service.ILogService;
@@ -45,7 +46,7 @@ public class AgentJob implements Job{
 	public void execute(JobExecutionContext context) throws JobExecutionException {
 		// 잡 키로 그룹아이디 가져옴
 		String batGrpId = context.getJobDetail().getKey().toString();
-		JSONArray jsonArray = new JSONArray();
+		List<JsonDto> jsonArray = new ArrayList<>();
 		// 그룹에 등록된 프로그램 조회 ********조회할 때 실행 순서별로(excnOrd) 해야함 **************
 		List<BatPrm> batPrmList = batchService.getBatPrmList(batGrpId);
 		
@@ -60,7 +61,7 @@ public class AgentJob implements Job{
 		
 		// 프로그램 로그 저장 및 Agent 서버로 보낼 JSONArray 생성
 		for(BatPrm batPrm : batPrmList) {
-			JSONObject jsonObject = new JSONObject();
+			JsonDto jsonObject = new JsonDto();
 			
 			// 프로그램 로그 저장
 			BatPrmLog batPrmLog = new BatPrmLog();
@@ -73,21 +74,21 @@ public class AgentJob implements Job{
 			logService.insertBatPrmLog(batPrmLog);
 			
 			// Agent서버로 보낼 JSON에 값 추가
-			jsonObject.put("path", batPrm.getPath());
-			jsonObject.put("param", batPrm.getParam());
-			jsonObject.put("batGrpLogId", batGrpLog.getBatGrpLogId());
-			jsonObject.put("batPrmId", batPrm.getBatPrmId());
-			jsonObject.put("batGrpRtyCnt", 0);
-			jsonObject.put("excnOrd", batPrm.getExcnOrd());
+			jsonObject.setPath(batPrm.getPath());
+			jsonObject.setParam(batPrm.getParam());
+			jsonObject.setBatGrpLogId(batGrpLog.getBatGrpLogId());
+			jsonObject.setBatPrmId(batPrm.getBatPrmId());
+			jsonObject.setBatGrpRtyCnt(0);
+			jsonObject.setExcnOrd(batPrm.getExcnOrd());
 			
 			// JSONArray에 Object 추가
-			jsonArray.put(jsonObject);
+			jsonArray.add(jsonObject);
 			
 			// 첫 번째 프로그램 '실행중' 저장 이후 다음 순서는 '대기중'으로 저장하기 위해 값 변경
 			statusCode = BatchStatusCode.WAIT.getCode();
 		}
 		// 호스트 정보 조회
-		Host host = hostService.getHostByBatGrpId("BGR00000002"); 
+		Host host = hostService.getHostByBatGrpId(batGrpId); 
 		// Agent 서버와 통신 및 JSON 객체 전송
 		batchServer.sendMessage(host, jsonArray);
 	}

@@ -20,8 +20,8 @@ import com.company.myapp.dto.Host;
 import com.company.myapp.dto.Pager;
 import com.company.myapp.service.IHostService;
 
-@RequestMapping("/host")
 @Controller
+@RequestMapping("/host")
 public class HostController {
 	
 	@Autowired

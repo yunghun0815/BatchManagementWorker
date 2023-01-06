@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.company.myapp.dto.BatGrp;
 import com.company.myapp.dto.BatPrm;
+import com.company.myapp.dto.Host;
 import com.company.myapp.dto.Pager;
 
 public interface IBatchService {
@@ -26,8 +27,6 @@ public interface IBatchService {
 	public int getTotalSearchNum(String keyword, List<String> filtering);
 	
 	public List<BatGrp> getBatGrpList();
-
-	
 	
 	public List<BatPrm> getBatPrmList(String grpId);
 
@@ -39,5 +38,5 @@ public interface IBatchService {
 
 	public void updateBatPrm(BatPrm vo);
 
-
+	public List<String> getAgentBatchPath(Host host);
 }

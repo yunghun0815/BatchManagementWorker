@@ -5,9 +5,11 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.company.myapp.batch.BatchServer;
 import com.company.myapp.dao.IBatchDao;
 import com.company.myapp.dto.BatGrp;
 import com.company.myapp.dto.BatPrm;
+import com.company.myapp.dto.Host;
 import com.company.myapp.dto.Pager;
 import com.company.myapp.service.IBatchService;
 
@@ -16,6 +18,9 @@ public class BatchService implements IBatchService {
 
 	@Autowired
 	IBatchDao batchDao;
+	
+	@Autowired
+	BatchServer batchServer;
 	
 	@Override
 	public int getTotalGroupNum() {
@@ -117,6 +122,12 @@ public class BatchService implements IBatchService {
 	@Override
 	public void updateBatPrm(BatPrm vo) {
 		batchDao.updateBatPrm(vo);
+	}
+
+	@Override
+	public List<String> getAgentBatchPath(Host host) {
+		
+		return batchServer.getPath(host);
 	}
 
 }

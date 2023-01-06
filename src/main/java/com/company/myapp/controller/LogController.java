@@ -16,8 +16,8 @@ import com.company.myapp.dto.BatPrmLog;
 import com.company.myapp.dto.Pager;
 import com.company.myapp.service.ILogService;
 
-@RequestMapping("/log")
 @Controller
+@RequestMapping("/log")
 public class LogController {
 	
 	@Autowired

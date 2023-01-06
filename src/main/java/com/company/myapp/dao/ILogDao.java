@@ -1,5 +1,6 @@
 package com.company.myapp.dao;
 
+import java.sql.Date;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
@@ -33,4 +34,6 @@ public interface ILogDao {
 	void updateBatGrpLog(BatGrpLog batGrpLog);
 
 	void updateBatPrmLog(BatPrmLog batPrmLog);
+
+	BatPrmLog getBatPrmLogByFirstFail(BatGrpLog batGrpLog);
 }

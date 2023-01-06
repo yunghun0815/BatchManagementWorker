@@ -190,4 +190,19 @@
 		AND
 			bat_prm_id = #{batPrmId}							
 	</update>
+	
+	<select id="getBatPrmLogByFirstFail" parameterType="BatGrpLog" resultType="BatPrmLog">
+		SELECT 
+			bat_grp_log_id as batGrpLogId,
+			bat_grp_rty_cnt as batGrpRtyCnt,
+			bat_end_dt as batEndDt
+		FROM 
+			bat_prm_log 
+		WHERE 
+			bat_grp_log_id = #{batGrpLogId} 
+		AND 
+			bat_grp_rty_cnt = 0 
+		AND 
+			excn_ord = (select min(excn_ord) from bat_prm_log where bat_prm_st_cd = #{batGrpStCd} and bat_grp_log_id = #{batGrpLogId} AND bat_grp_rty_cnt = #{batGrpRtyCnt})
+	</select>
 </mapper>

@@ -5,10 +5,12 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -16,6 +18,7 @@ import org.springframework.stereotype.Component;
 import com.company.myapp.dto.BatGrpLog;
 import com.company.myapp.dto.BatPrmLog;
 import com.company.myapp.dto.Host;
+import com.company.myapp.dto.JsonDto;
 import com.company.myapp.service.ILogService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -51,7 +54,9 @@ public class BatchServer {
 		serverSocket = new ServerSocket(50000);
 		// 작업 스레드 생성
 		threadPool.execute(new Runnable() {
-			
+			/**
+			 * 이부분 수정해야함 트라이캐치가 와일문 밖으로
+			 */
 			@Override
 			public void run() {
 				// 서버소켓이 열려있으면 실행
@@ -85,14 +90,21 @@ public class BatchServer {
 	 * @param host 아이피, 포트
 	 * @param json 넘길 json 형식 객체 
 	 */
-	public void sendMessage(Host host, JSONArray json) {
+	public void sendMessage(Host host, List<JsonDto> jsonArray) {
 		try {
 			// 소켓 생성 및 Agent 서버 연결 요청
 			Socket socket = new Socket(host.getHostIp(), host.getHostPt());
 			DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
 			
+			
+			// cmd, message 담아 전송
+			JSONObject json = new JSONObject();
+			json.put("cmd", "run");
+			json.put("message", jsonArray);
+			String sendDataStr = json.toString();
+			
 			// Agent 서버로 데이터 전송 후 연결 종료
-			dos.writeUTF(json.toString());
+			dos.writeUTF(sendDataStr);
 			dos.flush();
 			dos.close();
 			socket.close();
@@ -118,28 +130,66 @@ public class BatchServer {
 					// Agent 서버에서 넘어온 결과 DTO에 저장
 					String data = dis.readUTF();
 					JSONObject json = new JSONObject(data);
-					ObjectMapper mapper = new ObjectMapper();
-					BatPrmLog batPrmLog = mapper.readValue(data, BatPrmLog.class);
-					log.info(batPrmLog.toString());
-					// 프로그램 로그 DB에 저장
-					logService.updateBatPrmLog(batPrmLog);
 					
-					// 마지막 순번일 경우 그룹 로그 업데이트
-					if(json.get("lastYn").equals("Y")) {
+					if(json.get("cmd").equals("log")) {
+						ObjectMapper mapper = new ObjectMapper();
+						BatPrmLog batPrmLog = mapper.readValue(data, BatPrmLog.class);
+						log.info(batPrmLog.toString());
+						// 프로그램 로그 DB에 저장
+						logService.updateBatPrmLog(batPrmLog);
 						
-						// 받은 결과가 속한 그룹 로그 선언
-						BatGrpLog batGrpLog = logService.getBatGrpLogDetail(batPrmLog.getBatGrpLogId(), batPrmLog.getBatGrpRtyCnt());
-						// 그룹 로그의 상태코드, 배치 종료 일자를 업데이트
-						batGrpLog.setBatGrpStCd(batPrmLog.getBatPrmStCd());
-						batGrpLog.setBatEndDt(batPrmLog.getBatEndDt());
-						logService.updateBatGrpLog(batGrpLog);
+						// 마지막 순번일 경우 그룹 로그 업데이트
+						if(json.get("lastYn").equals("Y")) {
+							
+							// 받은 결과가 속한 그룹 로그 조회
+							BatGrpLog batGrpLog = logService.getBatGrpLogDetail(batPrmLog.getBatGrpLogId(), batPrmLog.getBatGrpRtyCnt());
+							// 그룹 로그의 상태코드, 배치 종료 일자를 업데이트
+							batGrpLog.setBatGrpStCd(batPrmLog.getBatPrmStCd());
+							batGrpLog.setBatEndDt(batPrmLog.getBatEndDt());
+							
+							// 마지막 프로그램이 실패일 경우 먼저 실행한 프로그램들 중 가장 먼저 실패한 배치 시작시간 조회
+							if(batPrmLog.getBatPrmStCd().equals(BatchStatusCode.FAIL.getCode())) {
+								BatPrmLog firstFailLog = logService.getBatPrmLogByFirstFail(batGrpLog);
+								batGrpLog.setBatEndDt(firstFailLog.getBatEndDt());
+							}
+							logService.updateBatGrpLog(batGrpLog);
+						}
 					}
 
 					dis.close();
+					socket.close();
 				}catch(Exception e) {
 					e.printStackTrace();
 				}
 			}
 		});
+	}
+	/**
+	 * Agent 서버 배치 파일 리스트 조회
+	 * @param host 연결 정보
+	 * @return
+	 */
+	public List<String> getPath(Host host) {
+		JSONObject json = new JSONObject();
+		json.put("cmd", "path");
+		List<String> pathList = new ArrayList<>();
+		try {
+			Socket socket = new Socket(host.getHostIp(), host.getHostPt());
+			DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
+			dos.writeUTF(json.toString());
+			dos.flush();
+			
+			DataInputStream dis = new DataInputStream(socket.getInputStream());
+			String data = dis.readUTF();
+			ObjectMapper mapper = new ObjectMapper();
+			pathList = mapper.readValue(data, List.class);
+			dos.close();
+			dis.close();
+			socket.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} 
+		
+		return pathList;
 	}
 }

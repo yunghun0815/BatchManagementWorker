@@ -1,5 +1,6 @@
 package com.company.myapp.service.impl;
 
+import java.sql.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,5 +71,10 @@ public class LogService implements ILogService {
 		@Override
 		public void updateBatPrmLog(BatPrmLog batPrmLog) {
 			logDao.updateBatPrmLog(batPrmLog);
+		}
+
+		@Override
+		public BatPrmLog getBatPrmLogByFirstFail(BatGrpLog batGrpLog) {
+			return logDao.getBatPrmLogByFirstFail(batGrpLog);
 		}
 }

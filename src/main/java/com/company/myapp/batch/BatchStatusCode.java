@@ -3,6 +3,11 @@ package com.company.myapp.batch;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+/**
+ * 배치 결과 상태코드 
+ * @author 정영훈, 김나영
+ *
+ */
 @Getter
 @RequiredArgsConstructor
 public enum BatchStatusCode {
