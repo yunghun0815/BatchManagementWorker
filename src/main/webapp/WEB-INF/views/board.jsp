@@ -1,21 +1,17 @@
-<%@ page language="java" contentType="text/html; charset=EUC-KR"
-    pageEncoding="EUC-KR"%>
+
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+   pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<!DOCTYPE html>
-<html>
+<%@ include file="common/header.jsp" %>
+
 <head>
+
 <style type="text/css">
-#main{
-	width:1600px;
-	height: 700px;
-	border: 1px solid black;
-	margin:auto;
-	
-}
-.search_content{
-	width: 100%;
-	height:150px;
-	border:1px solid black;
+@font-face {
+    font-family: 'NanumSquareNeo-Variable';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_11-01@1.0/NanumSquareNeo-Variable.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
 }
 .toggleSwitch {
     width: 47px;
@@ -53,8 +49,43 @@
   transition: all 0.2s ease-in;
 }
 
-li{
+
+
+.title{
+	margin: 30px;
+	margin-top: 20px;
+}
+
+.content{
+	margin:10px;
+	margin-left: 40px;
+	
+}
+
+.main-content{
+
+}
+
+.main-list{
+	
+}
+
+.main-list ul {
+
+}
+
+.main-list ul li{
 	display: flex;
+	background-color: white;
+	margin:6px;
+}
+
+*{
+	font-family: 'NanumSquareNeo-Variable';
+}
+
+h1,h3{
+	font-weight:  bold;
 }
 </style>
 <script type="text/javascript">
@@ -66,50 +97,61 @@ window.onload = function(){
 	}
 }
 </script>
-<meta charset="EUC-KR">
-<title>Insert title here</title>
 </head>
-<body>
-<div id="main">
-	<div class="title"><h1>¹èÄ¡ °ü¸®</h1></div>
-	<div class="search_content"></div>
-	<div class="managment_content">
-		<h2>¹èÄ¡ ±×·ì °ü¸®</h2>
-		<div class="batch_list">
-			<ul>
-				<c:forEach var="group" items="${batGrpList}">
-					<li class="">
-						<div class="group_id"><span>${group.batGrpId}</span></div>
-						<div class="group_id"><span>${group.batGrpNm}</span></div>
-						<div class="group_id"><span>${group.hostNm}(${group.hostIp})</span></div>
-						<div><span>
-								<c:if test="${empty group.cronDsc}">
+
+<main id="main">
+	<div class="title"><h1>ë°°ì¹˜ ê´€ë¦¬</h1></div>
+	<div class="content">
+		<!-- <div class="search-content">ê²€ìƒ‰</div> -->
+		<div class="main-content">
+			<h3>ë°°ì¹˜ ê·¸ë£¹ ê´€ë¦¬</h3>
+			<div class="main-list">
+				<ul>
+					<c:forEach var="group" items="${batGrpList}">
+						<li class="">
+							<div class="group_id">
+								<span>${group.batGrpId}</span>
+							</div>
+							<div class="group_id">
+								<span>${group.batGrpNm}</span>
+							</div>
+							<div class="group_id">
+								<span>${group.hostNm}(${group.hostIp})</span>
+							</div>
+							<div>
+								<span> <c:if test="${empty group.cronDsc}">
 									${group.cron}
-							</c:if>
-								<c:if test="${not empty group.cronDsc}">
+							</c:if> <c:if test="${not empty group.cronDsc}">
 									${group.cronDsc}
-								</c:if></span></div>
-						<div>
-							<c:if test="${group.conn == 'on'}">
-								<span class="conn_enabled">enabled</span>
-							</c:if>
-							<c:if test="${group.conn == 'off'}">
-								<span class="conn_disabled">disabled</span>
-							</c:if></div>
-						<div>
-							<c:if test="${group.runCheck eq true}">
-								<label for="toggle" class="toggleSwitch">
-								<span class="toggleButton"></span></label>
-							</c:if>
-							<c:if test="${group.runCheck eq false}">
-								<label for="toggle" class="toggleSwitch">
-								<span class="toggleButton"></span></label>
-							</c:if></div>
-					</li>
-				</c:forEach>
-			<ul>
+								</c:if></span>
+							</div>
+							<div>
+								<c:if test="${group.conn == 'on'}">
+									<span class="conn_enabled">enabled</span>
+								</c:if>
+								<c:if test="${group.conn == 'off'}">
+									<span class="conn_disabled">disabled</span>
+								</c:if>
+							</div>
+							<div>
+								<c:if test="${group.runCheck eq true}">
+									<label for="toggle" class="toggleSwitch"> <span
+										class="toggleButton"></span></label>
+								</c:if>
+								<c:if test="${group.runCheck eq false}">
+									<label for="toggle" class="toggleSwitch"> <span
+										class="toggleButton"></span></label>
+								</c:if>
+							</div>
+						</li>
+					</c:forEach>
+				<ul>
+			</div>
+		</div>
+		<div class="sub-content">
+		<!-- í”„ë¡œê·¸ëž¨ë¦¬ìŠ¤íŠ¸ -->
 		</div>
 	</div>
-</div>
-</body>
-</html>
+</main>
+
+<%@ include file="common/footer.jsp" %>

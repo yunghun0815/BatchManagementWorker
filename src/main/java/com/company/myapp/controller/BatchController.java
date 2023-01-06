@@ -42,13 +42,8 @@ public class BatchController {
 	 *
 	 * @return 배치관리페이지
 	 */
+
 	@GetMapping("")
-	public String home() {
-		return "main";
-	}
-	
-	
-	@GetMapping("/group")
 	public String getBatGrpList(@RequestParam(defaultValue = "1") int pageNo, Model model) {
 		
 		//데이터의 전체 행수 가져온 후 페이징 처리
