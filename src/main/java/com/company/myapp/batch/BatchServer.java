@@ -5,12 +5,12 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -39,6 +39,8 @@ public class BatchServer {
 	Socket socket;
 	ServerSocket serverSocket;
 	ExecutorService threadPool;
+	
+	JSONObject connect = new JSONObject();
 	
 	/**
 	 * 스레드풀, 서버소켓 생성 및 연결 수락 
@@ -130,7 +132,6 @@ public class BatchServer {
 					// Agent 서버에서 넘어온 결과 DTO에 저장
 					String data = dis.readUTF();
 					JSONObject json = new JSONObject(data);
-					
 					if(json.get("cmd").equals("log")) {
 						ObjectMapper mapper = new ObjectMapper();
 						BatPrmLog batPrmLog = mapper.readValue(data, BatPrmLog.class);
@@ -191,5 +192,59 @@ public class BatchServer {
 		} 
 		
 		return pathList;
+	}
+	
+	/**
+	 * Agent 서버 상태 체크
+	 * @param host 연결 정보
+	 * @return
+	 */
+	public JSONObject healthCheck(List<Host> hostList, int count) {
+		
+		if(count == 0) {
+			for(Host host : hostList) {
+				threadPool.execute(new Runnable() {
+					
+					@Override
+					public void run() {
+						try {
+							JSONObject json = new JSONObject();
+							json.put("cmd", "healthCheck");
+							
+							Socket socket = new Socket(host.getHostIp(), host.getHostPt());
+							
+							socket.setSoTimeout(1000);
+							DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
+							dos.writeUTF(json.toString());
+							dos.flush();
+							
+							DataInputStream dis = new DataInputStream(socket.getInputStream());
+							String data = dis.readUTF();
+							connect.put(host.getHostId(), data);
+							
+							dos.close();
+							dis.close();
+							socket.close();
+						} catch (Exception e) {
+							log.info("[연결 실패] : " + host.getHostIp() + ":" + host.getHostPt());
+							connect.put(host.getHostId(), "off");
+						} 
+					}	
+				});
+			}
+		}
+		
+		if(hostList.size() == connect.length()) {
+			return connect;
+		}else {
+			try {
+				Thread.sleep(1000L);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			// 호스트 체크 완료 안됐으면 재귀
+			return healthCheck(hostList, 1);
+		}
+		
 	}
 }

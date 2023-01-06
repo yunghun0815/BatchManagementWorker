@@ -2,9 +2,12 @@ package com.company.myapp.service.impl;
 
 import java.util.List;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.company.myapp.batch.BatchServer;
 import com.company.myapp.dao.IHostDao;
 import com.company.myapp.dto.Host;
 import com.company.myapp.dto.Pager;
@@ -15,6 +18,9 @@ public class HostService implements IHostService{
 
 	@Autowired
 	IHostDao hostDao;
+
+	@Autowired
+	BatchServer batchServer;
 	
 	@Override
 	public int getHostCount() {
@@ -54,6 +60,15 @@ public class HostService implements IHostService{
 	@Override
 	public Host getHostByBatGrpId(String batGrpId) {
 		return hostDao.getHostByBatGrpId(batGrpId);
+	}
+
+	@Override
+	public JSONObject connectHost(List<Host> hostList) {
+		
+		JSONObject connect = batchServer.healthCheck(hostList, 0);
+		
+		
+		return connect;
 	}
 
 

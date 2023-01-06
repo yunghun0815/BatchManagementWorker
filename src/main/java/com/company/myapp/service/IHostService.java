@@ -4,6 +4,8 @@ import java.util.List;
 
 import javax.validation.Valid;
 
+import org.json.JSONObject;
+
 import com.company.myapp.dto.Host;
 import com.company.myapp.dto.Pager;
 
@@ -24,4 +26,6 @@ public interface IHostService {
 	void deleteHost(String hostId);
 	
 	Host getHostByBatGrpId(String batGrpId);
+	
+	JSONObject connectHost(List<Host> hostList);
 }

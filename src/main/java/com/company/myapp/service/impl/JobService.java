@@ -53,17 +53,11 @@ public class JobService implements IJobService {
 	@Override
 	public void startSchedule() {
 		List<BatGrp> batGrpList = batchService.getBatGrpList();
-		try {
-			for(BatGrp vo: batGrpList) {
-				if(vo.getAutoExcnYn() == 'Y' && batchService.getBatPrmList(vo.getBatGrpId()).size()!=0) {
-					scheduler.resumeJob(new JobKey(vo.getBatGrpId()));
-				}
-			}
-		}catch(SchedulerException e) {
-			log.error(e.getMessage());
-			throw new RuntimeException();
-			//log 저장
-		}
+		for(BatGrp vo: batGrpList) {
+		     if(vo.getAutoExcnYn() == 'Y' && batchService.getBatPrmList(vo.getBatGrpId()).size()!=0) {
+		        addJob(vo.getBatGrpId());
+		     }
+	     }
 	}
 
 	@Override

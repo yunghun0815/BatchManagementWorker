@@ -1,8 +1,12 @@
 package com.company.myapp.controller;
 
-import java.util.ArrayList;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.List;
 
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,13 +15,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.company.myapp.dto.BatGrp;
 import com.company.myapp.dto.BatGrpLog;
 import com.company.myapp.dto.BatPrm;
+import com.company.myapp.dto.Host;
 import com.company.myapp.dto.Pager;
 import com.company.myapp.service.IBatchService;
+import com.company.myapp.service.IHostService;
 import com.company.myapp.service.IJobService;
 
 @Controller
@@ -28,6 +33,8 @@ public class BatchController {
 	IBatchService batchService;
 	@Autowired
 	IJobService jobService;
+	@Autowired
+	IHostService hostService;
 	
 	/**
 	 * 처음에 배치관리 메뉴로 들어갔을때
@@ -39,6 +46,8 @@ public class BatchController {
 	public String home() {
 		return "main";
 	}
+	
+	
 	@GetMapping("/group")
 	public String getBatGrpList(@RequestParam(defaultValue = "1") int pageNo, Model model) {
 		
@@ -46,9 +55,14 @@ public class BatchController {
 		int totalRows = batchService.getTotalGroupNum();
 		Pager pager = new Pager(5, 5, totalRows, pageNo);
 		
+		// 호스트 연결상태 확인
+		List<Host> hostList = hostService.getHostList();
+		JSONObject connect = hostService.connectHost(hostList);
+		
 		//현재 페이지에 맞는 데이터 가져오기
 		List<BatGrp> batGrpList = batchService.getBatGrpList(pager);
 		for(BatGrp vo: batGrpList) {
+			vo.setConn(connect.getString(vo.getHostId()));
 			if(jobService.checkJob(vo.getBatGrpId())==true) vo.setRunCheck(true);
 			else vo.setRunCheck(false);
 		}

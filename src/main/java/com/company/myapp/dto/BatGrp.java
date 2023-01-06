@@ -6,12 +6,14 @@ import java.util.List;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 /**
  * 배치그룹 테이블 Dto
  * @author 김나영
  *
  */
+@ToString
 @Getter
 @Setter
 @NoArgsConstructor
@@ -29,6 +31,7 @@ public class BatGrp {
 	private String hostNm;
 	private String hostIp;
 	private String hostPt;
+	private String conn; // Agent 연결 상태 on/off
 	
 	private String cronDsc;
 	
