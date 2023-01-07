@@ -54,8 +54,6 @@ public class BatchController {
 		//현재 페이지에 맞는 데이터 가져오기
 		List<BatGrp> batGrpList = batchService.getBatGrpList(pager);
 		
-		//그룹 사이즈는 4
-		//distinct로 중복제거해서 2개를 가져왔음
 		Set<String> set = new HashSet<>();
 		for(BatGrp test : batGrpList) {
 			set.add(test.getHostId()); // 호스트아이디 중복제거
@@ -65,8 +63,6 @@ public class BatchController {
 		
 		
 		for(BatGrp vo: batGrpList) {
-			
-			
 			vo.setConn(connect.getString(vo.getHostId()));
 			if(jobService.checkJob(vo.getBatGrpId())==true) vo.setRunCheck(true);
 			else vo.setRunCheck(false);
