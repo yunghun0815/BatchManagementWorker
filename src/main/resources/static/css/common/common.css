@@ -31,7 +31,8 @@
 		padding-top: 45px;
 	}
 	#main{
-		background-color: #f8fafb;
+		/* background-color: #f8fafb; */
+		background-color: #f3f6f7d6;
 		width: 90%;
 		height: 820px;
 		margin: 15px 15px 15px 0;

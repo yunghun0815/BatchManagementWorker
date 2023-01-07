@@ -1,11 +1,13 @@
 package com.company.myapp.service;
 
 import java.util.List;
+import java.util.Set;
 
 import javax.validation.Valid;
 
 import org.json.JSONObject;
 
+import com.company.myapp.dto.BatGrp;
 import com.company.myapp.dto.Host;
 import com.company.myapp.dto.Pager;
 
@@ -27,5 +29,5 @@ public interface IHostService {
 	
 	Host getHostByBatGrpId(String batGrpId);
 	
-	JSONObject connectHost(List<Host> hostList);
+	JSONObject connectHost(Set<String> set);
 }

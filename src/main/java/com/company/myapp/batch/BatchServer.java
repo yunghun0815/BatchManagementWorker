@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -210,10 +209,9 @@ public class BatchServer {
 						try {
 							JSONObject json = new JSONObject();
 							json.put("cmd", "healthCheck");
-							
 							Socket socket = new Socket(host.getHostIp(), host.getHostPt());
 							
-							socket.setSoTimeout(1000);
+							socket.setSoTimeout(500);
 							DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
 							dos.writeUTF(json.toString());
 							dos.flush();
@@ -237,12 +235,14 @@ public class BatchServer {
 		if(hostList.size() == connect.length()) {
 			return connect;
 		}else {
-			try {
-				Thread.sleep(1000L);
+			/*try {
+				Thread.sleep(500L);
 			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
 				e.printStackTrace();
-			}
+			}*/
 			// 호스트 체크 완료 안됐으면 재귀
+			log.info("[메소드 재실행]");
 			return healthCheck(hostList, 1);
 		}
 		

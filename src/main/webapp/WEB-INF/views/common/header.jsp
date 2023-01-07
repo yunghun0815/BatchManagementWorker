@@ -46,7 +46,7 @@ $(function(){
 					</a>
 				</li>		 
 				<li>
-					<a class="icon-box" href="/batch/group">
+					<a class="icon-box" href="/batch">
 						<img id="batch" class="menu-icon" src="/image/common/nav/batch-gray.png">
 					</a>
 				</li>		

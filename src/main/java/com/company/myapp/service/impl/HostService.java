@@ -1,8 +1,9 @@
 package com.company.myapp.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -63,7 +64,13 @@ public class HostService implements IHostService{
 	}
 
 	@Override
-	public JSONObject connectHost(List<Host> hostList) {
+	public JSONObject connectHost(Set<String> hostSet) {
+		
+		List<Host> hostList = new ArrayList<>(); 
+		
+		for(String hostId : hostSet) {
+			hostList.add(hostDao.getHostDetail(hostId));
+		}
 		
 		JSONObject connect = batchServer.healthCheck(hostList, 0);
 		
