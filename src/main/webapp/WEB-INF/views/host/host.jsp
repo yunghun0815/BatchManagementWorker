@@ -2,74 +2,74 @@
    pageEncoding="UTF-8"%>
 <%@ include file="/WEB-INF/views/common/header.jsp" %>
 <script type="module" src="/js/host/host.js"></script>
+<link rel="stylesheet" type="text/css" href="/css/host/host.css">
 <style>
-/* 공통 부분 */
-	@font-face {
-	    font-family: 'NanumSquareNeo-Variable';
-	    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_11-01@1.0/NanumSquareNeo-Variable.woff2') format('woff2');
-	    font-weight: normal;
-	    font-style: normal;
+	#title-action-box{
+		font-size: 16px;
+		height: 100%;
+		position: relative;
 	}
-	*{
-		font-family: 'NanumSquareNeo-Variable';
+	#title-action-box #search-box{
+		display: none;
+		position: absolute;
+		width: 700px;
+		right: 38px;
+	    bottom: -80px;
+	    border: 1px solid black;
+	    background-color: white;
+	    padding: 15px;
 	}
-	.title{
-		margin: 30px; /* 20 -> 30으로 수정 */
-		margin-top: 30px;
+	#title-action-box #search-box input{
+		width: 150px;
 	}
-	.title h1{  /* 추가했음 */
-		font-weight: bold;
+	#title-action-box{
+		line-height: 48px;
 	}
-	.content{
-		margin: 10px;
-		margin-left: 40px;
+	#title-action-box table{
+		width: 100%;
 	}
-/* 호스트 부분 */
-	.content{
-		width: 1000px;
+	#title-action-box table td{
+		text-align: right;
+		padding-top: 15px;
 	}
-	.row-header{
-		font-weight: bold;
-	}
-	.content-header{
-	    height: 50px;
-	    line-height: 50px;
-	    justify-content: space-around;
-	    padding: 0 30px;
-	}
-	.content-header>span{
-		width: calc(100% / 5);
-		text-align: center;
-	}
-	.content-main{
-		height: 70px;
-		justify-content: space-around;
-		padding: 0 30px;
-		background-color: white;
-		margin: 10px 0;
-		line-height: 70px;
-		border-radius: 20px; 
-		/* font-size: 0.8em; */
-	}
-	.content-main>div{
-		width: calc(100% / 5);
-		text-align: center;
-	}
-	.content-main:hover {
-		cursor: pointer;
-		border: 2px solid #79c2cc;
-		box-shadow: 
-	}
-	
-	
-	/* 임시 */
-	.content-main>div:first-child{
-		font-weight: bold;
+	#title-action-box #search-action input{
+		width: 50px
 	}
 </style>
 <main id="main">
 	<div class="title">
-		<h1>호스트 관리</h1>
+		<h1>
+			<span>호스트 관리</span>
+			<div id="title-action-box">
+				<img id="search" class="action-icon" src="/image/common/action/search_before.png">
+				<div id="search-box" >
+					<form action="#">
+						<table>
+							<tr>
+								<td>
+									<span>호스트ID</span>
+									<input type="text" name="hostId">
+								</td>
+								<td>
+									<span>호스트명</span>
+									<input type="text" name="hostNm">
+								</td>
+								<td>
+									<span>아이피</span>
+									<input type="text" name="hostIp">
+								</td>	
+							</tr>
+							<tr>
+								<td colspan="3" id="search-action">
+									<input type="submit" value="검색"> 
+									<input type="reset" value="취소">
+								</td>
+							</tr>
+						</table>
+					</form>
+				</div>	
+			</div>
+		</h1>
 	</div>
 	<!-- <span data-bs-toggle="modal" data-bs-target="#insert-host-modal">호스트등록</span> -->
 	<div class="content">
@@ -84,34 +84,51 @@
 			<c:forEach var="host" items="${hostList}">
 				<li class="d-flex content-main">
 					<div>
-						<span class="detail-host" data-bs-toggle="modal" data-bs-target="#detail-host-modal">${host.hostId}</span>
+						<span>${host.hostId}</span>
 					</div>
 					<div>
-						<span>${host.hostNm}</span>
+						<input type="text" name="hostNm" value="${host.hostNm}" readonly="readonly">
 					</div>
 					<div>
-						<span>${host.hostIp}</span>
+						<input id="error-update-hostIp" type="text" name="hostIp" value="${host.hostIp}" readonly="readonly">
 					</div>
 					<div>
-						<span>${host.hostPt}</span>
+						<input id="error-update-hostPt" type="text" name="hostPt" value="${host.hostPt}" readonly="readonly">
 					</div>
 					<div>
-						<span id="${host.hostId}" class="host-delete-button">삭제</span>
+						<img src="/image/common/action/update_before.png" id="update" class="action-icon host-update">
+						<img src="/image/common/action/check_before.png" id="check" class="action-icon host-update-complete" style="display: none;">
+						<img src="/image/common/action/delete_before.png" id="delete" class="action-icon host-delete">
+ 						<input type="hidden" name="hostId" value="${host.hostId}">
 					</div>
-					<%-- /host/detail?hostId=${host.hostId} --%>
 				</li>
 			</c:forEach>
+			<li>
+			<div id="page-box"><!-- #79c2cc -->
+				<c:if test="${pager.groupNo>1}">
+					<a class="page-button" href="host?pageNo=${pager.startPageNo-1}"><</a>
+				</c:if>
+				
+				<c:forEach var="i" begin="${pager.startPageNo}" end="${pager.endPageNo}">
+					<c:if test="${pager.pageNo != i}">
+						<a class="page-button" href="host?pageNo=${i}">${i}</a>
+					</c:if>
+					<c:if test="${pager.pageNo == i}">
+						<a class="page-button this-page" href="host?pageNo=${i}">${i}</a>
+					</c:if>
+				</c:forEach>
+				
+				<c:if test="${pager.groupNo<pager.totalGroupNo}">
+					<a class="page-button" href="host?pageNo=${pager.endPageNo+1}">></a>
+				</c:if>
+			</div>
+			</li>
 		</ul>	
 	</div>
 
 </main>
 
 <%@ include file="/WEB-INF/views/common/footer.jsp" %>
-
-
-
-
-
 
 <div id="insert-host-modal" class="modal" tabindex="-1">
 	  <div class="modal-dialog">
@@ -131,32 +148,6 @@
 	      </div>
 	      <div class="modal-footer">
 	        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
-	        <button type="submit" class="btn btn-primary">저장</button>
-	      </div>
-	    </div>
-	  </div>
-</div>
-
-<div id="detail-host-modal" class="modal" tabindex="-1">
-	  <div class="modal-dialog">
-	    <div class="modal-content">
-	      <div class="modal-header">
-	        <h5 class="modal-title">호스트 상세페이지</h5>
-	        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-	      </div>
-	      <div class="modal-body">
-	      	<form:form id="host-update-form" modelAttribute="host">
-	      		호스트ID: <form:input path="hostId" readonly="true" /><span id="error-update-hostId" class="error-message"></span><br>
-		      	호스트명: <form:input path="hostNm" readonly="true" /><span id="error-update-hostNm" class="error-message"></span><br>
-	      		아이피: <form:input path="hostIp" readonly="true" /><span id="error-update-hostIp" class="error-message" ></span><br>
-	      		포트: <form:input path="hostPt" readonly="true" type="number" min="0" max="65535"/><span id="error-update-hostPt" class="error-message"></span><br>
-	      		<input type="submit" value="전송">
-			</form:form>	      	
-	      	
-	      </div>
-	      <div class="modal-footer">
-	        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
-	        <button type="button" id="update-host-button">수정</button>
 	        <button type="submit" class="btn btn-primary">저장</button>
 	      </div>
 	    </div>

@@ -40,7 +40,7 @@ public class HostController {
 		
 		int hostSize = hostService.getHostCount();
 		
-		Pager pager = new Pager(10, 5, hostSize, pageNo);
+		Pager pager = new Pager(7, 5, hostSize, pageNo);
 		
 		List<Host> hostList = hostService.getHostList(pager);
 		

@@ -235,12 +235,12 @@ public class BatchServer {
 		if(hostList.size() == connect.length()) {
 			return connect;
 		}else {
-			/*try {
+			try {
 				Thread.sleep(500L);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			}*/
+			}
 			// 호스트 체크 완료 안됐으면 재귀
 			log.info("[메소드 재실행]");
 			return healthCheck(hostList, 1);

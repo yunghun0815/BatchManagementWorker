@@ -47,26 +47,18 @@ public class BatchController {
 		int totalRows = batchService.getTotalGroupNum();
 		Pager pager = new Pager(5, 5, totalRows, pageNo);
 		
-		// 호스트 연결상태 확인
-		//List<Host> hostList = hostService.getHostList();
-		
-		
 		//현재 페이지에 맞는 데이터 가져오기
 		List<BatGrp> batGrpList = batchService.getBatGrpList(pager);
 		
-		//그룹 사이즈는 4
-		//distinct로 중복제거해서 2개를 가져왔음
 		Set<String> set = new HashSet<>();
 		for(BatGrp test : batGrpList) {
-			set.add(test.getHostId()); // 호스트아이디 중복제거
+			set.add(test.getHostId()); 
 		}
 
 		JSONObject connect = hostService.connectHost(set);
 		
 		
 		for(BatGrp vo: batGrpList) {
-			
-			
 			vo.setConn(connect.getString(vo.getHostId()));
 			if(jobService.checkJob(vo.getBatGrpId())==true) vo.setRunCheck(true);
 			else vo.setRunCheck(false);
@@ -74,7 +66,6 @@ public class BatchController {
 		
 		model.addAttribute("pager", pager);
 		model.addAttribute("batGrpList", batGrpList);
-		System.out.println(batGrpList);
 		model.addAttribute("menu","batch");
 		return "board";
 	}

@@ -200,10 +200,10 @@ window.onload = function(){
 							</div>
 							<div class="group-active">
 								<a href="<c:url value='/batch/group/detail?grpId=${item.batGrpId}'/>">
-									<img src="/image/detail_before.png">
+									<img id="detail" class="action-icon" src="/image/common/action/detail_before.png">
 								</a>
 								<a href="<c:url value='/batch/group/delete?grpId=${item.batGrpId}'/>">
-									<img src="/image/delete_before.png">
+									<img id="delete" class="action-icon" src="/image/common/action/delete_before.png">
 								</a>
 							</div>
 						</li>

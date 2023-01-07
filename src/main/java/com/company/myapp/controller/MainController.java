@@ -124,16 +124,14 @@ public class MainController {
 	
 	@GetMapping("/test77")
 	public String test77() {
-		
 		Host host = new Host();
-		host.setHostIp("localhost");
-		host.setHostPt(50001);
-		
-		List<String> list = batchService.getAgentBatchPath(host);
-		System.out.println(list.size());
-		for(String data : list) {
-			System.out.println(data);
+		host.setHostNm("test");
+		host.setHostIp("1234");
+		host.setHostPt(1234);
+		for(int i=0; i<60; i++) {
+			hostService.insertHost(host);
 		}
+		
 		
 		return "";
 	}

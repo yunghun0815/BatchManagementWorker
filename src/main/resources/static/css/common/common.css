@@ -1,11 +1,21 @@
 @charset "UTF-8";
+
+	@font-face {
+	    font-family: 'NanumSquareNeo-Variable';
+	    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_11-01@1.0/NanumSquareNeo-Variable.woff2') format('woff2');
+	    font-weight: normal;
+	    font-style: normal;
+	}
+	*{
+		font-family: 'NanumSquareNeo-Variable';
+		list-style: none;
+	}
 	body{
 		background-color: #e8eef2;
 		height: 100%;
 	}
-	*{
-		list-style: none;
-	}
+	
+	/* 공통 바디 */
 	#app{
 		width: 1600px;
  		height: 850px; 
@@ -57,5 +67,48 @@
 	    width: 65px;
 	    display: inline-block;
 	    border-radius: 15px;
+	}
+	
+	
+	.action-icon{
+		width: 30px;
+		height: 30px;
+		cursor: pointer;
+	}
+	.title{
+		margin: 30px; /* 20 -> 30으로 수정 */
+	}
+	.title h1{  /* 추가했음 */
+		font-weight: bold;
+	}
+	#title-action-box{
+		display: inline-block;
+		float: right;
+	} 
+	
+	.content{
+		margin: 10px;
+		margin-left: 40px;
+	}
+	
+	/* 페이징 버튼 */
+	
+	#page-box{
+		margin-top: 15px;
+		text-align: center;
+	}
+	#page-box .page-button{
+		text-decoration: none;
+		border: 1px solid #d8d3d3;
+	    display: inline-block;
+	    width: 25px;
+	    border-radius: 5px;
+	    color: black;
+	    font-weight: bold;
+	    background-color: white;
+	}
+	#page-box .this-page{
+		color: white;
+		background-color: #79c2cc;
 	}
 		
