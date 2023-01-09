@@ -31,6 +31,12 @@ $(function(){
 			$(this).find(".menu-icon").prop("src", "/image/common/nav/"+ $(this).find(".menu-icon").prop("id") +"-gray.png");
 		}
 	})
+	
+	$(".action-icon").hover(function(){
+		$(this).prop("src", "/image/common/action/" + $(this).prop("id")+".png");
+	},function(){
+		$(this).prop("src", "/image/common/action/" + $(this).prop("id")+"_before.png");
+	});
 }); 
 </script>
 <body>
