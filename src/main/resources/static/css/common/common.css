@@ -1,6 +1,6 @@
 @charset "UTF-8";
 	body{
-		background-color: #e8eef2;
+		background-color: #e8eef2 !important;
 		height: 100%;
 	}
 	*{
