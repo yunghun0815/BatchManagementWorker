@@ -30,4 +30,8 @@ public interface IHostService {
 	Host getHostByBatGrpId(String batGrpId);
 	
 	JSONObject connectHost(Set<String> set);
+
+	List<Host> searchHost(Pager pager, Host host);
+
+	int getHostCountBySearch(Host host);
 }

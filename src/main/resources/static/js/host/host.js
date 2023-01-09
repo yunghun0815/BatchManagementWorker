@@ -102,7 +102,7 @@ $(function(){
 		});
 	})
 	
-	//호스트 삭제
+	// 호스트 삭제
 	$(".host-delete").click(function(){
 		let hostId = $(this).parent().find("input[type='hidden']").val(); 
 		if(confirm('정말 삭제하시겠습니까?')){
@@ -119,5 +119,11 @@ $(function(){
 		};
 	});
 	
+	// 검색
+	$("#search").click(function(){
+		$("#search-box").show();
+	});
+	$("#search-action input[type='reset']").click(function(){
+		$("#search-box").hide();
+	});
 });
-

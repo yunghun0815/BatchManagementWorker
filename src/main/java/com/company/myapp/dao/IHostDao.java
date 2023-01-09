@@ -3,6 +3,7 @@ package com.company.myapp.dao;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import com.company.myapp.dto.Host;
 import com.company.myapp.dto.Pager;
@@ -25,6 +26,10 @@ public interface IHostDao {
 	int deleteHost(String hostId);
 
 	Host getHostByBatGrpId(String batGrpId);
+
+	List<Host> searchHost(@Param(value = "pager") Pager pager, @Param(value = "host") Host host);
+
+	int getHostCountBySearch(Host host);
 
 	
 

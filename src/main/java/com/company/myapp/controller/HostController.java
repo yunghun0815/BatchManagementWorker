@@ -1,7 +1,9 @@
 package com.company.myapp.controller;
 
+import java.util.Enumeration;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,10 +40,11 @@ public class HostController {
 	@GetMapping("")
 	public String getHostList(@RequestParam(defaultValue = "1") int pageNo, Model model) {
 		
+		// 전체 호스트 수
 		int hostSize = hostService.getHostCount();
-		
+		// 페이저 객체 생성
 		Pager pager = new Pager(7, 5, hostSize, pageNo);
-		
+		// 페이징 처리 해 조회 
 		List<Host> hostList = hostService.getHostList(pager);
 		
 		model.addAttribute("host", new Host());
@@ -49,6 +52,48 @@ public class HostController {
 		model.addAttribute("hostList", hostList);
 		
 		model.addAttribute("menu","host");
+		return "host/host";
+	}
+	/**
+	 * 호스트 검색 결과
+	 * @param pageNo 페이지 번호
+	 * @param keyword 검색 키워드
+	 * @param filtering 검색 카테고리
+	 * @param model
+	 * @return
+	 */
+	@GetMapping("/search")
+	public String searchHost(@RequestParam(defaultValue = "1") int pageNo, Host host, Model model, HttpServletRequest request) {
+		
+		
+		// 검색한 전체 호스트 수
+		int hostSize = hostService.getHostCountBySearch(host);
+		
+		// 페이저 객체 생성
+		Pager pager = new Pager(7, 5, hostSize, pageNo);
+		// 페이징 처리 해 조회 
+		List<Host> hostList = hostService.searchHost(pager, host);
+		
+		model.addAttribute("host", new Host());
+		model.addAttribute("pager", pager);
+		model.addAttribute("hostList", hostList);
+		
+		model.addAttribute("menu","host");
+		
+		// view에 페이지 버튼 링크 
+		//String uri = request.getRequestURI();
+		StringBuilder sb = new StringBuilder();
+		
+		Enumeration<String> paramKeys = request.getParameterNames();
+		while(paramKeys.hasMoreElements()) {
+			String key = paramKeys.nextElement();
+			String value = request.getParameter(key);
+			
+			if(!key.equals("pageNo"))sb.append("&" + key + "=" + value);
+		}
+		//String search = uri + sb.toString();
+		model.addAttribute("search", sb.toString());
+		
 		return "host/host";
 	}
 	
@@ -99,7 +144,7 @@ public class HostController {
 	}
 	
 	/**
-	 * 호스트 삭제 
+	 * 호스트 삭제 (사용여부를 N으로)
 	 * @param hostId
 	 */
 	@ResponseBody
@@ -113,4 +158,5 @@ public class HostController {
 			batchService.deleteBatGrp(grpId);
 		}
 	}
+	
 }

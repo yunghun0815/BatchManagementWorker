@@ -3,7 +3,12 @@
 <mapper namespace="com.company.myapp.dao.IHostDao">
 
    <select id="getHostCount" parameterType="com.company.myapp.dto.Host" resultType="int">
-      SELECT count(*) FROM host
+      SELECT count(*) 
+      FROM 
+      	host
+      WHERE
+      	use_yn = 'Y'
+      
    </select>
 	
    <select id="getHostList" resultType="Host">
@@ -61,7 +66,9 @@
          last_mdfcn_dttm as lastMdfcnDttm
       FROM
          host
-      WHERE 
+      WHERE
+      	 use_yn = 'Y'
+      AND	  
          host_id = #{hostId}         
    </select>
    
@@ -104,5 +111,65 @@
       	h.host_id = bg.host_id
       WHERE			
       	bg.bat_grp_id = #{batGrpId}
+   </select>
+   
+   <select id="searchHost" parameterType="map" resultType="Host">
+      SELECT    
+   		rnum,                
+        host_id as hostId, 
+        host_ip as hostIp, 
+        host_pt as hostPt, 
+        host_nm as hostNm, 
+        use_yn as useYn, 
+        last_mdfr_nm as lastMdfrNm, 
+        last_mdfcn_dttm as lastMdfcnDttm
+      FROM (
+        SELECT ROWNUM as rnum, host_id, host_ip, host_pt, host_nm, use_yn, last_mdfr_nm, last_mdfcn_dttm
+        FROM (
+           SELECT 
+               host_id,
+            host_ip,
+            host_pt, 
+            host_nm, 
+            use_yn, 
+            last_mdfr_nm, 
+            last_mdfcn_dttm
+         FROM
+            host
+         WHERE 
+            use_yn = 'Y'
+       	<if test="host.hostId != null and host.hostId != ''">
+    		AND	host_id like '%'||#{host.hostId}||'%'	
+    	</if>   
+    	<if test="host.hostIp != null and host.hostIp != ''">
+    		AND	host_ip like '%'||#{host.hostIp}||'%' 
+     	</if>   
+  	    <if test="host.hostNm != null and host.hostNm != ''">
+  	 		AND	host_nm like '%'||#{host.hostNm}||'%'
+   	 	</if>
+         ORDER BY host_id
+        )
+        WHERE rownum &lt;= #{pager.endRowNo}  
+      )
+      WHERE rnum &gt;= #{pager.startRowNo} 
+   </select>
+   
+   <select id="getHostCountBySearch" parameterType="Host" resultType="int">
+      SELECT count(*) 
+      FROM 
+      	host
+      WHERE use_yn = 'Y' 
+      <if test="hostId != null and hostId != ''">
+      AND
+      	host_id like '%'||#{hostId}||'%'	
+      </if>   
+      <if test="hostIp != null and hostIp != ''">
+      AND
+      	host_ip like '%'||#{hostIp}||'%' 
+      </if>   
+      <if test="hostNm != null and hostNm != ''">
+      AND 
+      	host_nm like '%'||#{hostNm}||'%'
+      </if>       		    
    </select>
 </mapper>

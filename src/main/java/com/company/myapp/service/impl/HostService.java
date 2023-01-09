@@ -78,6 +78,17 @@ public class HostService implements IHostService{
 		return connect;
 	}
 
+	@Override
+	public List<Host> searchHost(Pager pager, Host host) {
+		
+		return hostDao.searchHost(pager, host);
+	}
+
+	@Override
+	public int getHostCountBySearch(Host host) {
+		return hostDao.getHostCountBySearch(host);
+	}
+
 
 
 }
