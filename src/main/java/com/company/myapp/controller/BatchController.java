@@ -145,8 +145,10 @@ public class BatchController {
 	
 	@ResponseBody
 	@GetMapping("/program")
-	public List<BatPrm> getBatPrmList(@RequestParam(value="grpId")String grpId){
+	public List<BatPrm> getBatPrmList(String grpId){
+		System.out.println(grpId);
 		List<BatPrm> batPrmList = batchService.getBatPrmList(grpId);
+		System.out.println(batPrmList);
 		return batPrmList;
 	}
 	
