@@ -37,4 +37,6 @@ public interface IBatchService {
 	public List<String> getAgentBatchPath(Host host);
 
 	public List<String> getBatGrpIdListByHostId(String hostId);
+
+	public void updateExcnOrd(List<BatPrm> prmList);
 }

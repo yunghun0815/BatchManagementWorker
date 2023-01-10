@@ -127,4 +127,12 @@ public class BatchService implements IBatchService {
 		return batchDao.getBatGrpIdListByHostId(hostId);
 	}
 
+	@Override
+	public void updateExcnOrd(List<BatPrm> prmList) {
+		for(BatPrm vo: prmList) {
+			batchDao.sortByUsers(vo);
+		}
+		
+	}
+
 }

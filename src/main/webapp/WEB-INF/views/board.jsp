@@ -4,6 +4,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ include file="common/header.jsp"%>
 <script src="https://code.jquery.com/jquery-3.6.2.js"></script>
+<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js" ></script>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
@@ -94,8 +95,15 @@
 .group-cron{
 	width:22%;
 }
+
 .group-conn{
 	width:10%;
+}
+.group-conn .conn_enabled{
+	color: green;
+}
+.group-conn .conn_disabled{
+	color: red;
 }
 .group-running {
 	width:10%;
@@ -231,6 +239,48 @@
 	width:23px;
 	height: 23px;
 }
+.sub-content .warning{
+	line-height:650px;
+	font-size: 2.5em;
+	color:white;
+	vertical-align:middle;
+	margin-left: 18px;
+	
+}
+
+.sub-content .grpId{
+	backgroud-color:none;
+	font-size:1.2em;
+	font-weight: bold;
+	color : white;
+	text-align: center;
+}
+.ord-btn-wrap{
+	background-color: white;
+    width: 90%;
+    margin: 10px auto;
+    height: 50px;
+    border-radius: 10px;
+    padding: 5px;
+    padding-top: 10px;
+    padding-left: 14px;
+    margin-top: 14px;
+    
+    padding: 0px;
+    line-height: 48px;
+    margin: auto;
+    text-align: center;
+    background-color: #79c2cc;
+    color: white;
+    font-size: 1.8em;
+    font-weight: bold;
+    cursor: pointer;
+}
+.ord-btn{
+}
+.change-ord{
+	cursor:move;
+}
 /* 토글 */
 .toggleSwitch {
 	width: 47px;
@@ -284,7 +334,7 @@ function prmList(grp){
 			if(result.length==0){
 				view = `<span style="margin-left: 20px;line-height:670px;font-size: 2.5em;color:white;vertical-align:middle;">프로그램이 없습니다.</span>`;
 			}else{
-				view = `<ul>`;
+				view = `<ul id="sortable"><li class="grpId"><div>` + grpId + `</div>`;
 				for(var i=0;i<result.length;i++){
 					let obj = result[i];
 					view += `<li class="d-flex program">
@@ -294,16 +344,16 @@ function prmList(grp){
 								<div class="program-active">
 									<div onmouseenter="iconMouseOver(this)" onmouseleave="iconMouseLeave(this)"
 										onclick="" data-bs-toggl="modal" data-bs-target="#detail-batch-program">
-									<img src="/image/detail.png" class="menu-box" id="detail">
+									<img src="/image/common/action/detail.png" class="menu-box" id="detail">
 								</div> 
 								<div onmouseenter="iconMouseOver(this)" onmouseleave="iconMouseLeave(this)"
 									onclick="prmDelete(` + obj['batPrmId'] + `)">
-									<img src="/image/delete.png" class="menu-box" id="delete">
+									<img src="/image/common/action/delete.png" class="menu-box" id="delete">
 								</div></div>
 								<div class="program-ord"><span>` + obj['excnOrd'] + `</span></div>
 							</li>`;
 				}
-				view += `</ul>`;
+				view += `<li class="ord-btn-wrap"><div class="ord-btn" onclick="possibleChangeOrd(this)"><span>순서 변경</span></div></li></ul>`;
 			}
 			target.append(view);
 		},
@@ -316,14 +366,14 @@ function prmList(grp){
 //프로그램 리스트 아이콘 이벤트
 function iconMouseOver(obj){
 	$(obj).css("border","1.5px solid #374c70");
-	$(obj).find(".menu-box").prop("src", "/image/"+ $(obj).find(".menu-box").prop("id") +"_after2.png");
+	$(obj).find(".menu-box").prop("src", "/image/common/action/"+ $(obj).find(".menu-box").prop("id") +"_after2.png");
 }
 function iconMouseLeave(obj){
 	$(obj).css("border","1.5px solid #acb9c7");
-	$(obj).find(".menu-box").prop("src", "/image/"+ $(obj).find(".menu-box").prop("id") +".png");
+	$(obj).find(".menu-box").prop("src", "/image/common/action/"+ $(obj).find(".menu-box").prop("id") +".png");
 }
 
-window.onload = function(){
+/* window.onload = function(){
 	const $toggle = document.querySelector(".toggleSwitch");
 	const $active = document.querySelector(".group-active");
 	
@@ -334,7 +384,7 @@ window.onload = function(){
 	$active.onclick = () => {
 		event.stopPropagation();
 	}
-}
+} */
 
 //삭제확인
 function grpDelete(grpId){
@@ -350,12 +400,26 @@ $(function(){
 	// 페이지별 메뉴 색 변경
 	 $(".group-active div").mouseover(function(){
 		$(this).css("border","1.5px solid #0CA3B9");
-		$(this).find(".menu-box").prop("src", "/image/"+ $(this).find(".menu-box").prop("id") +"_after.png");
+		$(this).find(".menu-box").prop("src", "/image/common/action/"+ $(this).find(".menu-box").prop("id") +"_after.png");
 	})
 	$(".group-active div").mouseleave(function(){
 		$(this).css("border","1.5px solid #acb9c7");
-		$(this).find(".menu-box").prop("src", "/image/"+ $(this).find(".menu-box").prop("id") +".png");
+		$(this).find(".menu-box").prop("src", "/image/common/action/"+ $(this).find(".menu-box").prop("id") +".png");
 	})
+	
+	//실행토글
+	const toggle = $(".toggleSwitch");
+	const active = $(".group-active");
+	toggle.click(function(){
+		event.stopPropagation();
+		$(this).toggleClass('active');
+		})
+	active.each(function(){
+		active.click(function(){
+			event.stopPropagation();
+		})
+	})
+	
 	
 	//cron 입력
 	$("#option-week").hide();
@@ -425,8 +489,96 @@ function groupDetail(table){
 //수정화면에서 저장 누르면 저장된 상세 페이지로 변경
 //수정화면에서 크론의 경우 변경 버튼을 눌러야 변경 가능
 //일단 호스트는 셀렉트
-//맨밑에 프로그램 순서 변경
+//프로그램 순서 변경 버튼 눌렀을 때(순서 변경 가능한 상태)
+function possibleChangeOrd(btn){
+	$(".program").toggleClass('change-ord');
+	$(".ord-btn-wrap").empty();
+	$(".ord-btn-wrap").append(`<div class="ord-btn" onclick="saveChangedOrd(this)"><span>저장하기</span></div>`);
+	$( "#sortable" ).sortable( {
+    	stop: function(e){
+    		const li = $(".program");
+    		
+    		li.each(function(index){
+    			const target = $(this);
+    			target.find(".program-ord span").text(index+1);
+    		});
+    	}
+    });
+}
+//프로그램 순서 저장 버튼 눌렀을 때(순서 변경 저장)
+function saveChangedOrd(btn){
+	
+	const grpId = $("#sortable .grpId").text();
+	
+	var prmList = [];
+	var prmCnt = $(".program").length;
 
+	for(var i=0;i<prmCnt;i++){
+		let id = $($(".program")[i]).find(".program-id span").text();
+		let ord = $($(".program")[i]).find(".program-ord span").text();
+		var BatPrm = {
+				'batPrmId' : id,
+				'excnOrd' : ord
+				
+		}
+		prmList.push(BatPrm);
+	} 
+	var vo = {
+			'batGrpId': grpId,
+			'prmList': prmList
+	};
+	console.log(prmList);
+ 	 $.ajax({
+		url: "/batch/program/update/ord" ,
+		type: "POST",
+		dataType: "json",
+		contentType: "application/json; charset=utf-8",
+		data: JSON.stringify(vo),
+		success: function(result){
+			var target = $(".sub-content");
+			target.empty();
+			var view = ``;
+			if(result.length==0){
+				view = `<span style="margin-left: 20px;line-height:670px;font-size: 2.5em;color:white;vertical-align:middle;">프로그램이 없습니다.</span>`;
+			}else{
+				view = `<ul id="sortable"><li class="grpId"><div>` + grpId + `</div>`;
+				for(var i=0;i<result.length;i++){
+					let obj = result[i];
+					view += `<li class="d-flex program">
+								<div class="program-id"><span>` + obj['batPrmId'] + `</span></div>
+								<div class="program-nm"><span>` + obj['batPrmNm'] + `</span></div>
+								<div class="program-path"><span>` + obj['path'] + `</span></div>
+								<div class="program-active">
+									<div onmouseenter="iconMouseOver(this)" onmouseleave="iconMouseLeave(this)"
+										onclick="" data-bs-toggl="modal" data-bs-target="#detail-batch-program">
+									<img src="/image/common/action/detail.png" class="menu-box" id="detail">
+								</div> 
+								<div onmouseenter="iconMouseOver(this)" onmouseleave="iconMouseLeave(this)"
+									onclick="prmDelete(` + obj['batPrmId'] + `)">
+									<img src="/image/common/action/delete.png" class="menu-box" id="delete">
+								</div></div>
+								<div class="program-ord"><span>` + obj['excnOrd'] + `</span></div>
+							</li>`;
+				}
+				view += `<li class="ord-btn-wrap"><div class="ord-btn" onclick="possibleChangeOrd(this)"><span>순서 변경</span></div></li></ul>`;
+			}
+			target.append(view);
+		}
+	});  
+} 
+/*   $( function() {
+    $( "#sortable" ).sortable( {
+    	stop: function(e){
+    		const li = $("ul li");
+    		
+    		li.each(function(index){
+    			const target = $(this);
+    			target.find("input[name='excnOrd']").val(index+1);
+    		});
+    	}
+    } );
+    
+  }); */
 
 
 </script>
@@ -491,92 +643,45 @@ function groupDetail(table){
 							<div class="group-active">
 								<div 
 									data-bs-toggle="modal" data-bs-target="#detail-batch-group">
-									<img src="/image/detail.png" class="menu-box" id="detail">
+									<img src="/image/common/action/detail.png" class="menu-box" id="detail">
 								</div> 
 								<div onclick="grpDelete(${group.batGrpId})">
-									<img src="/image/delete.png" class="menu-box" id="delete">
+									<img src="/image/common/action/delete.png" class="menu-box" id="delete">
 								</div>
 							</div>
 						</li>
 					</c:forEach>
+						<li>
+							<c:if test="${pager.totalRows > 0}">
+								<div id="page-box">
+									<c:set var="url" value="/batch"/>
+									<c:if test="${not empty search}">
+										<c:set var="url" value="/batch" />
+									</c:if>
+								
+									<c:if test="${pager.groupNo>1}">
+										<a class="page-button" href="${url}?pageNo=${pager.startPageNo-1}${search}"><</a>
+									</c:if>
+									<c:forEach var="i" begin="${pager.startPageNo}" end="${pager.endPageNo}">
+										<c:if test="${pager.pageNo != i}">
+											<a class="page-button" href="${url}?pageNo=${i}${search}">${i}</a>
+										</c:if>
+										<c:if test="${pager.pageNo == i}">
+											<a class="page-button this-page" href="${url}?pageNo=${i}${search}">${i}</a>
+										</c:if>
+									</c:forEach>
+									
+									<c:if test="${pager.groupNo<pager.totalGroupNo}">
+										<a class="page-button" href="${url}?pageNo=${pager.endPageNo+1}${search}">></a>
+									</c:if>
+								</div>
+							</c:if>
+						</li>
 					<ul>
 			</div>
 		</div>
-		<div class="sub-content">
-			<ul>
-			<li class="d-flex program">
-								<div class="program-id"><span>PRM000000001</span></div>
-								<div class="program-nm"><span>프로그램 이름</span></div>
-								<div class="program-path"><span>C:/dev/batch-agent/test-app1.bat</span></div>
-								<div class="program-active">
-									<div onmouseenter="iconMouseOver(this)" onmouseleave="iconMouseLeave(this)" onclick="" 
-										data-bs-toggl="modal" data-bs-target="#detail-batch-program">
-										<img src="/image/detail.png" class="menu-box" id="detail">
-									</div> 
-									<div onmouseenter="iconMouseOver(this)" onmouseleave="iconMouseLeave(this)" onclick="prmDelete(` + obj['batPrmId'] + `)">
-										<img src="/image/delete.png" class="menu-box" id="delete">
-									</div>
-								</div>
-								<div class="program-ord"><span>1</span></div>
-			</li>
-			<li class="d-flex program">
-								<div class="program-id"><span>PRM000000001</span></div>
-								<div class="program-nm"><span>프로그램 이름</span></div>
-								<div class="program-path"><span>C:/dev/batch-agent/test-app1.bat</span></div>
-								<div class="program-ord"><span>1</span></div>
-								<div class="program-active">
-									<div onclick="" data-bs-toggl="modal" data-bs-target="#detail-batch-program">
-										<img src="/image/detail.png" class="menu-box" id="detail">
-									</div> 
-									<div onclick="prmDelete(` + obj['batPrmId'] + `)">
-										<img src="/image/delete.png" class="menu-box" id="delete">
-									</div>
-								</div>
-			</li>
-			<li class="d-flex program">
-								<div class="program-id"><span>PRM000000001</span></div>
-								<div class="program-nm"><span>프로그램 이름</span></div>
-								<div class="program-path"><span>C:/dev/batch-agent/test-app1.bat</span></div>
-								<div class="program-ord"><span>1</span></div>
-								<div class="program-active">
-									<div onclick="" data-bs-toggl="modal" data-bs-target="#detail-batch-program">
-										<img src="/image/detail.png" class="menu-box" id="detail">
-									</div> 
-									<div onclick="prmDelete(` + obj['batPrmId'] + `)">
-										<img src="/image/delete.png" class="menu-box" id="delete">
-									</div>
-								</div>
-			</li>
-			<li class="d-flex program">
-								<div class="program-id"><span>PRM000000001</span></div>
-								<div class="program-nm"><span>프로그램 이름</span></div>
-								<div class="program-path"><span>C:/dev/batch-agent/test-app1.bat</span></div>
-								<div class="program-ord"><span>1</span></div>
-								<div class="program-active">
-									<div onclick="" data-bs-toggl="modal" data-bs-target="#detail-batch-program">
-										<img src="/image/detail.png" class="menu-box" id="detail">
-									</div> 
-									<div onclick="prmDelete(` + obj['batPrmId'] + `)">
-										<img src="/image/delete.png" class="menu-box" id="delete">
-									</div>
-								</div>
-			</li>
-			<li class="d-flex program">
-								<div class="program-id"><span>PRM000000001</span></div>
-								<div class="program-nm"><span>프로그램 이름</span></div>
-								<div class="program-path"><span>C:/dev/batch-agent/test-app1.bat</span></div>
-								<div class="program-ord"><span>1</span></div>
-								<div class="program-active">
-									<div onclick="" data-bs-toggl="modal" data-bs-target="#detail-batch-program">
-										<img src="/image/detail.png" class="menu-box" id="detail">
-									</div> 
-									<div onclick="prmDelete(` + obj['batPrmId'] + `)">
-										<img src="/image/delete.png" class="menu-box" id="delete">
-									</div>
-								</div>
-			</li>
-			</ul>
-			<!-- <span style="line-height:670px;font-size: 2.5em;color:white;vertical-align:middle;">그룹을 선택해주세요.</span> -->
+		<div class="sub-content" value="">
+			<span class="warning">그룹을 선택해주세요.</span>
 		</div>
 	</div>
 </main>

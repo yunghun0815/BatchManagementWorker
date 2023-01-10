@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -45,7 +46,7 @@ public class BatchController {
 		
 		//데이터의 전체 행수 가져온 후 페이징 처리
 		int totalRows = batchService.getTotalGroupNum();
-		Pager pager = new Pager(5, 5, totalRows, pageNo);
+		Pager pager = new Pager(10, 5, totalRows, pageNo);
 		
 		//현재 페이지에 맞는 데이터 가져오기
 		List<BatGrp> batGrpList = batchService.getBatGrpList(pager);
@@ -179,7 +180,13 @@ public class BatchController {
 		batchService.updateBatPrm(vo);
 		return batchService.getBatPrmList(vo.getBatGrpId());
 	} 
-	
+
+	@ResponseBody
+	@PostMapping("/program/update/ord")
+	public List<BatPrm> updateExcnOrd(@RequestBody BatGrp vo){
+		batchService.updateExcnOrd(vo.getPrmList());
+		return batchService.getBatPrmList(vo.getBatGrpId());
+	}
 	/**
 	 * 배치그룹별 스케쥴러 실행 체크후 실행 및 중단
 	 * @param grpId
