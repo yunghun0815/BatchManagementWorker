@@ -39,13 +39,19 @@ public class LogService implements ILogService {
 		}
 
 		@Override
-		public List<BatPrmLog> getBatPrmLogListByBatGrpLogId(String batGrpLogId) {
-			return logDao.getBatPrmLogListByBatGrpLogId(batGrpLogId);
+		public List<BatPrmLog> getBatPrmLogListByBatGrpLogId(String batGrpLogId, int batGrpRtyCnt) {
+			return logDao.getBatPrmLogListByBatGrpLogId(batGrpLogId, batGrpRtyCnt);
 		}
 
 		@Override
 		public BatGrpLog getBatGrpLogDetail(String batGrpLogId, int batGrpRtyCnt) {
 			return logDao.getBatGrpLogDetail(batGrpLogId, batGrpRtyCnt);
+		}
+		
+		@Override
+		public List<BatGrpLog> getBatGrpLogDetailList(String batGrpLogId) {
+			// TODO Auto-generated method stub
+			return logDao.getBatGrpLogDetailList(batGrpLogId);
 		}
 		
 		@Override
@@ -83,4 +89,15 @@ public class LogService implements ILogService {
 			logDao.insertRtyBatGrpLog(rtyBatGrpLog);
 			
 		}
+
+		@Override
+		public int getBatGrpLogCountBySearch(BatGrpLog log) {
+			return logDao.getBatGrpLogCountBySearch(log);
+		}
+
+		@Override
+		public List<BatGrpLog> searchBatGrpLog(Pager pager, BatGrpLog log) {
+			return logDao.searchBatGrpLog(pager, log);
+		}
+
 }

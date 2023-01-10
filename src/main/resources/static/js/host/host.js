@@ -119,11 +119,5 @@ $(function(){
 		};
 	});
 	
-	// 검색
-	$("#search").click(function(){
-		$("#search-box").show();
-	});
-	$("#search-action input[type='reset']").click(function(){
-		$("#search-box").hide();
-	});
+
 });

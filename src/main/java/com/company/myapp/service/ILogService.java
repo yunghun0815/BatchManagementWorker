@@ -2,6 +2,8 @@ package com.company.myapp.service;
 
 import java.util.List;
 
+import org.apache.ibatis.annotations.Param;
+
 import com.company.myapp.dto.BatGrpLog;
 import com.company.myapp.dto.BatPrmLog;
 import com.company.myapp.dto.Pager;
@@ -16,9 +18,11 @@ public interface ILogService {
 
 	List<BatPrmLog> getBatPrmLogList(Pager pager); // 전체 프로그램 로그 리스트
 	
-	List<BatPrmLog> getBatPrmLogListByBatGrpLogId(String batGrpLogId); // 그룹 로그 상세 -> 모든 회차 프로그램 로그 리스트
+	List<BatPrmLog> getBatPrmLogListByBatGrpLogId(String batGrpLogId, int batGrpRtyCnt); // 그룹 로그 상세 -> 모든 회차 프로그램 로그 리스트
 
-	BatGrpLog getBatGrpLogDetail(String batGrpLogId, int batGrpRtyCnt); // 그룹 로그 상세
+	BatGrpLog getBatGrpLogDetail(String batGrpLogId, int batGrpRtyCnt); // 그룹 로그 리스트 상세
+	
+	List<BatGrpLog> getBatGrpLogDetailList(String batGrpLogId);  // 로그ID에 대한 전체 그룹 리스트
 
 	BatPrmLog getBatPrmLogDetail(String batGrpLogId, int batGrpRtyCnt, String batPrmId); // 프로그램 로그 상세
 
@@ -30,7 +34,12 @@ public interface ILogService {
 	
 	void updateBatPrmLog(BatPrmLog batPrmLog); // 프로그램 로그 수정
 
-	BatPrmLog getBatPrmLogByFirstFail(BatGrpLog batGrpLog);
+	BatPrmLog getBatPrmLogByFirstFail(BatGrpLog batGrpLog); // 차수별 그룹 로그 중 처음 실패한 로그 조회
 
-	void insertRtyBatGrpLog(BatGrpLog batGrpLog);
+	void insertRtyBatGrpLog(BatGrpLog batGrpLog); // 재실행 로그 저장
+
+	int getBatGrpLogCountBySearch(BatGrpLog log); // 검색 결과 카운트
+
+	List<BatGrpLog> searchBatGrpLog(Pager pager, BatGrpLog log); // 검색 결과 페이징 처리해 조회
+
 }

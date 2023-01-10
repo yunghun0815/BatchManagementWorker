@@ -1,6 +1,5 @@
 package com.company.myapp.dao;
 
-import java.sql.Date;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
@@ -21,9 +20,11 @@ public interface ILogDao {
 
 	List<BatPrmLog> getBatPrmLogList(Pager pager);
 
-	List<BatPrmLog> getBatPrmLogListByBatGrpLogId(String batGrpLogId);
+	List<BatPrmLog> getBatPrmLogListByBatGrpLogId(@Param(value = "batGrpLogId") String batGrpLogId, @Param(value = "batGrpRtyCnt") int batGrpRtyCnt);
 	
 	BatGrpLog getBatGrpLogDetail(@Param(value = "batGrpLogId") String batGrpLogId, @Param(value = "batGrpRtyCnt") int batGrpRtyCnt);
+	
+	List<BatGrpLog> getBatGrpLogDetailList(String batGrpLogId);
 	
 	BatPrmLog getBatPrmLogDetail(@Param(value = "batGrpLogId") String batGrpLogId, @Param(value = "batGrpRtyCnt") int batGrpRtyCnt, @Param(value = "batPrmId") String batPrmId);
 
@@ -44,5 +45,10 @@ public interface ILogDao {
 	List<BatPrmLog> getRtyPrmListByLogIdNCnt(@Param(value="logId")String logId, @Param(value="rty")int rty);
 
 	List<BatGrpLog> getRtyBatGrpLogListByLogId(String batGrpLogId);
+
+	int getBatGrpLogCountBySearch(BatGrpLog log);
+
+	List<BatGrpLog> searchBatGrpLog(@Param(value = "pager") Pager pager, @Param(value = "log") BatGrpLog log);
+
 
 }

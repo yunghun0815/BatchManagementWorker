@@ -1,6 +1,6 @@
 package com.company.myapp.dto;
 
-import lombok.Data;
+import java.util.Date;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

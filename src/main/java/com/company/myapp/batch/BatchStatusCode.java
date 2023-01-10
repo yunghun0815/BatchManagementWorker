@@ -19,5 +19,16 @@ public enum BatchStatusCode {
 	RESTART("BSRS", "재실행");
 	
 	private final String code;
-	private final String message;
+	private final String title;
+	
+	public static String codeToTitle(String code) {
+		String title = null;
+		
+		for(BatchStatusCode type : BatchStatusCode.values()) {
+			if(type.getCode().equals(code)) {
+				title = type.getTitle();
+			}
+		}
+		return title;
+	}
 }
