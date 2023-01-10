@@ -52,9 +52,8 @@ public class BatchController {
 		
 		Set<String> set = new HashSet<>();
 		for(BatGrp test : batGrpList) {
-			set.add(test.getHostId()); 
+			set.add(test.getHostId());
 		}
-
 		JSONObject connect = hostService.connectHost(set);
 		
 		

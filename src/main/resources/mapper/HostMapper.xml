@@ -155,21 +155,23 @@
    </select>
    
    <select id="getHostCountBySearch" parameterType="Host" resultType="int">
-      SELECT count(*) 
+      SELECT 
+      	count(*) 
       FROM 
       	host
-      WHERE use_yn = 'Y' 
-      <if test="hostId != null and hostId != ''">
-      AND
-      	host_id like '%'||#{hostId}||'%'	
+      WHERE 
+      	use_yn = 'Y' 
+      <if test="hostId != null">
+      	AND
+      		host_id like '%'||#{hostId}||'%'	
       </if>   
-      <if test="hostIp != null and hostIp != ''">
-      AND
-      	host_ip like '%'||#{hostIp}||'%' 
+      <if test="hostIp != null">
+      	AND
+      		host_ip like '%'||#{hostIp}||'%' 
       </if>   
-      <if test="hostNm != null and hostNm != ''">
-      AND 
-      	host_nm like '%'||#{hostNm}||'%'
+      <if test="hostNm != null">
+      	AND 
+      		host_nm like '%'||#{hostNm}||'%'
       </if>       		    
    </select>
 </mapper>

@@ -31,7 +31,6 @@
 	.content-main .action-icon{
 		width: 30px;
 		height: 30px;
-		margin: 0 8px;
 	}
 	.content-main>div{
 		width: calc(100% / 5);
@@ -41,6 +40,7 @@
 	.content-main:hover {
 		cursor: pointer;
 		border: 2px solid #79c2cc;
+		box-shadow: 1px 4px 5px 3px #79c2cc36;
 	}
 	.content-main input{
 		line-height: normal;
@@ -55,4 +55,19 @@
 	}
 	.content-main>div:first-child{
 		font-weight: bold;
+	}
+	.action-icon-box{
+		display: inline-block;
+		border: 1.5px solid #acb9c7;
+	    width: 40px;
+	    height: 40px;
+	    vertical-align: middle;
+	    margin: 0 8px;
+	    border-radius: 6px;
+	}
+	.action-icon-box:hover{
+		border: 1.5px solid #79c2cc;
+	}
+	.action-icon{
+		vertical-align: super;
 	}

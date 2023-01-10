@@ -3,7 +3,7 @@
 <mapper namespace="com.company.myapp.dao.ILogDao">
 
 	<select id="getBatGrpLogCount" resultType="int">
-		SELECT count(*)	FROM bat_grp_log	
+		SELECT count(*)	FROM bat_grp_log WHERE bat_grp_rty_cnt = 0	
 	</select>
 	
 	<select id="getBatPrmLogCount" resultType="int">
@@ -91,7 +91,9 @@
 		FROM 
 			bat_prm_log
 		WHERE
-			bat_grp_log_id = #{batGrpLogId}		
+			bat_grp_log_id = #{batGrpLogId}	
+		AND
+			bat_grp_rty_cnt = #{batGrpRtyCnt}		
 	</select>
 	 
 	<select id="getBatGrpLogDetail" parameterType="map" resultType="BatGrpLog">
@@ -109,7 +111,23 @@
 		WHERE
 			bat_grp_log_id = #{batGrpLogId}
 		AND
-			bat_grp_rty_cnt = #{batGrpRtyCnt}		  
+			bat_grp_rty_cnt = #{batGrpRtyCnt}	
+	</select> 
+	  
+	<select id="getBatGrpLogDetailList" parameterType="String" resultType="BatGrpLog">
+		SELECT
+		    bat_grp_log_id as batGrpLogId,
+		    bat_grp_rty_cnt as batGrpRtyCnt,
+		    bat_grp_id as batGrpId,
+		    bat_grp_st_cd as batGrpStCd,
+		    bat_bgng_dt as batBgngDt,
+		    bat_end_dt as batEndDt,
+		    last_mdfr_nm as lastMdfrNm,
+		    last_mdfcn_dttm as lastMdfcnDttm
+		FROM
+			bat_grp_log
+		WHERE
+			bat_grp_log_id = #{batGrpLogId}
 	</select> 
 	  
 	<select id="getBatPrmLogDetail" parameterType="map" resultType="BatPrmLog">
@@ -265,5 +283,91 @@
 			bat_grp_rty_cnt = #{rty}		
 	</select>
 	
-
+	<select id="getBatGrpLogCountBySearch" parameterType="BatGrpLog" resultType="int">
+		SELECT 
+			count(*)
+		FROM
+			bat_grp_log
+		WHERE 
+			bat_grp_rty_cnt = 0
+		<if test="batGrpLogId != null">
+			AND
+				bat_grp_log_id like '%'||#{batGrpLogId}||'%'	
+		</if>		
+		<if test="batGrpId != null">
+			AND
+				bat_grp_id like '%'||#{batGrpId}||'%'	
+		</if>		
+		<if test="batGrpStCd != null">
+			AND
+				bat_grp_st_cd like '%'||#{batGrpStCd}||'%'	
+		</if>		
+ 		<if test="batBgngDtStart != '' and batBgngDtEnd == ''">
+			AND
+				to_char(bat_bgng_dt, 'yyyy-mm-dd hh24:mm') &gt;= #{batBgngDtStart}	
+		</if>		        	
+		<if test="batBgngDtStart == '' and batBgngDtEnd != ''">
+			AND
+				to_char(bat_bgng_dt, 'yyyy-mm-dd hh24:mm') &lt;= #{batBgngDtEnd}	
+		</if>		        	
+		<if test="batBgngDtStart != '' and batBgngDtEnd != ''">
+			AND
+				to_char(bat_bgng_dt, 'yyyy-mm-dd hh24:mm') between #{batBgngDtStart} and #{batBgngDtEnd}	
+		</if>
+	</select>
+	
+	<select id="searchBatGrpLog" parameterType="map" resultType="BatGrpLog">
+		SELECT 
+		    rnum,
+		    bat_grp_log_id as batGrpLogId,
+		    bat_grp_rty_cnt as batGrpRtyCnt,
+		    bat_grp_id as batGrpId,
+		    bat_grp_st_cd as batGrpStCd,
+		    bat_bgng_dt as batBgngDt,
+		    bat_end_dt as batEndDt,
+		    last_mdfr_nm as lastMdfrNm,
+		    last_mdfcn_dttm as lastMdfcnDttm
+		FROM (
+		    SELECT 
+		        ROWNUM as rnum, bat_grp_log_id, bat_grp_rty_cnt, bat_grp_id, 
+		        bat_grp_st_cd, bat_bgng_dt, bat_end_dt, last_mdfr_nm, last_mdfcn_dttm
+		    FROM (
+		        SELECT 
+		            bat_grp_log_id, bat_grp_rty_cnt, bat_grp_id, 
+		            bat_grp_st_cd, bat_bgng_dt, bat_end_dt, last_mdfr_nm, last_mdfcn_dttm
+		        FROM 
+		            bat_grp_log 
+		        WHERE
+		        	bat_grp_rty_cnt = 0
+				<if test="log.batGrpLogId != null">
+					AND
+						bat_grp_log_id like '%'||#{log.batGrpLogId}||'%'	
+				</if>		
+				<if test="log.batGrpId != null">
+					AND
+						bat_grp_id like '%'||#{log.batGrpId}||'%'	
+				</if>		
+				<if test="log.batGrpStCd != null">
+					AND
+						bat_grp_st_cd like '%'||#{log.batGrpStCd}||'%'	
+				</if>		
+				<if test="log.batBgngDtStart != '' and log.batBgngDtEnd != ''">
+					AND
+						to_char(bat_bgng_dt, 'yyyy-mm-dd hh24:mm') between #{log.batBgngDtStart} and #{log.batBgngDtEnd}	
+				</if>		        	
+				<if test="log.batBgngDtStart != '' and log.batBgngDtEnd == ''">
+					AND
+						to_char(bat_bgng_dt, 'yyyy-mm-dd hh24:mm') &gt;= #{log.batBgngDtStart}	
+				</if>		        	
+				<if test="log.batBgngDtStart == '' and log.batBgngDtEnd != ''">
+					AND
+						to_char(bat_bgng_dt, 'yyyy-mm-dd hh24:mm') &lt;= #{log.batBgngDtEnd}	
+				</if>		        	
+		        ORDER BY 
+		        	bat_grp_log_id DESC
+		    )
+		    WHERE rownum &lt;= #{pager.endRowNo}  
+		)
+		WHERE rnum &gt;= #{pager.startRowNo} 
+	</select>
 </mapper>

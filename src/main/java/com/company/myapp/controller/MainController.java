@@ -8,9 +8,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import com.company.myapp.batch.BatchServer;
 import com.company.myapp.batch.BatchStatusCode;
+import com.company.myapp.dto.BatGrp;
 import com.company.myapp.dto.BatGrpLog;
 import com.company.myapp.dto.BatPrm;
 import com.company.myapp.dto.BatPrmLog;
@@ -116,22 +119,16 @@ public class MainController {
 		return "drag";
 	}
 	
-	@GetMapping("/sample")
-	public String sample(Model model) {
-		model.addAttribute("menu", "sample");
-		return "header";
+	@GetMapping("/time")
+	public String sample(BatGrpLog log) {
+		System.out.println(log.getBatBgngDtStart());
+		System.out.println(log.getBatBgngDtEnd());
+		return "test";
 	}
 	
-	@GetMapping("/test77")
-	public String test77() {
-		Host host = new Host();
-		host.setHostNm("test");
-		host.setHostIp("1234");
-		host.setHostPt(1234);
-		for(int i=0; i<60; i++) {
-			hostService.insertHost(host);
-		}
-		
+	@PostMapping("/test77")
+	public String test77(@RequestBody BatGrp batGrp) {
+		System.out.println(batGrp.getPrmList().size());
 		
 		return "";
 	}

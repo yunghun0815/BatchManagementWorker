@@ -1,6 +1,6 @@
 package com.company.myapp.dto;
 
-import java.sql.Date;
+import java.util.Date;
 import java.util.List;
 
 import lombok.Getter;
@@ -24,4 +24,8 @@ public class BatGrpLog {
 	private Date lastMdfcnDttm;
 	
 	private List<BatPrmLog> prmLogList;
+	
+	//시간 검색용 컬럼
+	private String batBgngDtStart;
+	private String batBgngDtEnd;
 }

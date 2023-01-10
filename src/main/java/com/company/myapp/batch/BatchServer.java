@@ -19,6 +19,7 @@ import com.company.myapp.dto.BatPrmLog;
 import com.company.myapp.dto.Host;
 import com.company.myapp.dto.JsonDto;
 import com.company.myapp.service.ILogService;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.extern.slf4j.Slf4j;
@@ -131,15 +132,16 @@ public class BatchServer {
 					// Agent 서버에서 넘어온 결과 DTO에 저장
 					String data = dis.readUTF();
 					JSONObject json = new JSONObject(data);
+					JSONObject message = new JSONObject(json.get("message").toString());
 					if(json.get("cmd").equals("log")) {
 						ObjectMapper mapper = new ObjectMapper();
-						BatPrmLog batPrmLog = mapper.readValue(data, BatPrmLog.class);
-						log.info(batPrmLog.toString());
+						BatPrmLog batPrmLog = mapper.readValue(message.toString(), BatPrmLog.class);
+						
 						// 프로그램 로그 DB에 저장
 						logService.updateBatPrmLog(batPrmLog);
 						
 						// 마지막 순번일 경우 그룹 로그 업데이트
-						if(json.get("lastYn").equals("Y")) {
+						if(message.get("lastYn").equals("Y")) {
 							
 							// 받은 결과가 속한 그룹 로그 조회
 							BatGrpLog batGrpLog = logService.getBatGrpLogDetail(batPrmLog.getBatGrpLogId(), batPrmLog.getBatGrpRtyCnt());
@@ -211,7 +213,7 @@ public class BatchServer {
 							json.put("cmd", "healthCheck");
 							Socket socket = new Socket(host.getHostIp(), host.getHostPt());
 							
-							socket.setSoTimeout(500);
+							socket.setSoTimeout(1000);
 							DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
 							dos.writeUTF(json.toString());
 							dos.flush();
@@ -233,16 +235,18 @@ public class BatchServer {
 		}
 		
 		if(hostList.size() == connect.length()) {
-			return connect;
+			JSONObject result = connect;
+			connect = new JSONObject();
+			return result;
 		}else {
 			try {
-				Thread.sleep(500L);
+				Thread.sleep(1000L);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			// 호스트 체크 완료 안됐으면 재귀
-			log.info("[메소드 재실행]");
+			log.info("[메소드 재실행]" + connect.length());
 			return healthCheck(hostList, 1);
 		}
 		

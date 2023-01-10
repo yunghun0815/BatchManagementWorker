@@ -57,9 +57,7 @@ public class HostController {
 	/**
 	 * 호스트 검색 결과
 	 * @param pageNo 페이지 번호
-	 * @param keyword 검색 키워드
-	 * @param filtering 검색 카테고리
-	 * @param model
+	 * @param host
 	 * @return
 	 */
 	@GetMapping("/search")
@@ -80,18 +78,16 @@ public class HostController {
 		
 		model.addAttribute("menu","host");
 		
-		// view에 페이지 버튼 링크 
-		//String uri = request.getRequestURI();
+		// view 페이지 페이징 버튼 url 생성
 		StringBuilder sb = new StringBuilder();
 		
 		Enumeration<String> paramKeys = request.getParameterNames();
 		while(paramKeys.hasMoreElements()) {
 			String key = paramKeys.nextElement();
 			String value = request.getParameter(key);
-			
+			// 요청 파라미터 중 pageNo 제외 저장
 			if(!key.equals("pageNo"))sb.append("&" + key + "=" + value);
 		}
-		//String search = uri + sb.toString();
 		model.addAttribute("search", sb.toString());
 		
 		return "host/host";

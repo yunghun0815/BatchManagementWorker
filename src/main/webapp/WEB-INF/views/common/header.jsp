@@ -37,6 +37,14 @@ $(function(){
 	},function(){
 		$(this).prop("src", "/image/common/action/" + $(this).prop("id")+"_before.png");
 	});
+	
+	// 검색
+	$("#search").click(function(){
+		$("#search-box").show();
+	});
+	$("#search-action input[type='reset']").click(function(){
+		$("#search-box").hide();
+	});
 }); 
 </script>
 <body>
@@ -57,7 +65,7 @@ $(function(){
 					</a>
 				</li>		
 				<li>
-					<a class="icon-box" href="/log/group/list">
+					<a class="icon-box" href="/log">
 						<img id="log" class="menu-icon" src="/image/common/nav/log-gray.png">
 					</a>
 				</li>		
