@@ -74,8 +74,9 @@
 	font-size: 0.9em;
 }
 
-.group div {
+.group>div {
 	text-align: center;
+	overflow:hidden;
 }
 .group:hover {
 	cursor: pointer;
@@ -350,6 +351,8 @@
 <script type="text/javascript">
 //그룹 클릭하면 해당 프로그램 리스트 보여주는 함수
 function prmList(grp){
+	$(grp).parent().find(".group").removeClass("group-hover");
+	$(grp).addClass("group-hover");
 	const grpId = $(grp).find(".group-id span").text();
 	$.ajax({
 		url: "/batch/program?grpId=" + grpId,
@@ -473,7 +476,7 @@ function prmDelete(btn){
 											<div class="program-ord"><span>` + obj['excnOrd'] + `</span></div>
 										</li>`;
 							}
-							view += `<li class="ord-btn-wrap"><div class="ord-btn" onclick="possibleChangeOrd(this)"><span>순서 변경</span></div></li></ul>`;
+							view += `</ul><div class="ord-btn" onclick="possibleChangeOrd(this)"><span>순서 변경</span></div>`;
 						}
 						target.append(view);
 					},
@@ -967,6 +970,7 @@ function changeCron(btn){
 			</div>
 		</div>
 		<div class="sub-content" value="">
+			<div class="grpId" style="height: 28.8px"></div>
 			<span class="warning">그룹을 선택해주세요.</span>
 		</div>
 	</div>
