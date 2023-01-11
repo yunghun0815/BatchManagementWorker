@@ -126,7 +126,7 @@ public class BatchController {
 	/**
 	 * 스케줄링 일시중지 후 Job에서 그룹정보 삭제한 후, 해당 배치그룹 정보를 DB에서 삭제
 	 */
-	@GetMapping("/group/delete")
+	@PostMapping("/group/delete")
 	public String deleteBatGrp(@RequestParam(value="grpId")String batGrpId) {
 		//스케줄링 일시중지
 		jobService.pauseJob(batGrpId);

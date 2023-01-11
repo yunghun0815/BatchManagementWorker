@@ -405,55 +405,85 @@ function iconMouseLeave(obj){
 //삭제확인
 function grpDelete(grpId){
 	event.stopPropagation();
-	if(window.confirm('정말 삭제하시겠습니까?')){
-		alert(grpId + "그룹이 삭제되었습니다");
-		location.href='http://localhost:8080/batch/group/delete?grpId='  + grpId;
-	}
+	
+	swal({
+		  title: "정말로 삭제하시겠습니까?",
+		  text: "삭제시 복구가 불가능합니다.",
+		  icon: "warning",
+		  buttons: true,
+		  dangerMode: true,
+	})
+	.then((willDelete) => {
+ 		if (willDelete) {
+	     $.ajax({
+			url: "/batch/group/delete",
+			method: "post",
+			data: {
+				grpId: grpId
+			},
+			success: function(result){
+				console.log(result);
+			}
+		});
+		swal("", "삭제가 완료되었습니다.", "success").then(() => {
+			location.reload();
+		});
+	  }
+	}); 
 }
 function prmDelete(btn){
 	event.stopPropagation();
 	const prmId=$(btn).parent().siblings(".program-id").text();
 	const grpId=$(".grpId").text();
-	if(window.confirm('정말 삭제하시겠습니까?')){
-		$.ajax({
-			url : "/batch/program/delete?prmId=" + prmId + "&&grpId=" + grpId,
-			method : "POST",
-			success : function(result){
-				alert(prmId + "가 삭제되었습니다");
-				var target = $(".sub-content");
-				target.empty();
-				var view = `<div class="grpId">` + grpId + `<img src="/image/common/action/prmAdd.png" class="insert-prm-btn" onclick="getInsertInfo(this)" data-bs-toggle="modal" data-bs-target="#insert-batch-program"/></div>`;
-				if(result.length==0){
-					view += `<span class='warning'">프로그램이 없습니다.</span>`;
-				}else{
-					view += `<ul id="sortable">`;
-					for(var i=0;i<result.length;i++){
-						let obj = result[i];
-						view += `<li class="d-flex program">
-									<div class="program-id"><span>` + obj['batPrmId'] + `</span></div>
-									<div class="program-nm"><span>` + obj['batPrmNm'] + `</span></div>
-									<div class="program-path"><span>` + obj['path'] + `</span></div>
-									<div class="program-active">
-										<div onmouseenter="iconMouseOver(this)" onmouseleave="iconMouseLeave(this)"
-											onclick="" data-bs-toggle="modal" data-bs-target="#detail-batch-program">
-										<img src="/image/common/action/detail.png" class="menu-box" id="detail">
-									</div> 
-									<div onmouseenter="iconMouseOver(this)" onmouseleave="iconMouseLeave(this)"
-										onclick="prmDelete(this)">
-										<img src="/image/common/action/delete.png" class="menu-box" id="delete">
-									</div></div>
-									<div class="program-ord"><span>` + obj['excnOrd'] + `</span></div>
-								</li>`;
+	swal({
+		  title: "정말로 삭제하시겠습니까?",
+		  text: "삭제시 복구가 불가능합니다.",
+		  icon: "warning",
+		  buttons: true,
+		  dangerMode: true,
+		})
+		.then((willDelete) => {
+		  if (willDelete) {
+			  $.ajax({
+					url : "/batch/program/delete?prmId=" + prmId + "&&grpId=" + grpId,
+					method : "POST",
+					success : function(result){
+						var target = $(".sub-content");
+						target.empty();
+						var view = `<div class="grpId">` + grpId + `<img src="/image/common/action/prmAdd.png" class="insert-prm-btn" onclick="getInsertInfo(this)" data-bs-toggle="modal" data-bs-target="#insert-batch-program"/></div>`;
+						if(result.length==0){
+							view += `<span class='warning'">프로그램이 없습니다.</span>`;
+						}else{
+							view += `<ul id="sortable">`;
+							for(var i=0;i<result.length;i++){
+								let obj = result[i];
+								view += `<li class="d-flex program">
+											<div class="program-id"><span>` + obj['batPrmId'] + `</span></div>
+											<div class="program-nm"><span>` + obj['batPrmNm'] + `</span></div>
+											<div class="program-path"><span>` + obj['path'] + `</span></div>
+											<div class="program-active">
+												<div onmouseenter="iconMouseOver(this)" onmouseleave="iconMouseLeave(this)"
+													onclick="" data-bs-toggle="modal" data-bs-target="#detail-batch-program">
+												<img src="/image/common/action/detail.png" class="menu-box" id="detail">
+											</div> 
+											<div onmouseenter="iconMouseOver(this)" onmouseleave="iconMouseLeave(this)"
+												onclick="prmDelete(this)">
+												<img src="/image/common/action/delete.png" class="menu-box" id="delete">
+											</div></div>
+											<div class="program-ord"><span>` + obj['excnOrd'] + `</span></div>
+										</li>`;
+							}
+							view += `<li class="ord-btn-wrap"><div class="ord-btn" onclick="possibleChangeOrd(this)"><span>순서 변경</span></div></li></ul>`;
+						}
+						target.append(view);
+					},
+					error: function(request,status,error){
+						alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
 					}
-					view += `<li class="ord-btn-wrap"><div class="ord-btn" onclick="possibleChangeOrd(this)"><span>순서 변경</span></div></li></ul>`;
-				}
-				target.append(view);
-			},
-			error: function(request,status,error){
-				alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
-			}
+				}); 
+			swal("", "삭제가 완료되었습니다.", "success");
+		  }
 		}); 
-	}
 }  
 
 

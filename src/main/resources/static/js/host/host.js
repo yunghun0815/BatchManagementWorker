@@ -107,30 +107,7 @@ $(function(){
 	$(".host-delete").click(function(){
 		let hostId = $(this).parent().parent().find("input[type='hidden']").val();
 		
-		swal({
-		  title: "정말로 삭제하시겠습니까?",
-		  text: "삭제시 복구가 불가능합니다.",
-		  icon: "warning",
-		  buttons: true,
-		  dangerMode: true,
-		})
-		.then((willDelete) => {
-		  if (willDelete) {
-		     $.ajax({
-				url: "/host/delete",
-				method: "post",
-				data: {
-					hostId: hostId
-				},
-				success: function(result){
-					console.log(result);
-				}
-			});
-			swal("", "삭제가 완료되었습니다.", "success").then(() => {
-				location.reload();
-			});
-		  }
-		}); 
+		
 	});
 	
 
