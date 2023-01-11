@@ -73,7 +73,7 @@ function toggleProgram(e){
 						<div class="program-ord"><span>` + batPrmLog['excnOrd'] + `</span></div>
 						<div class="program-active">
 							<div data-bs-toggle="modal" data-bs-target="#detail-log-modal" onclick="programDetail(this)">
-								<img src="/image/detail.png" class="menu-box action-icon" id="detail">
+								<img src="/image/common/action/detail.png" class="menu-box action-icon" id="detail">
 							</div>
 						</div> 
 					</li>`;
@@ -141,7 +141,7 @@ function groupDetail(e){
 					<div class="program-ord"><span>` + batPrmLogList[i]['excnOrd'] + `</span></div>
 					<div class="program-active">
 						<div data-bs-toggle="modal" data-bs-target="#detail-log-modal" onclick="programDetail(this)">
-							<img src="/image/detail.png" class="menu-box action-icon" id="detail">
+							<img src="/image/common/action/detail.png" class="menu-box action-icon" id="detail">
 						</div>
 					</div> 
 				</li>`;

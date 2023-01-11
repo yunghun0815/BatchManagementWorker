@@ -183,7 +183,7 @@
 	height: 23px;
 }
 .program .program-active img:hover{
-	content: url("/image/detail_after.png");
+	content: url("/image/common/action/detail_after.png");
 }
 
 .program .program-active>div:hover{

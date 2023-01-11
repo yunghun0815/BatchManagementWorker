@@ -46,7 +46,8 @@ public class AgentJob implements Job{
 	@Override
 	   public void execute(JobExecutionContext context) throws JobExecutionException {
 	      // 잡 키로 그룹아이디 가져옴
-	      String batGrpId = context.getJobDetail().getKey().toString();
+	      String batGrpId = context.getJobDetail().getKey().getName();
+	      
 	      List<JsonDto> jsonArray = new ArrayList<>();
 	      // 그룹에 등록된 프로그램 조회 
 	      List<BatPrm> batPrmList = batchService.getBatPrmList(batGrpId);

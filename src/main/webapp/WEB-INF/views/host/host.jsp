@@ -65,11 +65,11 @@
 					</div>
 					<div>
 						<div class="action-icon-box">
-							<img src="/image/common/action/update_before.png" id="update" class="action-icon host-update">
-							<img src="/image/common/action/check_before.png" id="check" class="action-icon host-update-complete" style="display: none;">
+							<img src="/image/common/action/update.png" id="update" class="action-icon host-update">
+							<img src="/image/common/action/check.png" id="check" class="action-icon host-update-complete" style="display: none;">
 						</div>
 						<div class="action-icon-box">
-							<img src="/image/common/action/delete_before.png" id="delete" class="action-icon host-delete">
+							<img src="/image/common/action/delete.png" id="delete" class="action-icon host-delete">
 						</div>
  						<input type="hidden" name="hostId" value="${host.hostId}">
 					</div>

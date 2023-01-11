@@ -33,9 +33,9 @@ $(function(){
 	})
 	
 	$(".action-icon").hover(function(){
-		$(this).prop("src", "/image/common/action/" + $(this).prop("id")+".png");
+		$(this).prop("src", "/image/common/action/" + $(this).prop("id")+"_after.png");
 	},function(){
-		$(this).prop("src", "/image/common/action/" + $(this).prop("id")+"_before.png");
+		$(this).prop("src", "/image/common/action/" + $(this).prop("id")+".png");
 	});
 	
 	// 검색

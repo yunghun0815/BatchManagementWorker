@@ -249,7 +249,6 @@ public class BatchServer {
 							// echo
 							DataInputStream dis = new DataInputStream(socket.getInputStream());
 							String data = dis.readUTF();
-							log.info("[echo 값" + host.getHostId()+" ] : " + data);
 							
 							if(socket.isConnected()) {
 								connect.put(host.getHostId(), data);
@@ -257,10 +256,6 @@ public class BatchServer {
 								connect.put(host.getHostId(), "off");
 							}
 							
-							
-							
-							
-							log.info("종료");
 							dos.close();
 							dis.close();
 							socket.close();
