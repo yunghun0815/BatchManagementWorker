@@ -168,7 +168,7 @@ public class BatchController {
 	 */
 	@ResponseBody
 	@GetMapping("/program")
-	public List<BatPrm> getBatPrmList(String batGrpId){
+	public List<BatPrm> getBatPrmList(@RequestParam(value="grpId")String batGrpId){
 		List<BatPrm> batPrmList = batchService.getBatPrmList(batGrpId);
 		return batPrmList;
 	}
@@ -288,7 +288,6 @@ public class BatchController {
 		else{
 			log.info("Job 실행");
 			jobService.startJob(batGrpId);
-			
 		}
 	}
 

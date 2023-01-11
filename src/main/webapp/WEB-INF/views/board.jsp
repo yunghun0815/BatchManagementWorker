@@ -163,10 +163,10 @@
 }
 
 .sub-content ul{
-	height:640px;
+	height: 524px;
 	overflow: auto;
 	padding: 1px;
-    margin: 17px auto;
+    margin : 0px;
 	-ms-overflow-style: none;
 }
 
@@ -240,7 +240,7 @@
 	height: 23px;
 }
 .sub-content .warning{
-	line-height:650px;
+	line-height: 494px;
 	font-size: 2.5em;
 	color:white;
 	vertical-align:middle;
@@ -249,13 +249,14 @@
 }
 
 .sub-content .grpId{
-	backgroud-color:none;
-	font-size:1.2em;
-	font-weight: bold;
-	color : white;
-	text-align: center;
+	margin: 17px;
+	font-size: 1.2em;
+    color: white;
+    text-align: center;
+    font-weight: bold;
+    position: relative;
 }
-.ord-btn-wrap{
+/* .ord-btn-wrap{
 	background-color: white;
     width: 90%;
     margin: 10px auto;
@@ -275,23 +276,32 @@
     font-size: 1.8em;
     font-weight: bold;
     cursor: pointer;
-}
+} */
 .ord-btn{
+    width: 90%;
+    padding: 0px;
+    line-height: 48px;
+    margin: auto;
+    text-align: center;
+    background-color: #79c2cc;
+    color: white;
+    font-size: 1.8em;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 15px;
+    border-radius: 10px;
 }
 .change-ord{
 	cursor:move;
 }
-.insert-prm-btn{
-	color:white;
-	border: 1.5px solid white;
-	border-radius:50%;
-	font-size:1.2em;
-	width:30px;
-	height:30px;
-	line-height:26px;
-	margin-left:25px;
-	text-align:center;
+.sub-content .insert-prm-btn{
+	width: 25px;
+    position: absolute;
+    left: 343px; 
+    bottom: -2px;
+    cursor: pointer;
 }
+
 /* 토글 */
 .toggleSwitch {
 	width: 47px;
@@ -347,11 +357,11 @@ function prmList(grp){
 		success: function(result){
 			var target = $(".sub-content");
 			target.empty();
-			var view = ``;
+			var view = `<div class="grpId">` + grpId + `<img src="/image/common/action/prmAdd.png" class="insert-prm-btn" onclick="getInsertInfo(this)" data-bs-toggle="modal" data-bs-target="#insert-batch-program"/></div>`;
 			if(result.length==0){
-				view = `<div class="grpId">` + grpId + `</div><div onclick="getInsertInfo(this)" data-bs-toggle="modal" data-bs-target="#insert-batch-program" class="insert-prm-btn">+</div><span class='warning'">프로그램이 없습니다.</span>`;
+				view += `<span class='warning'">프로그램이 없습니다.</span>`;
 			}else{
-				view = `<div class="grpId">` + grpId + `</div><div onclick="getInsertInfo(this)" data-bs-toggle="modal" data-bs-target="#insert-batch-program" class="insert-prm-btn">+</div><ul id="sortable">`;
+				view += `<ul id="sortable">`;
 				for(var i=0;i<result.length;i++){
 					let obj = result[i];
 					view += `<li class="d-flex program">
@@ -370,7 +380,7 @@ function prmList(grp){
 								<div class="program-ord"><span>` + obj['excnOrd'] + `</span></div>
 							</li>`;
 				}
-				view += `<li class="ord-btn-wrap"><div class="ord-btn" onclick="possibleChangeOrd(this)"><span>순서 변경</span></div></li></ul>`;
+				view += `</ul><div class="ord-btn" onclick="possibleChangeOrd(this)"><span>순서 변경</span></div>`;
 			}
 			target.append(view);
 		},
@@ -412,11 +422,11 @@ function prmDelete(btn){
 				alert(prmId + "가 삭제되었습니다");
 				var target = $(".sub-content");
 				target.empty();
-				var view = ``;
+				var view = `<div class="grpId">` + grpId + `<img src="/image/common/action/prmAdd.png" class="insert-prm-btn" onclick="getInsertInfo(this)" data-bs-toggle="modal" data-bs-target="#insert-batch-program"/></div>`;
 				if(result.length==0){
-					view = `<div class="grpId">` + grpId + `</div><div onclick="getInsertInfo(this)" data-bs-toggle="modal" data-bs-target="#insert-batch-program" class="insert-prm-btn">+</div><span class='warning'">프로그램이 없습니다.</span>`;
+					view += `<span class='warning'">프로그램이 없습니다.</span>`;
 				}else{
-					view = `<div class="grpId">` + grpId + `</div><div onclick="getInsertInfo(this)" data-bs-toggle="modal" data-bs-target="#insert-batch-program" class="insert-prm-btn">+</div><ul id="sortable">`;
+					view += `<ul id="sortable">`;
 					for(var i=0;i<result.length;i++){
 						let obj = result[i];
 						view += `<li class="d-flex program">
@@ -666,8 +676,9 @@ function programDetail(table){
 //프로그램 순서 변경 버튼 눌렀을 때(순서 변경 가능한 상태)
 function possibleChangeOrd(btn){
 	$(".program").toggleClass('change-ord');
-	$(".ord-btn-wrap").empty();
-	$(".ord-btn-wrap").append(`<div class="ord-btn" onclick="saveChangedOrd(this)"><span>저장하기</span></div>`);
+	$(".ord-btn").attr("onclick", "saveChangedOrd(this)");
+	$(".ord-btn").text("저장하기");
+	/* $(".ord-btn-wrap").append(`<div class="ord-btn" onclick="saveChangedOrd(this)"><span>저장하기</span></div>`); */
 	$( "#sortable" ).sortable( {
     	stop: function(e){
     		const li = $(".program");
@@ -682,8 +693,8 @@ function possibleChangeOrd(btn){
 //프로그램 순서 저장 버튼 눌렀을 때(순서 변경 저장)
 function saveChangedOrd(btn){
 	
-	const grpId = $("#sortable .grpId").text();
-	
+	const grpId = $(".grpId").text();
+	console.log(grpId);
 	var prmList = [];
 	var prmCnt = $(".program").length;
 
@@ -711,11 +722,11 @@ function saveChangedOrd(btn){
 		success: function(result){
 			var target = $(".sub-content");
 			target.empty();
-			var view = ``;
+			var view = `<div class="grpId">` + grpId + `<img src="/image/common/action/prmAdd.png" class="insert-prm-btn" onclick="getInsertInfo(this)" data-bs-toggle="modal" data-bs-target="#insert-batch-program"/></div>`;
 			if(result.length==0){
-				view = `<div class="grpId">` + grpId + `</div><div onclick="getInsertInfo(this)" data-bs-toggle="modal" data-bs-target="#insert-batch-program" class="insert-prm-btn">+</div><span class='warning'">프로그램이 없습니다.</span>`;
+				view += `<span class='warning'">프로그램이 없습니다.</span>`;
 			}else{
-				view = `<div class="grpId">` + grpId + `</div><div onclick="getInsertInfo(this)" data-bs-toggle="modal" data-bs-target="#insert-batch-program" class="insert-prm-btn">+</div><ul id="sortable">`;
+				view += `<ul id="sortable">`;
 				for(var i=0;i<result.length;i++){
 					let obj = result[i];
 					view += `<li class="d-flex program">
@@ -734,7 +745,7 @@ function saveChangedOrd(btn){
 								<div class="program-ord"><span>` + obj['excnOrd'] + `</span></div>
 							</li>`;
 				}
-				view += `<li class="ord-btn-wrap"><div class="ord-btn" onclick="possibleChangeOrd(this)"><span>순서 변경</span></div></li></ul>`;
+				view += `</ul><div class="ord-btn" onclick="possibleChangeOrd(this)"><span>순서 변경</span></div>`;
 			}
 			target.append(view);
 		}
