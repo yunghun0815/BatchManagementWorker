@@ -187,7 +187,12 @@ public class BatchController {
 		return batchService.getBatPrmList(grpId);
 	}
 	
-	@ResponseBody
+	/*
+	 * @ResponseBody
+	 * 
+	 * @PostMapping("/program/insert") public String insertBatPrm(BatPrm vo) {
+	 * batchService.insertBatPrm(vo); return "redirect:/batch"; }
+	 */
 	@PostMapping("/program/insert")
 	public String insertBatPrm(BatPrm vo) {
 		batchService.insertBatPrm(vo);

@@ -40,7 +40,7 @@
 				</table>
 			</div>
 			<div class="modal-footer">
-				<button type="submit" class="btn btn-primary" onclick="programModify(this)">저장</button>
+				<button type="submit" class="btn btn-primary">저장</button>
 				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
 			</div>
 		</div></form>

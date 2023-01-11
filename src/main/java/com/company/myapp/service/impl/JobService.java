@@ -127,8 +127,10 @@ public class JobService implements IJobService {
 		JobKey key = JobKey.jobKey(grpId);
 		log.info("1. 그룹Id: " + key.getGroup());
 		log.info("2. 이름: " + key.getName());
+		
 		try{
 			scheduler.pauseJob(key);
+			removeJob(grpId);
 			log.info(key + "를 정지");
 		}catch(SchedulerException e) {
 			log.error(e.getMessage());

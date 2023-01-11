@@ -234,8 +234,7 @@
   </update>
   
   <select id="getLastExcnOrd" parameterType="String" resultType="int">
-  	SELECT DISTINCT LAST_VALUE(excn_ord) 
-  	OVER (PARTITION BY bat_grp_id ORDER BY bat_grp_id) 
+  	SELECT count(*) 
   	FROM bat_prm 
 	WHERE use_yn = 'Y' AND bat_grp_id = #{grpId}
   </select>
