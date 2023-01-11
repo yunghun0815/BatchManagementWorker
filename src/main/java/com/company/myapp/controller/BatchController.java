@@ -102,20 +102,9 @@ public class BatchController {
 		return batGrp;
 	}
 	
-<<<<<<< HEAD
-	@ResponseBody
-	@GetMapping("/path")
-	public List<String> getPathListByGrpId(@RequestParam(value="grpId")String grpId){
-		Host vo = hostService.getHostByBatGrpId(grpId);
-		List<String> pathList = batchServer.getPath(vo);
-		return pathList;
-	}
-	
-=======
 	/**
 	 * 배치그룹 등록
 	 */
->>>>>>> branch 'master' of https://github.com/yunghun0815/BatchManagementWorker.git
 	@PostMapping("/group/insert")
 	public String insertBatGrp(BatGrp vo) {
 		batchService.insertBatGrp(vo);
@@ -180,13 +169,8 @@ public class BatchController {
 	 */
 	@ResponseBody
 	@GetMapping("/program")
-<<<<<<< HEAD
-	public List<BatPrm> getBatPrmList(String grpId){
-		List<BatPrm> batPrmList = batchService.getBatPrmList(grpId);
-=======
-	public List<BatPrm> getBatPrmList(String batGrpId){
+	public List<BatPrm> getBatPrmList(@RequestParam(value="grpId")String batGrpId){
 		List<BatPrm> batPrmList = batchService.getBatPrmList(batGrpId);
->>>>>>> branch 'master' of https://github.com/yunghun0815/BatchManagementWorker.git
 		return batPrmList;
 	}
 	
@@ -296,29 +280,15 @@ public class BatchController {
 	 * 배치그룹별 Job 실행 체크후 실행 및 중단
 	 */
 	@ResponseBody
-	@PostMapping("/Job/{grpId}")
-<<<<<<< HEAD
-	public void schedule(boolean execute, @PathVariable String grpId) {
-		//boolean check = jobService.checkJob(grpId);
-=======
+	@PostMapping("/Job/{batGrpId}")
 	public void schedule(boolean execute, @PathVariable String batGrpId) {
->>>>>>> branch 'master' of https://github.com/yunghun0815/BatchManagementWorker.git
 		if (execute) {
-<<<<<<< HEAD
-			jobService.pauseJob(grpId);
-=======
 			log.info("Job 중지");
 			jobService.pauseJob(batGrpId);
->>>>>>> branch 'master' of https://github.com/yunghun0815/BatchManagementWorker.git
 		}
 		else{
-<<<<<<< HEAD
-			jobService.startJob(grpId);
-=======
 			log.info("Job 실행");
 			jobService.startJob(batGrpId);
->>>>>>> branch 'master' of https://github.com/yunghun0815/BatchManagementWorker.git
-			
 		}
 	}
 
