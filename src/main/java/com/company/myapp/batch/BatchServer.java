@@ -3,9 +3,11 @@ package com.company.myapp.batch;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -19,7 +21,6 @@ import com.company.myapp.dto.BatPrmLog;
 import com.company.myapp.dto.Host;
 import com.company.myapp.dto.JsonDto;
 import com.company.myapp.service.ILogService;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.extern.slf4j.Slf4j;
@@ -56,21 +57,20 @@ public class BatchServer {
 		serverSocket = new ServerSocket(50000);
 		// 작업 스레드 생성
 		threadPool.execute(new Runnable() {
-			/**
-			 * 이부분 수정해야함 트라이캐치가 와일문 밖으로
-			 */
+			
 			@Override
 			public void run() {
 				// 서버소켓이 열려있으면 실행
-				while(true) {
+				if(!serverSocket.isClosed()) {
 					try {
 						// 연결 수락 및 메세지 처리 메소드 호출
-						if(!serverSocket.isClosed()) {
+						while(true) {
 							Socket socket = serverSocket.accept();
 							receiveMessage(socket);
 						}
-					} catch (IOException e) {
-						e.printStackTrace();
+					}
+					catch (Exception e) {
+						log.info("[응답 에러]" + e.getMessage());
 					}
 				}
 			}
@@ -93,6 +93,10 @@ public class BatchServer {
 	 * @param json 넘길 json 형식 객체 
 	 */
 	public void sendMessage(Host host, List<JsonDto> jsonArray) {
+		// 연결 실패시 로그 실패 처리
+		BatGrpLog failGrpLog = new BatGrpLog();
+		failGrpLog.setBatBgngDt(new Date());
+		
 		try {
 			// 소켓 생성 및 Agent 서버 연결 요청
 			Socket socket = new Socket(host.getHostIp(), host.getHostPt());
@@ -113,8 +117,24 @@ public class BatchServer {
 			
 			
 		}catch(Exception e) {
-			e.printStackTrace();
+			// Agent 서버로 연결 실패시 로그 실행중 -> 실패로 업데이트
+			log.info("[전송 실패] Agent서버로 메시지 전송에 실패하였습니다.");
+			for(JsonDto json : jsonArray) {
+				BatPrmLog batPrmLog = new BatPrmLog();
+				batPrmLog.setBatPrmStCd(BatchStatusCode.FAIL.getCode());
+				batPrmLog.setRsltMsg("연결 실패");
+				batPrmLog.setBatGrpLogId(json.getBatGrpLogId());
+				batPrmLog.setBatGrpRtyCnt(json.getBatGrpRtyCnt());
+				batPrmLog.setBatPrmId(json.getBatPrmId());
+				logService.updateBatPrmLog(batPrmLog);
+			}
+			failGrpLog.setBatGrpStCd(BatchStatusCode.FAIL.getCode());
+			failGrpLog.setBatEndDt(new Date());
+			failGrpLog.setBatGrpLogId(jsonArray.get(0).getBatGrpLogId());
+			failGrpLog.setBatGrpRtyCnt(jsonArray.get(0).getBatGrpRtyCnt());
+			logService.updateBatGrpLog(failGrpLog);
 		}
+		
 	}
 	
 	/**
@@ -177,26 +197,31 @@ public class BatchServer {
 		List<String> pathList = new ArrayList<>();
 		try {
 			Socket socket = new Socket(host.getHostIp(), host.getHostPt());
+			
+			// Agent서버로 경로 요청
 			DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
-			dos.writeUTF(json.toString());
+			dos.writeUTF(json.toString());  
 			dos.flush();
 			
 			DataInputStream dis = new DataInputStream(socket.getInputStream());
 			String data = dis.readUTF();
 			ObjectMapper mapper = new ObjectMapper();
-			pathList = mapper.readValue(data, List.class);
+			pathList = mapper.readValue(data, List.class); // 경로 저장
 			dos.close();
 			dis.close();
 			socket.close();
 		} catch (Exception e) {
-			e.printStackTrace();
+			// Agent서버 연결 실패시 경로에 '연결 실패' 추가
+			log.info("[연결 실패] Agent서버 연결에 실패해 경로를 받아올 수 없습니다.");
+			pathList.add("연결 실패");
 		} 
 		
 		return pathList;
 	}
 	
 	/**
-	 * Agent 서버 상태 체크
+	 * 호스트의 수만큼 쓰레드를 생성해 Agent 서버의 상태 체크 
+	 * 1초마다 메소드를 재귀시켜 완료 여부를 확인 
 	 * @param host 연결 정보
 	 * @return
 	 */
@@ -211,17 +236,31 @@ public class BatchServer {
 						try {
 							JSONObject json = new JSONObject();
 							json.put("cmd", "healthCheck");
-							Socket socket = new Socket(host.getHostIp(), host.getHostPt());
 							
-							socket.setSoTimeout(1000);
+							Socket socket = new Socket();
+							socket.connect(new InetSocketAddress(host.getHostIp(), host.getHostPt()), 2000); // 2초후 소멸
+							log.info("[연결 시도] : " + host.getHostIp() + ":" + host.getHostPt()+"("+ host.getHostId() +")");
+							
+							// healthCheck 요청
 							DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
 							dos.writeUTF(json.toString());
 							dos.flush();
 							
+							// echo
 							DataInputStream dis = new DataInputStream(socket.getInputStream());
 							String data = dis.readUTF();
-							connect.put(host.getHostId(), data);
+							log.info("[echo 값" + host.getHostId()+" ] : " + data);
 							
+							if(socket.isConnected()) {
+								connect.put(host.getHostId(), data);
+							}else {
+								connect.put(host.getHostId(), "off");
+							}
+							
+							
+							
+							
+							log.info("종료");
 							dos.close();
 							dis.close();
 							socket.close();
@@ -242,12 +281,12 @@ public class BatchServer {
 			try {
 				Thread.sleep(1000L);
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			// 호스트 체크 완료 안됐으면 재귀
-			log.info("[메소드 재실행]" + connect.length());
-			return healthCheck(hostList, 1);
+			// 작업이 완료 안됐으면 재귀시킴
+			log.info("[메소드 재실행]" + connect.toString());
+			count ++;
+			return healthCheck(hostList, count);
 		}
 		
 	}

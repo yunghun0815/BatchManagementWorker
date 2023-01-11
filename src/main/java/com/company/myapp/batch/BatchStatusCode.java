@@ -21,6 +21,12 @@ public enum BatchStatusCode {
 	private final String code;
 	private final String title;
 	
+	/**
+	 * 코드를 타이틀로 변경
+	 * ex) 'BSSC' -> '성공'
+	 * @param code 상태코드
+	 * @return
+	 */
 	public static String codeToTitle(String code) {
 		String title = null;
 		

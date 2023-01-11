@@ -15,13 +15,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.company.myapp.dto.BatGrp;
-import com.company.myapp.dto.BatGrpLog;
 import com.company.myapp.dto.BatPrm;
 import com.company.myapp.dto.Pager;
 import com.company.myapp.service.IBatchService;
 import com.company.myapp.service.IHostService;
 import com.company.myapp.service.IJobService;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Controller
 @RequestMapping("/batch")
 public class BatchController {
@@ -55,7 +57,6 @@ public class BatchController {
 			set.add(test.getHostId());
 		}
 		JSONObject connect = hostService.connectHost(set);
-		
 		
 		for(BatGrp vo: batGrpList) {
 			vo.setConn(connect.getString(vo.getHostId()));
@@ -202,16 +203,32 @@ public class BatchController {
 	public void shutdownSchedule() {
 		jobService.shutdownSchedule();
 	}
+	
 	/**
-	 * 재실행
-	 * return : 재실행 그룹vo(include 프로그램vo List)
-	 * @param batGrpLogId
-	 * @param vo : 재실행할 프로그램List를 담은 그룹vo
+	 * 그룹내 모든 프로그램 재실행
+	 * @param batGrpLogId 그룹 로그 아이디
+	 * @return
 	 */
 	@ResponseBody
-	@GetMapping("/retry")
-	public List<BatGrpLog> retryJob(String batGrpLogId, BatGrp vo) {
-		return jobService.retryJob(batGrpLogId, vo);
+	@PostMapping("/retry/all")
+	public String retryAll(String batGrpLogId) {
+		// 마지막 차수 조회
+		String cmd = "all";
+		log.info("전부 재실행");
+		return jobService.retryJob(batGrpLogId, cmd);
+	}
+	
+	/**
+	 * 그룹내 실패한 프로그램 재실행
+	 * @param batGrpLogId 그룹 로그 아이디
+	 * @return
+	 */	
+	@ResponseBody
+	@PostMapping("/retry/fail")
+	public String retryFail(String batGrpLogId) {
+		String cmd = "fail";
+		log.info("실패한것만 재실행");
+		return jobService.retryJob(batGrpLogId, cmd);
 	}
 	
 //	@ResponseBody

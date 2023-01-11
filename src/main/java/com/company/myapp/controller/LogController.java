@@ -1,11 +1,12 @@
 package com.company.myapp.controller;
 
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -91,44 +92,51 @@ public class LogController {
 		model.addAttribute("search", sb.toString());	
 		return "log/log";
 	}
-	
-	/*	@ResponseBody
-		@GetMapping("/program/list")
-		public String getBatPrmLogList(@RequestParam(defaultValue = "1") int pageNo, Model model) {
-	
-			int batPrmLogSize = logService.getBatPrmLogCount();
-			
-			Pager pager = new Pager(10, 5, batPrmLogSize, pageNo);
-			
-			List<BatPrmLog> batPrmLogList = logService.getBatPrmLogList(pager);
-			
-			model.addAttribute("batPrmLogList", batPrmLogList);
-			model.addAttribute("menu", "log");
-			return "log/program";
-		}*/
+
 	
 	@ResponseBody
-	@GetMapping("/program/list") 
-	public JSONObject getBatGrpLogDetail(String batGrpLogId) {
+	@GetMapping("/group/detail") 
+	public Map<String, Object> getBatGrpLogDetail(String batGrpLogId) {
 		
-		List<BatGrpLog> batGrpLog = logService.getBatGrpLogDetailList(batGrpLogId);  // 로그ID에 대한 전체 그룹 리스트
+		List<BatGrpLog> batGrpLogList = logService.getBatGrpLogDetailList(batGrpLogId);  // 로그ID에 대한 전체 그룹 리스트
 		
-		List<BatPrmLog> batPrmLogList = logService.getBatPrmLogListByBatGrpLogId(batGrpLogId, 0); // 첫 번째 프로그램 로그 리스트
+		List<BatPrmLog> batPrmLogList = logService.getBatPrmLogListByGrpLog(batGrpLogId, 0); // 첫 번째 프로그램 로그 리스트
 		
+		for(BatGrpLog list : batGrpLogList) {
+			list.setBatGrpStCd(BatchStatusCode.codeToTitle(list.getBatGrpStCd()));
+		}
 		
+		for(BatPrmLog list : batPrmLogList) {
+			list.setBatPrmStCd(BatchStatusCode.codeToTitle(list.getBatPrmStCd()));
+		}
 		
-		JSONObject jsonObj = new JSONObject();
-		jsonObj.put("batGrpLog", batGrpLog);
+		Map<String, Object> jsonObj = new HashMap<>();
+		jsonObj.put("batGrpLog", batGrpLogList);
 		jsonObj.put("batPrmLogList", batPrmLogList);
 		
 		return jsonObj;
 	}
 	
 	@ResponseBody
+	@GetMapping("/group/detail/retry")
+	public List<BatPrmLog> getBatPrmLogListByGrpLog(String batGrpLogId, int batGrpRtyCnt) {
+		
+		List<BatPrmLog> batPrmLog = logService.getBatPrmLogListByGrpLog(batGrpLogId, batGrpRtyCnt);
+		
+		for(BatPrmLog list : batPrmLog) {
+			list.setBatPrmStCd(BatchStatusCode.codeToTitle(list.getBatPrmStCd()));
+		}
+		
+		return batPrmLog;
+	}
+	
+	@ResponseBody
 	@GetMapping("/program/detail")
 	public BatPrmLog getBatPrmLogDetail(String batGrpLogId, int batGrpRtyCnt, String batPrmId) {
-		
+	
 		BatPrmLog batPrmLog = logService.getBatPrmLogDetail(batGrpLogId, batGrpRtyCnt, batPrmId);
+		
+		batPrmLog.setBatPrmStCd(BatchStatusCode.codeToTitle(batPrmLog.getBatPrmStCd()));
 		
 		return batPrmLog;
 	}

@@ -10,7 +10,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.company.myapp.batch.AgentJob;
 import com.company.myapp.batch.BatchServer;
 import com.company.myapp.batch.BatchStatusCode;
 import com.company.myapp.dto.BatGrp;
@@ -60,7 +62,8 @@ public class MainController {
 	}
 	
 	@GetMapping("/test2")
-	public String serverTest2() {
+	public String serverTest2(int no) {
+		no=0;
 		// 잡 키로 그룹아이디 가져옴
 		String batGrpId = "BGR00000002";
 		// 잡 키로 그룹아이디 가져옴
@@ -70,7 +73,7 @@ public class MainController {
 		
 		// 그룹 로그 저장
 		BatGrpLog batGrpLog = new BatGrpLog();
-		batGrpLog.setBatGrpRtyCnt(0);
+		batGrpLog.setBatGrpRtyCnt(no);
 		batGrpLog.setBatGrpId(batGrpId); 
 		batGrpLog.setBatGrpStCd(BatchStatusCode.RUNNING.getCode());
 		logService.insertBatGrpLog(batGrpLog); // 저장 쿼리 실행될 때 PK를 selectKey로 DTO에 SET 시킴
@@ -84,7 +87,7 @@ public class MainController {
 			// 프로그램 로그 저장
 			BatPrmLog batPrmLog = new BatPrmLog();
 			batPrmLog.setBatGrpLogId(batGrpLog.getBatGrpLogId());
-			batPrmLog.setBatGrpRtyCnt(0);
+			batPrmLog.setBatGrpRtyCnt(no);
 			batPrmLog.setBatPrmId(batPrm.getBatPrmId());
 			batPrmLog.setParam(batPrm.getParam());
 			batPrmLog.setBatPrmStCd(statusCode);
@@ -96,7 +99,7 @@ public class MainController {
 			jsonObject.setParam(batPrm.getParam());
 			jsonObject.setBatGrpLogId(batGrpLog.getBatGrpLogId());
 			jsonObject.setBatPrmId(batPrm.getBatPrmId());
-			jsonObject.setBatGrpRtyCnt(0);
+			jsonObject.setBatGrpRtyCnt(no);
 			jsonObject.setExcnOrd(batPrm.getExcnOrd());
 			
 			// JSONArray에 Object 추가
@@ -113,6 +116,28 @@ public class MainController {
 		return "";
 		
 }
+	
+	/**
+	 * 재실행테스트
+	 * @param no
+	 * @return
+	 */
+	@Autowired
+	AgentJob job;
+	
+	@GetMapping("/test3")
+	public String serverTest1234(int no) {
+		String batGrpId = "BGR00000002";
+		BatGrp vo = new BatGrp();
+		
+		vo.setBatGrpId(batGrpId);
+		List<BatPrm> batPrmList = batchService.getBatPrmList(batGrpId);
+		vo.setPrmList(batPrmList);
+		job.rtyExecute("BGL00000063", vo, no);
+		
+		return "";
+	}
+	
 	
 	@GetMapping("/drag")
 	public String dragAndDrop() {
@@ -131,5 +156,12 @@ public class MainController {
 		System.out.println(batGrp.getPrmList().size());
 		
 		return "";
+	}
+	
+	@ResponseBody
+	@GetMapping("/swal")
+	public String test() {
+		
+		return "swal?!";
 	}
 }

@@ -13,6 +13,11 @@ import com.company.myapp.service.IJobService;
 
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * 웹 애플리케이션 시작, 종료시점 메소드 실행
+ * @author 정영훈
+ *
+ */
 @Slf4j
 @Component
 public class AppListener implements ServletContextListener{
@@ -26,8 +31,8 @@ public class AppListener implements ServletContextListener{
 	public void contextInitialized(ServletContextEvent sce) {
 		try {
 			log.info("웹 애플리케이션 실행");
-			batchServer.start();
-			jobService.startSchedule();
+			batchServer.start();		// 소켓, 스레드풀 생성
+			jobService.startSchedule();	// 자동실행 'Y' 인 배치 그룹 Job에 등록
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -37,7 +42,8 @@ public class AppListener implements ServletContextListener{
 	public void contextDestroyed(ServletContextEvent sce) {
 		try {
 			log.info("웹 애플리케이션 종료");
-			batchServer.shutDown();
+			batchServer.shutDown();			// 소켓, 스레드풀 닫음
+			jobService.shutdownSchedule(); 	// 등록 된 Job clear
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

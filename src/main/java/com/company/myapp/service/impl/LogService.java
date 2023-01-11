@@ -1,6 +1,5 @@
 package com.company.myapp.service.impl;
 
-import java.sql.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,18 +38,12 @@ public class LogService implements ILogService {
 		}
 
 		@Override
-		public List<BatPrmLog> getBatPrmLogListByBatGrpLogId(String batGrpLogId, int batGrpRtyCnt) {
-			return logDao.getBatPrmLogListByBatGrpLogId(batGrpLogId, batGrpRtyCnt);
-		}
-
-		@Override
 		public BatGrpLog getBatGrpLogDetail(String batGrpLogId, int batGrpRtyCnt) {
 			return logDao.getBatGrpLogDetail(batGrpLogId, batGrpRtyCnt);
 		}
 		
 		@Override
 		public List<BatGrpLog> getBatGrpLogDetailList(String batGrpLogId) {
-			// TODO Auto-generated method stub
 			return logDao.getBatGrpLogDetailList(batGrpLogId);
 		}
 		
@@ -85,8 +78,8 @@ public class LogService implements ILogService {
 		}
 		
 		@Override
-		public void insertRtyBatGrpLog(BatGrpLog rtyBatGrpLog) {
-			logDao.insertRtyBatGrpLog(rtyBatGrpLog);
+		public void insertRtyBatGrpLog(BatGrpLog batGrpLog) {
+			logDao.insertRtyBatGrpLog(batGrpLog);
 			
 		}
 
@@ -99,5 +92,11 @@ public class LogService implements ILogService {
 		public List<BatGrpLog> searchBatGrpLog(Pager pager, BatGrpLog log) {
 			return logDao.searchBatGrpLog(pager, log);
 		}
+
+		@Override
+		public List<BatPrmLog> getBatPrmLogListByGrpLog(String batGrpLogId, int batGrpRtyCnt) {
+			return logDao.getBatPrmLogListByGrpLog(batGrpLogId, batGrpRtyCnt);
+		}
+
 
 }

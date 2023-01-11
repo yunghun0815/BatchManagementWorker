@@ -1,5 +1,6 @@
 package com.company.myapp.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.quartz.CronScheduleBuilder;
@@ -40,7 +41,8 @@ public class JobService implements IJobService {
 	IBatchDao batchDao;
 	@Autowired
 	ILogDao logDao;
-	
+	@Autowired
+	AgentJob agentJob;
 	@Override
 	public boolean checkJob(String grpId) {
 		try {
@@ -242,5 +244,24 @@ public class JobService implements IJobService {
 			rtyVo.setPrmLogList(batPrmLogList);
 		}
 		return rtyBatGrpLogList;
+	}
+	
+	// new 
+	@Override
+	public String retryJob(String batGrpLogId, String cmd) {
+		BatGrp vo = batchDao.getBatGrpByGrpLogId(batGrpLogId);
+		List<BatPrm> list = new ArrayList<>();
+		String result = "성공";
+		//현재 재실행 회차 세팅
+		int rtyCnt = logDao.getRtyCnt(batGrpLogId);
+		
+		if(cmd.equals("all")) {		// 전체 재실행 -> 그룹 + 프로그램 전체
+			list = batchDao.getBatPrmListByLogId(batGrpLogId);
+		}else if(cmd.equals("fail")) {		// 실패한것만 재실행 -> 그룹 + 실패한 프로그램
+			list = batchDao.getBatPrmListByFailLogId(batGrpLogId);
+		}
+		vo.setPrmList(list);
+		agentJob.rtyExecute(batGrpLogId, vo, rtyCnt);
+		return result;
 	}
 }

@@ -1,0 +1,269 @@
+@charset "UTF-8";
+
+
+
+/* 그룹 부분 - 메인 */
+.main-content {
+	float: left;
+	width:70%;
+}
+.main-list ul {
+	padding-left: 5px;
+	text-align: center;
+}
+
+.list-header{
+	height: 50px;
+	line-height: 50px;
+	justify-content: space-around;
+	padding: 0 30px;
+}
+.group {
+	justify-content: space-around;
+	padding: 0 30px;
+	background-color: white;
+	line-height: 50px;
+	border-radius: 20px; 
+	line-height: 45px;
+	display: flex;
+	margin: 6px 0;
+	height: 50px;
+	text-align: center;
+	margin-bottom:15px;
+	font-size: 0.9em;
+}
+
+.group div {
+	text-align: center;
+}
+.group:hover {
+	cursor: pointer;
+	border: 2px solid #79c2cc;
+	box-shadow: 1px 4px 5px 3px #79c2cc36;
+}
+
+.group-running label {
+	margin: auto;
+	margin-top:10px;
+}
+
+.group-active {
+	width:10%;
+}
+
+.group-active div {
+	border:1.5px solid #acb9c7;
+	height: 28px;
+	width:28px;
+	display:inline-block;
+	vertical-align:middle;
+	margin:3px;
+	border-radius:5px;
+	margin-top:6px;
+}
+
+
+
+.group-active img {
+	width: 20px;
+	vertical-align:super;
+	padding-top:2.5px;
+}
+
+
+/* 그룹 부분 - 서브 */
+.sub-content{
+	float: right;
+	width:29%;
+	background-color: #374c70;
+	border-radius: 30px;
+	height: 670px;
+	margin-left: 8px;
+	position: relative;
+}
+
+.sub-content ul{
+	height:640px;
+	overflow: auto;
+	padding: 1px;
+    margin: 17px auto;
+	-ms-overflow-style: none;
+}
+.sub-content ul>li:first-child{
+	position: relative;
+}
+.sub-content .restart-btn{ /* 재실행 버튼  */
+	position: absolute;
+    width: 25px;
+    left: 343px;
+    bottom: -2px;
+    cursor: pointer;
+}
+
+.sub-content ul::-webkit-scrollbar{
+  display:none;
+}
+.sub-content .warning{
+	position: absolute;
+	display: inline-block;
+	line-height:670px;
+	font-size: 2em;
+	color:white;
+	width: 100%;
+	text-align: center;
+}
+/* 프로그램 부분 - 서브 */
+
+.program{
+	position: relative;
+	background-color: white;
+    width: 90%;
+    margin: 10px auto;
+    height: 145px;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    padding: 10px 5px 10px 15px;
+    margin-top: 14px;
+}
+.program .program-id{
+	font-size: 0.3em;
+	height: 15px;
+}
+.program .program-nm{
+	font-size: 1.6em;
+	font-weight: bold;
+	height: 40px;
+}
+.program .program-ord{
+	font-size: 1.5em;
+    margin-left: 287px !important;
+    position: absolute !important;
+    width: 59px;
+    height: 36px;
+    text-align: center;
+    background-color: #374c709e;
+    color: white;
+    border-radius: 5px !important;
+    line-height: 36px;
+    margin-top: 11px;
+	
+}
+.program .program-path{
+	font-size: 0.8em;
+	height: 30px;
+	
+	padding-top: 1px;
+    padding-left: 3px;
+    color: #908c8c;
+}
+.program .program-active{
+	display: flex;
+    flex-direction: row;
+}
+.program .program-active div{
+	border: 1.5px solid #acb9c7;
+	padding:2.5px;
+	display:inline-block;
+	vertical-align:middle;
+	margin:4px;
+	border-radius:5px;
+	margin-top:6px;
+	margin-right: 5px;
+	position: relative;
+	left: 302px;
+	bottom: 35px;
+	
+}
+.program .program-active div:hover{
+	cursor: pointer;
+}
+.program .program-active img{
+	width:23px;
+	height: 23px;
+}
+.program .program-active img:hover{
+	content: url("/image/detail_after.png");
+}
+
+.program .program-active>div:hover{
+	border: 1.5px solid #79c2cc;
+}
+#title-action-box{
+	right: 25px;
+}
+.sub-content-title{
+	font-size: 1.2em;
+	color: white;
+	text-align: center;
+	font-weight: bold;
+}
+.main-list>ul>li{
+	width: 970px;
+}
+.main-list>ul>li>div{
+	width: 20%;
+}
+.main-list>ul>li>div:nth-child(3){
+	width: 14%;
+}
+.main-list>ul>li>div:nth-child(4), .main-list>ul>li>div:nth-child(5){
+	width: 23%;
+}
+.program th{
+	text-align: left;
+	width: 110px;
+}
+.list-header>div, .group>div{
+	width: calc(100%/5);
+}
+#page-box{
+	margin: 0 auto;
+}
+
+/* 재실행 */
+.rty-list{
+    padding: 0 10px 1px;
+    background-color: white;
+    margin: 10px 20px;
+    cursor: pointer;
+}
+.rty-list .program-ord{
+	margin-left: 272px !important;
+}
+.rty-list>p{
+    padding-top: 15px;
+}
+.rty-list>ol{
+    padding: 0 0 5px 0;
+    display: none;
+}
+.rty-list .program{
+	border: 1px solid black;
+    padding: 0;
+    border-radius: 0;
+    width: 100%;
+    margin: 0 0 5px 0;
+    padding: 5px;
+}
+.rty-list .program-active div{
+	left: 287px;
+}
+
+/* 모달창 */
+#detail-log-modal .log-detail td{
+	text-align: center;
+	font-size: 0.8em;	
+	font-weight: bold;
+}
+
+/* swal 라이브러리 */
+.swal-footer{
+    text-align: center;
+}
+.swal-footer .swal-button-container .swal-button{
+	background-color: #79c2cc;
+}
+.swal-footer .swal-button-container:nth-child(3) .swal-button{ /* 취소버튼  */
+	background-color: #efefef;
+} 

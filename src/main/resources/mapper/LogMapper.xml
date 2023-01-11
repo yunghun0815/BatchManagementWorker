@@ -75,27 +75,6 @@
 		WHERE rnum &gt;= #{startRowNo}		
 	</select>
 	 
-	<select id="getBatPrmLogListByBatGrpLogId" parameterType="map" resultType="BatPrmLog">
-		SELECT
-			bat_grp_log_id as batGrpLogId,
-			bat_grp_rty_cnt as batGrpRtyCnt,
-			bat_prm_id as batPrmId,
-			param,
-			bat_prm_st_cd as batPrmStCd,
-			rslt_msg as rsltMsg,
-			bat_bgng_dt as batBgngDt,
-			bat_end_dt as batEndDt,
-			excn_ord as excnOrd,
-			last_mdfr_nm as lastMdfrNm,
-			last_mdfcn_dttm as lastMdfcnDttm
-		FROM 
-			bat_prm_log
-		WHERE
-			bat_grp_log_id = #{batGrpLogId}	
-		AND
-			bat_grp_rty_cnt = #{batGrpRtyCnt}		
-	</select>
-	 
 	<select id="getBatGrpLogDetail" parameterType="map" resultType="BatGrpLog">
 		SELECT
 		    bat_grp_log_id as batGrpLogId,
@@ -128,29 +107,36 @@
 			bat_grp_log
 		WHERE
 			bat_grp_log_id = #{batGrpLogId}
+		ORDER BY
+			bat_grp_rty_cnt	
 	</select> 
 	  
 	<select id="getBatPrmLogDetail" parameterType="map" resultType="BatPrmLog">
-		SELECT
-			bat_grp_log_id as batGrpLogId,
-			bat_grp_rty_cnt as batGrpRtyCnt,
-			bat_prm_id as batPrmId,
-			param,
-			bat_prm_st_cd as batPrmStCd,
-			rslt_msg as rsltMsg,
-			bat_bgng_dt as batBgngDt,
-			bat_end_dt as batEndDt,
-			excn_ord as excnOrd,
-			last_mdfr_nm as lastMdfrNm,
-			last_mdfcn_dttm as lastMdfcnDttm
+		SELECT 
+			pl.bat_grp_log_id as batGrpLogId,
+			pl.bat_grp_rty_cnt as batGrpRtyCnt,
+			pl.bat_prm_id as batPrmId,
+			pl.param,
+			pl.bat_prm_st_cd as batPrmStCd,
+			pl.rslt_msg as rsltMsg,
+			pl.bat_bgng_dt as batBgngDt,
+			pl.bat_end_dt as batEndDt,
+			pl.excn_ord as excnOrd,
+			pl.last_mdfr_nm as lastMdfrNm,
+			pl.last_mdfcn_dttm as lastMdfcnDttm,
+			p.bat_prm_nm as batPrmNm
 		FROM
-			bat_prm_log
+			bat_prm_log pl
+		JOIN
+			bat_prm p
+		ON
+			pl.bat_prm_id = p.bat_prm_id
 		WHERE
 			bat_grp_log_id = #{batGrpLogId}
-		AND 
+		AND
 			bat_grp_rty_cnt = #{batGrpRtyCnt}
-		AND 
-			bat_prm_id = #{batPrmId}	
+		AND
+			pl.bat_prm_id = #{batPrmId}		
 	</select>
 	
 	<insert id="insertBatGrpLog" parameterType="BatGrpLog">
@@ -224,7 +210,7 @@
 			excn_ord = (select min(excn_ord) from bat_prm_log where bat_prm_st_cd = #{batGrpStCd} and bat_grp_log_id = #{batGrpLogId} AND bat_grp_rty_cnt = #{batGrpRtyCnt})
 	</select>
 	
-	<select id="getRtyCnt" parameterType="String">
+	<select id="getRtyCnt" parameterType="String" resultType="int">
 		SELECT 
 			COUNT(*)
 		FROM
@@ -234,7 +220,7 @@
 	</select>
 	
 	<insert id="insertRtyBatGrpLog" parameterType="BatGrpLog">
-		ISNERT INTO bat_grp_log(
+		INSERT INTO bat_grp_log(
 			bat_grp_log_id, bat_grp_rty_cnt, bat_grp_id, bat_grp_st_cd, 
         	bat_bgng_dt, last_mdfr_nm, last_mdfcn_dttm
 		)
@@ -286,34 +272,44 @@
 	<select id="getBatGrpLogCountBySearch" parameterType="BatGrpLog" resultType="int">
 		SELECT 
 			count(*)
-		FROM
-			bat_grp_log
-		WHERE 
-			bat_grp_rty_cnt = 0
-		<if test="batGrpLogId != null">
-			AND
-				bat_grp_log_id like '%'||#{batGrpLogId}||'%'	
-		</if>		
-		<if test="batGrpId != null">
-			AND
-				bat_grp_id like '%'||#{batGrpId}||'%'	
-		</if>		
-		<if test="batGrpStCd != null">
-			AND
-				bat_grp_st_cd like '%'||#{batGrpStCd}||'%'	
-		</if>		
- 		<if test="batBgngDtStart != '' and batBgngDtEnd == ''">
-			AND
-				to_char(bat_bgng_dt, 'yyyy-mm-dd hh24:mm') &gt;= #{batBgngDtStart}	
-		</if>		        	
-		<if test="batBgngDtStart == '' and batBgngDtEnd != ''">
-			AND
-				to_char(bat_bgng_dt, 'yyyy-mm-dd hh24:mm') &lt;= #{batBgngDtEnd}	
-		</if>		        	
-		<if test="batBgngDtStart != '' and batBgngDtEnd != ''">
-			AND
-				to_char(bat_bgng_dt, 'yyyy-mm-dd hh24:mm') between #{batBgngDtStart} and #{batBgngDtEnd}	
-		</if>
+	    FROM 
+	    	(
+	        SELECT 
+	            bat_grp_log_id, bat_grp_rty_cnt, bat_grp_id, 
+	            bat_grp_st_cd, bat_bgng_dt, bat_end_dt, last_mdfr_nm, last_mdfcn_dttm
+	        FROM 
+	            bat_grp_log 
+	        WHERE 
+	            (bat_grp_log_id, bat_grp_rty_cnt)
+	        IN 
+	            (SELECT bat_grp_log_id, MAX(bat_grp_rty_cnt) FROM bat_grp_log GROUP BY (bat_grp_log_id))
+				<if test="batGrpLogId != null">
+					AND
+						bat_grp_log_id like '%'||#{batGrpLogId}||'%'	
+				</if>		
+				<if test="batGrpId != null">
+					AND
+						bat_grp_id like '%'||#{batGrpId}||'%'	
+				</if>		
+				<if test="batGrpStCd != null">
+					AND
+						bat_grp_st_cd like '%'||#{batGrpStCd}||'%'	
+				</if>		
+		 		<if test="batBgngDtStart != '' and batBgngDtEnd == ''">
+					AND
+						to_char(bat_bgng_dt, 'yyyy-mm-dd hh24:mm') &gt;= #{batBgngDtStart}	
+				</if>		        	
+				<if test="batBgngDtStart == '' and batBgngDtEnd != ''">
+					AND
+						to_char(bat_bgng_dt, 'yyyy-mm-dd hh24:mm') &lt;= #{batBgngDtEnd}	
+				</if>		        	
+				<if test="batBgngDtStart != '' and batBgngDtEnd != ''">
+					AND
+						to_char(bat_bgng_dt, 'yyyy-mm-dd hh24:mm') between #{batBgngDtStart} and #{batBgngDtEnd}	
+				</if>
+			ORDER BY 
+        		bat_grp_log_id DESC
+        	)
 	</select>
 	
 	<select id="searchBatGrpLog" parameterType="map" resultType="BatGrpLog">
@@ -337,8 +333,10 @@
 		            bat_grp_st_cd, bat_bgng_dt, bat_end_dt, last_mdfr_nm, last_mdfcn_dttm
 		        FROM 
 		            bat_grp_log 
-		        WHERE
-		        	bat_grp_rty_cnt = 0
+		        WHERE 
+	            	(bat_grp_log_id, bat_grp_rty_cnt)
+	       	 	IN 
+	            	(SELECT bat_grp_log_id, MAX(bat_grp_rty_cnt) FROM bat_grp_log GROUP BY (bat_grp_log_id))
 				<if test="log.batGrpLogId != null">
 					AND
 						bat_grp_log_id like '%'||#{log.batGrpLogId}||'%'	
@@ -369,5 +367,33 @@
 		    WHERE rownum &lt;= #{pager.endRowNo}  
 		)
 		WHERE rnum &gt;= #{pager.startRowNo} 
+	</select>
+	
+	<select id="getBatPrmLogListByGrpLog" parameterType="map" resultType="BatPrmLog">
+		SELECT 
+			pl.bat_grp_log_id as batGrpLogId,
+			pl.bat_grp_rty_cnt as batGrpRtyCnt,
+			pl.bat_prm_id as batPrmId,
+			pl.param,
+			pl.bat_prm_st_cd as batPrmStCd,
+			pl.rslt_msg as rsltMsg,
+			pl.bat_bgng_dt as batBgngDt,
+			pl.bat_end_dt as batEndDt,
+			pl.excn_ord as excnOrd,
+			pl.last_mdfr_nm as lastMdfrNm,
+			pl.last_mdfcn_dttm as lastMdfcnDttm,
+			p.bat_prm_nm as batPrmNm
+		FROM
+			bat_prm_log pl
+		JOIN
+			bat_prm p
+		ON
+			pl.bat_prm_id = p.bat_prm_id
+		WHERE
+			bat_grp_log_id = #{batGrpLogId}
+		AND
+			bat_grp_rty_cnt = #{batGrpRtyCnt}		
+		ORDER BY
+			pl.excn_ord			
 	</select>
 </mapper>

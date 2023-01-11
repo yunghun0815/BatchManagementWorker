@@ -16,10 +16,13 @@ public interface IBatchService {
 	public BatGrp getBatGrpDetail(String grpId);
 
 	public void insertBatGrp(BatGrp vo);
+	
 	public void updateBatGrp(BatGrp vo);
+	
 	public void deleteBatGrp(String grpId);
 
 	public List<BatGrp> searchBatGrp(Pager pager, String keyword, List<String> filtering);
+	
 	public int getTotalSearchNum(String keyword, List<String> filtering);
 	
 	public List<BatGrp> getBatGrpList();

@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+
 import com.company.myapp.dto.BatGrp;
 import com.company.myapp.dto.BatPrm;
 import com.company.myapp.dto.Pager;
@@ -29,8 +30,6 @@ public interface IBatchDao {
 	public int getTotalSearchNum(@Param("keyword")String keyword, @Param("filtering")List<String> filtering);
 
 	public List<BatGrp> getBatGrpList();
-
-	
 	
 	public List<BatPrm> getBatPrmList(String grpId);
 
@@ -50,4 +49,10 @@ public interface IBatchDao {
 
 	public List<String> getBatGrpIdListByHostId(String hostId);
 
+	public BatGrp getBatGrpByGrpLogId(String batGrpLogId);
+
+	public List<BatPrm> getBatPrmListByLogId(String batGrpLogId);
+
+	public List<BatPrm> getBatPrmListByFailLogId(String batGrpLogId);
+	
 }

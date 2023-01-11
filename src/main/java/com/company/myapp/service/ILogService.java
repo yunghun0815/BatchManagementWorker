@@ -18,8 +18,6 @@ public interface ILogService {
 
 	List<BatPrmLog> getBatPrmLogList(Pager pager); // 전체 프로그램 로그 리스트
 	
-	List<BatPrmLog> getBatPrmLogListByBatGrpLogId(String batGrpLogId, int batGrpRtyCnt); // 그룹 로그 상세 -> 모든 회차 프로그램 로그 리스트
-
 	BatGrpLog getBatGrpLogDetail(String batGrpLogId, int batGrpRtyCnt); // 그룹 로그 리스트 상세
 	
 	List<BatGrpLog> getBatGrpLogDetailList(String batGrpLogId);  // 로그ID에 대한 전체 그룹 리스트
@@ -41,5 +39,7 @@ public interface ILogService {
 	int getBatGrpLogCountBySearch(BatGrpLog log); // 검색 결과 카운트
 
 	List<BatGrpLog> searchBatGrpLog(Pager pager, BatGrpLog log); // 검색 결과 페이징 처리해 조회
+
+	List<BatPrmLog> getBatPrmLogListByGrpLog(String batGrpLogId, int batGrpRtyCnt); // 그룹로그 회차별 프로그램 로그 리스트
 
 }

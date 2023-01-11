@@ -20,8 +20,6 @@ public interface ILogDao {
 
 	List<BatPrmLog> getBatPrmLogList(Pager pager);
 
-	List<BatPrmLog> getBatPrmLogListByBatGrpLogId(@Param(value = "batGrpLogId") String batGrpLogId, @Param(value = "batGrpRtyCnt") int batGrpRtyCnt);
-	
 	BatGrpLog getBatGrpLogDetail(@Param(value = "batGrpLogId") String batGrpLogId, @Param(value = "batGrpRtyCnt") int batGrpRtyCnt);
 	
 	List<BatGrpLog> getBatGrpLogDetailList(String batGrpLogId);
@@ -40,7 +38,7 @@ public interface ILogDao {
 	
 	int getRtyCnt(String batGrpLogId);
 
-	void insertRtyBatGrpLog(BatGrpLog rtyBatGrpLog);
+	void insertRtyBatGrpLog(BatGrpLog batGrpLog);
 
 	List<BatPrmLog> getRtyPrmListByLogIdNCnt(@Param(value="logId")String logId, @Param(value="rty")int rty);
 
@@ -49,6 +47,9 @@ public interface ILogDao {
 	int getBatGrpLogCountBySearch(BatGrpLog log);
 
 	List<BatGrpLog> searchBatGrpLog(@Param(value = "pager") Pager pager, @Param(value = "log") BatGrpLog log);
+
+	List<BatPrmLog> getBatPrmLogListByGrpLog(@Param(value = "batGrpLogId") String batGrpLogId, @Param(value = "batGrpRtyCnt") int batGrpRtyCnt);
+
 
 
 }

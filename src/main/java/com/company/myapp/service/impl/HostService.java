@@ -44,11 +44,6 @@ public class HostService implements IHostService{
 	}
 
 	@Override
-	public Host getHostDetail(String hostId) {
-		return hostDao.getHostDetail(hostId);
-	}
-
-	@Override
 	public void updateHost(Host host) {
 		hostDao.updateHost(host);
 	}

@@ -23,6 +23,8 @@ public interface IJobService {
 	
 	void updateJob(BatGrp vo);
 	
+	String retryJob(String batGrpLogId, String cmd);
+	
 	List<BatGrpLog> retryJob(String batGrpLogId, BatGrp vo);
 
 }

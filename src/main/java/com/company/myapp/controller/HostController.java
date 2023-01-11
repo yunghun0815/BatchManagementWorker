@@ -94,18 +94,6 @@ public class HostController {
 	}
 	
 	/**
-	 * 호스트 상세 정보
-	 * @param hostId 호스트 아이디
-	 */
-	@ResponseBody
-	@GetMapping("/detail")
-	public Host getHostDetail(String hostId) {
-		Host host = hostService.getHostDetail(hostId);
-		
-		return host;
-	}
-	
-	/**
 	 * 호스트 저장 
 	 * @param hostNm 호스트명
 	 * @param hostIp 호스트 아이피

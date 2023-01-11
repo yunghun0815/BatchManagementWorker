@@ -259,4 +259,78 @@
   	AND 
   		use_yn = 'Y'			
   </select>
+  
+  <select id="getBatGrpByGrpLogId" parameterType="String" resultType="BatGrp">
+  	SELECT DISTINCT
+		b.bat_grp_id as "batGrpId", 
+    	b.bat_grp_nm as "batGrpNm", 
+    	b.bat_grp_dsc as "batGrpDsc", 
+    	b.host_id as "hostId",  
+    	b.auto_excn_yn as "autoExcnYn", 
+    	b.cron as "cron"
+    FROM
+    	bat_grp b
+   	JOIN 
+   		bat_grp_log l 
+ 	ON b.bat_grp_id = l.bat_grp_id 
+ 	WHERE 
+ 		l.bat_grp_log_id = #{batGrpLogId} 
+ 	AND use_yn = 'Y'	
+  </select>
+  
+  <select id="getBatPrmListByLogId" parameterType="String" resultType="BatPrm">
+  	SELECT  
+  		bat_prm_id as "batPrmId",
+  		bat_grp_id as "batGrpId",
+  		bat_prm_nm as "batPrmNm",
+  		path,
+  		excn_ord as "excnOrd",
+  		param
+  	FROM 
+  		bat_prm 
+  	where 
+  		bat_grp_id = 
+  			(SELECT DISTINCT 
+  				bat_grp_id 
+ 			FROM 
+ 				bat_grp_log 
+ 			WHERE 
+ 				bat_grp_log_id = #{batGrpLogId}
+ 			) 
+ 	AND use_yn = 'Y'
+  </select>
+  
+  <select id="getBatPrmListByFailLogId" parameterType="String" resultType="BatPrm">
+   	SELECT  
+  		bat_prm_id as "batPrmId",
+  		bat_grp_id as "batGrpId",
+  		bat_prm_nm as "batPrmNm",
+  		path,
+  		excn_ord as "excnOrd",
+  		param
+  	FROM
+  		bat_prm
+  	WHERE
+  		bat_prm_id
+  	IN
+  		(SELECT 
+  			bat_prm_id 
+ 		FROM
+ 			bat_prm_log
+ 		WHERE
+ 			bat_grp_log_id = #{batGrpLogId}	
+ 		AND
+ 			bat_prm_st_cd = 'BSFL'
+ 		AND
+ 			bat_grp_rty_cnt = 
+ 				(SELECT MAX(bat_grp_rty_cnt)
+ 				FROM
+ 					bat_grp_log
+ 				WHERE
+ 					bat_grp_log_id = #{batGrpLogId}	
+ 				)		
+  		)
+  	AND
+  		use_yn = 'Y'				 	
+  </select>
 </mapper>
