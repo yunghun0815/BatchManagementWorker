@@ -62,11 +62,10 @@ public class BatchController {
 		for(BatGrp test : batGrpList) {
 			set.add(test.getHostId());
 		}
-		//JSONObject connect = hostService.connectHost(set);
+		JSONObject connect = hostService.connectHost(set);
 		
 		for(BatGrp vo: batGrpList) {
-			//vo.setConn(connect.getString(vo.getHostId()));
-			vo.setConn("off");
+			vo.setConn(connect.getString(vo.getHostId()));
 			if(jobService.checkJob(vo.getBatGrpId())==true) vo.setRunCheck(true);
 			else vo.setRunCheck(false);
 		}
