@@ -205,7 +205,7 @@
 		WHERE 
 			bat_grp_log_id = #{batGrpLogId} 
 		AND 
-			bat_grp_rty_cnt = 0 
+			bat_grp_rty_cnt = #{batGrpRtyCnt} 
 		AND 
 			excn_ord = (select min(excn_ord) from bat_prm_log where bat_prm_st_cd = #{batGrpStCd} and bat_grp_log_id = #{batGrpLogId} AND bat_grp_rty_cnt = #{batGrpRtyCnt})
 	</select>

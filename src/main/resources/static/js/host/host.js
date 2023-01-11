@@ -90,9 +90,10 @@ $(function(){
 			success: function(result){
 				if(result.length > 0){
 					// 에러메세지
-					alert(result[0]['defaultMessage']);
+					//alert(result[0]['defaultMessage']);
+					swal("[수정 실패] " + result[0]['defaultMessage']);
 				}else{
-					alert("수정에 성공하였습니다.")
+					swal("수정에 성공하였습니다");
 					e.hide();
 					e.prev().show();
 					input.removeAttr("readonly", "true");
@@ -104,19 +105,32 @@ $(function(){
 	
 	// 호스트 삭제
 	$(".host-delete").click(function(){
-		let hostId = $(this).parent().find("input[type='hidden']").val(); 
-		if(confirm('정말 삭제하시겠습니까?')){
-			$.ajax({
+		let hostId = $(this).parent().parent().find("input[type='hidden']").val();
+		
+		swal({
+		  title: "정말로 삭제하시겠습니까?",
+		  text: "삭제시 복구가 불가능합니다.",
+		  icon: "warning",
+		  buttons: true,
+		  dangerMode: true,
+		})
+		.then((willDelete) => {
+		  if (willDelete) {
+		     $.ajax({
 				url: "/host/delete",
 				method: "post",
 				data: {
 					hostId: hostId
 				},
 				success: function(result){
-					location.reload();
+					console.log(result);
 				}
 			});
-		};
+			swal("", "삭제가 완료되었습니다.", "success").then(() => {
+				location.reload();
+			});
+		  }
+		}); 
 	});
 	
 

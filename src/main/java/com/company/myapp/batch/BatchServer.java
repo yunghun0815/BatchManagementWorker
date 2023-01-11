@@ -9,6 +9,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
@@ -45,7 +46,7 @@ public class BatchServer {
 	ExecutorService threadPool;
 
 	//JSONObject connect = new JSONObject();
-	Map<String, String> connect = new HashMap<>();
+	Map<String, String> connect = new Hashtable<>();
 	/**
 	 * 스레드풀, 서버소켓 생성 및 연결 수락
 	 * 
@@ -55,7 +56,7 @@ public class BatchServer {
 		log.info("[서버] 시작");
 
 		// 스레드풀 생성
-		threadPool = Executors.newFixedThreadPool(10);
+		threadPool = Executors.newFixedThreadPool(20);
 
 		// 서버소켓 생성 및 포트 바인딩
 		serverSocket = new ServerSocket(50000);
@@ -203,8 +204,8 @@ public class BatchServer {
 		json.put("cmd", "path");
 		List<String> pathList = new ArrayList<>();
 		try {
-			Socket socket = new Socket(host.getHostIp(), host.getHostPt());
-
+			Socket socket = new Socket();
+			socket.connect(new InetSocketAddress(host.getHostIp(), host.getHostPt()), 500);
 			// Agent서버로 경로 요청
 			DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
 			dos.writeUTF(json.toString());
@@ -261,17 +262,11 @@ public class BatchServer {
 							// echo
 							DataInputStream dis = new DataInputStream(socket.getInputStream());
 							String data = dis.readUTF();
+							connect.put(host.getHostId(), data);
 							
-							if (socket.isConnected()) {
-								connect.put(host.getHostId(), data);
-							} else {
-								connect.put(host.getHostId(), "off");
-							}
-
 							dos.close();
 							dis.close();
 							socket.close();
-							log.info(connect.get(host.getHostId()));
 						} catch (Exception e) {
 							log.info("[연결 실패] : " + host.getHostIp() + ":" + host.getHostPt());
 							connect.put(host.getHostId(), "off");
@@ -292,8 +287,7 @@ public class BatchServer {
 				e.printStackTrace();
 			}
 			// 작업이 완료 안됐으면 재귀시킴
-			log.info("[메소드 재실행]" + connect.toString() + " & [connect 사이즈]" + connect.size());
-			log.info("[호스트 사이즈 : " + hostList.size() + "] & [connect 사이즈 : " + connect.size() + "]" );
+			log.info("[메소드 재실행]" + connect.toString());
 			count++;
 			return healthCheck(hostList, count);
 		}

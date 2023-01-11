@@ -1,4 +1,3 @@
-
 // 날짜 yyyy-mm-dd hh:mm:ss 형식으로 변경
 function dateFormat(date){
 	function pad(n) { return n<10 ? "0" + n : n}
@@ -87,6 +86,10 @@ function toggleProgram(e){
 
 // 그룹 클릭 -> 해당 그룹의 프로그램 로그 및 차수별 그룹 로그 출력
 function groupDetail(e){
+	$(e).parent().find(".group").removeClass("group-hover");
+	$(e).addClass("group-hover");
+	
+	
 	$(".sub-content .warning").hide();
 	
 	const batGrpLogId = $(e).find("div:first-child span").text();

@@ -4,7 +4,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ include file="/WEB-INF/views/common/header.jsp"%>
 <link rel="stylesheet" type="text/css" href="/css/log/log.css">
-<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 <script type="text/javascript" src="/js/log/log.js"></script>
 <main id="main">
 	<div class="title">
@@ -35,7 +34,6 @@
 											<option value="BSFL">실패</option>
 											<option value="BSRN">실행중</option>
 											<option value="BSWT">대기</option>
-											<option value="BSRS">재실행</option>
 										</select>
 									</td>	
 								</tr>
@@ -73,7 +71,18 @@
 								<span>${log.batGrpId}</span>
 							</div>
 							<div>
-								<span>${log.batGrpStCd}</span>
+								<c:choose>
+									<c:when test="${log.batGrpStCd == '성공'}">
+										<c:set var="color" value="green"/>
+									</c:when>
+									<c:when test="${log.batGrpStCd == '실패'}">
+										<c:set var="color" value="red"/>
+									</c:when>
+									<c:otherwise>
+										<c:set var="color" value="black"/>
+									</c:otherwise>
+								</c:choose>
+								<span style="color: ${color}">${log.batGrpStCd}</span>
 							</div>
 							<div>
 								<span>

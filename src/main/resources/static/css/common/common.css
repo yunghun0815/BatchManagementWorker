@@ -207,3 +207,10 @@
 	#title-action-box .insert-btn:hover {
 		background-color: #79c2cc;
 	}
+	
+	/* 마우스 올렸을때 배경, 테두리 색*/
+	.group-hover{
+		cursor: pointer;
+		border: 2px solid #79c2cc;
+		box-shadow: 1px 4px 5px 3px #79c2cc36;
+	}	

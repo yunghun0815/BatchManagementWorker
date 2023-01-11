@@ -297,6 +297,8 @@
  				bat_grp_log_id = #{batGrpLogId}
  			) 
  	AND use_yn = 'Y'
+ 	ORDER BY
+ 		excn_ord
   </select>
   
   <select id="getBatPrmListByFailLogId" parameterType="String" resultType="BatPrm">
@@ -330,6 +332,8 @@
  				)		
   		)
   	AND
-  		use_yn = 'Y'				 	
+  		use_yn = 'Y'
+  	ORDER BY
+  		excn_ord					 	
   </select>
 </mapper>
