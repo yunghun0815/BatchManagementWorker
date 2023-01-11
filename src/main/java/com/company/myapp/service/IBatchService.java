@@ -13,13 +13,13 @@ public interface IBatchService {
 	
 	public List<BatGrp> getBatGrpList(Pager pager);
 	
-	public BatGrp getBatGrpDetail(String grpId);
+	public BatGrp getBatGrpDetail(String batGrpId);
 
 	public void insertBatGrp(BatGrp vo);
 	
 	public void updateBatGrp(BatGrp vo);
 	
-	public void deleteBatGrp(String grpId);
+	public void deleteBatGrp(String batGrpId);
 
 	public List<BatGrp> searchBatGrp(Pager pager, String keyword, List<String> filtering);
 	
@@ -27,13 +27,13 @@ public interface IBatchService {
 	
 	public List<BatGrp> getBatGrpList();
 	
-	public List<BatPrm> getBatPrmList(String grpId);
+	public List<BatPrm> getBatPrmList(String batGrpId);
 
-	public BatPrm getBatPrmDetail(String prmId);
+	public BatPrm getBatPrmDetail(String batPrmId);
 
 	public void insertBatPrm(BatPrm vo);
 
-	public void deleteBatPrm(String prmId, String grpId);
+	public void deleteBatPrm(String batPrmId, String batGrpId);
 
 	public void updateBatPrm(BatPrm vo);
 

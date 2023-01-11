@@ -43,18 +43,14 @@ public class JobService implements IJobService {
 	ILogDao logDao;
 	@Autowired
 	AgentJob agentJob;
-	@Override
-	public boolean checkJob(String grpId) {
-		try {
-			if(scheduler.getJobDetail(new JobKey(grpId))!=null) return true;
-			else return false;
-		}catch(SchedulerException e) {
-			log.error(e.getMessage());
-			throw new RuntimeException();
-			//log 저장
-		}
-	}
-
+	
+	/**
+	 * Job 실행 관련 Service
+	 */
+	
+	/**
+	 * 자동실행 여부 체크 후 실행
+	 */
 	@Override
 	public void startSchedule() {
 		
@@ -66,6 +62,9 @@ public class JobService implements IJobService {
 		}
 	}
 
+	/**
+	 * 전체 Job을 일시정지 시키고 삭제
+	 */
 	@Override
 	public void shutdownSchedule() {
 		try {
@@ -74,26 +73,22 @@ public class JobService implements IJobService {
 		}catch(SchedulerException e) {
 			log.error(e.getMessage());
 			throw new RuntimeException();
-			//log저장?
 		}
 	}
 
+	/**
+	 * 등록된 Job일 경우 재실행을, 등록되지 않은 Job일 경우에는 Job 등록 실행
+	 */
 	@Override
 	public void startJob(String grpId) {
-		System.out.println("startJob 실행");
 		try {
 			if(checkExistsJobByGrpId(grpId)) {
-				System.out.println("jobkey등록");
 				JobKey key = JobKey.jobKey(grpId);
-				System.out.println("재실행");
-				
 				scheduler.resumeJob(key);
 				log.info(key + "를 재실행");
 			}else {
-				
 				addJob(grpId);
 			}
-			
 		}catch(SchedulerException e) {
 			// 그룹 로그 저장
 			BatGrpLog batGrpLog = new BatGrpLog();
@@ -122,12 +117,14 @@ public class JobService implements IJobService {
 		}
 	}
 
+	/**
+	 * 실행 중지하게 되면 Job을 일시정지 시키고 Job 정보 삭제
+	 */
 	@Override
 	public void pauseJob(String grpId) {
 		JobKey key = JobKey.jobKey(grpId);
 		log.info("1. 그룹Id: " + key.getGroup());
 		log.info("2. 이름: " + key.getName());
-		
 		try{
 			scheduler.pauseJob(key);
 			removeJob(grpId);
@@ -135,13 +132,14 @@ public class JobService implements IJobService {
 		}catch(SchedulerException e) {
 			log.error(e.getMessage());
 			throw new RuntimeException();
-			//log저장?
 		}
 	}
-
+	
+	/**
+	 * Job 등록
+	 */
 	@Override
 	public void addJob(String grpId) {
-		System.out.println("addJob실행");
 		BatGrp vo = batchService.getBatGrpDetail(grpId);
 		
 		JobDetail job = JobBuilder.newJob(AgentJob.class)
@@ -183,6 +181,9 @@ public class JobService implements IJobService {
 		}
 	}
 
+	/**
+	 * Job 삭제
+	 */
 	@Override
 	public void removeJob(String grpId) {
 		try {
@@ -196,6 +197,9 @@ public class JobService implements IJobService {
 		}
 	}
 	
+	/**
+	 * Job 정보 업데이트
+	 */
 	@Override
 	public void updateJob(BatGrp vo) {
 		TriggerKey oldTrigger = TriggerKey.triggerKey(vo.getBatGrpId());
@@ -233,6 +237,9 @@ public class JobService implements IJobService {
 		}
 	}
 
+	/**
+	 * 그룹단위로 Job 재실행(수동)
+	 */
 	@Override
 	public List<BatGrpLog> retryJob(String batGrpLogId, BatGrp vo) {
 		//현재 재실행 회차 세팅
@@ -256,7 +263,9 @@ public class JobService implements IJobService {
 		return rtyBatGrpLogList;
 	}
 	
-	// new 
+	/**
+	 * 프로그램 단위로 Job 재실행(수동)
+	 */
 	@Override
 	public String retryJob(String batGrpLogId, String cmd) {
 		BatGrp vo = batchDao.getBatGrpByGrpLogId(batGrpLogId);
@@ -274,13 +283,12 @@ public class JobService implements IJobService {
 		agentJob.rtyExecute(batGrpLogId, vo, rtyCnt);
 		return result;
 	}
-	/*
-	 * Job이 등록된 그룹인지 확인하는 메서드
-	 * true일 경우 Job도 업데이트 해야함
+	
+	/**
+	 * 등록된 Job인지 체크
 	 */
 	@Override
 	public boolean checkExistsJobByGrpId(String batGrpId) {
-		System.out.println(batGrpId);
 		try {
 			JobKey key = JobKey.jobKey(batGrpId);
 			if(scheduler.checkExists(key)) return true;
