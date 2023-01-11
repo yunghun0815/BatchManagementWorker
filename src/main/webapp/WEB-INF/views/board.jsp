@@ -349,9 +349,9 @@ function prmList(grp){
 			target.empty();
 			var view = ``;
 			if(result.length==0){
-				view = `<span class='warning'">프로그램이 없습니다.</span>`;
+				view = `<div class="grpId">` + grpId + `</div><div onclick="getInsertInfo(this)" data-bs-toggle="modal" data-bs-target="#insert-batch-program" class="insert-prm-btn">+</div><span class='warning'">프로그램이 없습니다.</span>`;
 			}else{
-				view = `<ul id="sortable"><li><div class="grpId">` + grpId + `</div><div onclick="getInsertInfo(this)" data-bs-toggle="modal" data-bs-target="#insert-batch-program" class="insert-prm-btn">+</div>`;
+				view = `<div class="grpId">` + grpId + `</div><div onclick="getInsertInfo(this)" data-bs-toggle="modal" data-bs-target="#insert-batch-program" class="insert-prm-btn">+</div><ul id="sortable">`;
 				for(var i=0;i<result.length;i++){
 					let obj = result[i];
 					view += `<li class="d-flex program">
@@ -414,9 +414,9 @@ function prmDelete(btn){
 				target.empty();
 				var view = ``;
 				if(result.length==0){
-					view = `<span class='warning'">프로그램이 없습니다.</span>`;
+					view = `<div class="grpId">` + grpId + `</div><div onclick="getInsertInfo(this)" data-bs-toggle="modal" data-bs-target="#insert-batch-program" class="insert-prm-btn">+</div><span class='warning'">프로그램이 없습니다.</span>`;
 				}else{
-					view = `<ul id="sortable"><li><div class="grpId">` + grpId + `</div><div onclick="getInsertInfo(this)" data-bs-toggle="modal" data-bs-target="#insert-batch-program" class="insert-prm-btn">+</div>`;
+					view = `<div class="grpId">` + grpId + `</div><div onclick="getInsertInfo(this)" data-bs-toggle="modal" data-bs-target="#insert-batch-program" class="insert-prm-btn">+</div><ul id="sortable">`;
 					for(var i=0;i<result.length;i++){
 						let obj = result[i];
 						view += `<li class="d-flex program">
@@ -713,9 +713,9 @@ function saveChangedOrd(btn){
 			target.empty();
 			var view = ``;
 			if(result.length==0){
-				view = `<span style="margin-left: 20px;line-height:670px;font-size: 2.5em;color:white;vertical-align:middle;">프로그램이 없습니다.</span>`;
+				view = `<div class="grpId">` + grpId + `</div><div onclick="getInsertInfo(this)" data-bs-toggle="modal" data-bs-target="#insert-batch-program" class="insert-prm-btn">+</div><span class='warning'">프로그램이 없습니다.</span>`;
 			}else{
-				view = `<ul id="sortable"><li><div class="grpId">` + grpId + `</div><div onclick="getInsertInfo(this)" data-bs-toggle="modal" data-bs-target="#insert-batch-program" class="insert-prm-btn">+</div>`;
+				view = `<div class="grpId">` + grpId + `</div><div onclick="getInsertInfo(this)" data-bs-toggle="modal" data-bs-target="#insert-batch-program" class="insert-prm-btn">+</div><ul id="sortable">`;
 				for(var i=0;i<result.length;i++){
 					let obj = result[i];
 					view += `<li class="d-flex program">
@@ -742,7 +742,7 @@ function saveChangedOrd(btn){
 } 
 function getInsertInfo(btn){
 	//grpId랑 grpId로 Host찾고 path경로(controller) 비동기로 받아와서 insertPrm에 심기
-	const grpId = $("#sortable .grpId").text();
+	const grpId = $(".sub-content .grpId").text();
 	$.ajax({
 		url: "/batch/path?grpId=" + grpId, 
 		method: "GET",
@@ -816,11 +816,12 @@ function changeCron(btn){
 			sec = '/' + number;
 			cronDsc += number + '초마다';
 		}
-		cron = sec + ' ' + min + ' ' + hour + ' ' + day + ' ' + mon + ' ' + year + ' ' + week;	
+		cron = sec + ' ' + min + ' ' + hour + ' ' + day + ' ' + mon + ' ' + week;	
 	}else if(method=="3"){
 		cron = $("#insert-batch-group input[name=selectCron]").val();
 		cronDsc = '';
 	}
+	alert(cron);
 	$("#insert-batch-group input[name=cron]").val(cron);
 	$("#insert-batch-group input[name=cronDsc]").val(cronDsc);   
 	

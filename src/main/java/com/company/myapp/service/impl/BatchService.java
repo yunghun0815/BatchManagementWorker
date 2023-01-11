@@ -96,8 +96,6 @@ public class BatchService implements IBatchService {
 	@Override
 	public void insertBatPrm(BatPrm vo) {
 		int ord = batchDao.getLastExcnOrd(vo.getBatGrpId());
-		System.out.println(ord);
-		if(ord==0) ord=0;
 		vo.setExcnOrd(ord+1);
 		batchDao.insertBatPrm(vo);
 	}
