@@ -7,7 +7,7 @@ import com.company.myapp.dto.BatGrpLog;
 
 public interface IJobService {
 
-	boolean checkJob(String grpId);
+	//boolean checkJob(String grpId);
 
 	void startSchedule();
 
