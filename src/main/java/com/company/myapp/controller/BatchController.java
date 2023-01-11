@@ -9,13 +9,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.company.myapp.batch.BatchServer;
 import com.company.myapp.dto.BatGrp;
 import com.company.myapp.dto.BatPrm;
+import com.company.myapp.dto.Host;
 import com.company.myapp.dto.Pager;
 import com.company.myapp.service.IBatchService;
 import com.company.myapp.service.IHostService;
@@ -34,6 +38,8 @@ public class BatchController {
 	IJobService jobService;
 	@Autowired
 	IHostService hostService;
+	@Autowired
+	BatchServer batchServer;
 	
 	/**
 	 * 처음에 배치관리 메뉴로 들어갔을때
@@ -47,7 +53,7 @@ public class BatchController {
 		
 		//데이터의 전체 행수 가져온 후 페이징 처리
 		int totalRows = batchService.getTotalGroupNum();
-		Pager pager = new Pager(5, 5, totalRows, pageNo);
+		Pager pager = new Pager(8, 5, totalRows, pageNo);
 		
 		//현재 페이지에 맞는 데이터 가져오기
 		List<BatGrp> batGrpList = batchService.getBatGrpList(pager);
@@ -56,14 +62,16 @@ public class BatchController {
 		for(BatGrp test : batGrpList) {
 			set.add(test.getHostId());
 		}
-		JSONObject connect = hostService.connectHost(set);
+		//JSONObject connect = hostService.connectHost(set);
 		
 		for(BatGrp vo: batGrpList) {
-			vo.setConn(connect.getString(vo.getHostId()));
+			//vo.setConn(connect.getString(vo.getHostId()));
+			vo.setConn("off");
 			if(jobService.checkJob(vo.getBatGrpId())==true) vo.setRunCheck(true);
 			else vo.setRunCheck(false);
 		}
-		
+		List<Host> hostList = hostService.getHostList();
+		model.addAttribute("hostList", hostList);
 		model.addAttribute("pager", pager);
 		model.addAttribute("batGrpList", batGrpList);
 		model.addAttribute("menu","batch");
@@ -93,25 +101,39 @@ public class BatchController {
 //		return "group/groupDetail";
 //	}
 	
+	@ResponseBody
+	@GetMapping("/path")
+	public List<String> getPathListByGrpId(@RequestParam(value="grpId")String grpId){
+		System.out.println(grpId);
+		Host vo = hostService.getHostByBatGrpId(grpId);
+		System.out.println(vo);
+		List<String> pathList = batchServer.getPath(vo);
+		System.out.println(pathList);
+		return pathList;
+	}
 	
 	@PostMapping("/group/insert")
 	public String insertBatGrp(BatGrp vo) {
+		System.out.println(vo);
 		batchService.insertBatGrp(vo);
 		return "redirect:/batch";
 	}
 	
 	@PostMapping("/group/update")
-	public void updateBatGrp(BatGrp vo) {
+	public String updateBatGrp(BatGrp vo) {
 		batchService.updateBatGrp(vo);
-		jobService.updateJob(vo);
+		if(jobService.checkExistsJobByGrpId(vo.getBatGrpId())) {
+			jobService.updateJob(vo);
+		}
+		return "redirect:/batch";
 	}
 	
 	@GetMapping("/group/delete")
-	public String deleteBatGrp(String grpId) {
+	public String deleteBatGrp(@RequestParam(value="grpId")String grpId) {
 		jobService.pauseJob(grpId);
 		jobService.removeJob(grpId);
 		batchService.deleteBatGrp(grpId);
-		return "redirect:/batch/group";
+		return "redirect:/batch";
 	}
 	
 	/**
@@ -159,7 +181,7 @@ public class BatchController {
 	}
 	
 	@ResponseBody
-	@GetMapping("/program/delete")
+	@PostMapping("/program/delete")
 	public List<BatPrm> deleteBatPrm(@RequestParam(value="prmId")String prmId,
 										@RequestParam(value="grpId")String grpId) {
 		batchService.deleteBatPrm(prmId, grpId);
@@ -170,26 +192,47 @@ public class BatchController {
 	@PostMapping("/program/insert")
 	public String insertBatPrm(BatPrm vo) {
 		batchService.insertBatPrm(vo);
-		return "redirect:/batch/group";
+		return "redirect:/batch";
 	} 
 	
-	@ResponseBody
+	/*
+	 * @ResponseBody
+	 * 
+	 * @PostMapping("/program/update") public List<BatPrm> updateBatPrm(BatPrm vo) {
+	 * batchService.updateBatPrm(vo); return
+	 * batchService.getBatPrmList(vo.getBatGrpId()); }
+	 */
 	@PostMapping("/program/update")
-	public List<BatPrm> updateBatPrm(BatPrm vo) {
+	public String updateBatPrm(BatPrm vo) {
 		batchService.updateBatPrm(vo);
+		return "redirect:/batch";
+	}
+
+	@ResponseBody
+	@PostMapping("/program/update/ord")
+	public List<BatPrm> updateExcnOrd(@RequestBody BatGrp vo){
+		batchService.updateExcnOrd(vo.getPrmList());
 		return batchService.getBatPrmList(vo.getBatGrpId());
-	} 
-	
+	}
 	/**
 	 * 배치그룹별 스케쥴러 실행 체크후 실행 및 중단
 	 * @param grpId
 	 */
 	@ResponseBody
 	@PostMapping("/Job/{grpId}")
-	public void schedule(String grpId) {
-		boolean check = jobService.checkJob(grpId);
-		if (check == true) jobService.pauseJob(grpId);
-		else jobService.startJob(grpId);
+	public void schedule(boolean execute, @PathVariable String grpId) {
+		System.out.println(execute);
+		//boolean check = jobService.checkJob(grpId);
+		if (execute) {
+			System.out.println("정지서비스");
+			jobService.pauseJob(grpId);
+		}
+		else{
+
+			System.out.println("시작서비스");
+			jobService.startJob(grpId);
+			
+		}
 	}
 
 	@ResponseBody

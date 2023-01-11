@@ -80,14 +80,20 @@ public class JobService implements IJobService {
 
 	@Override
 	public void startJob(String grpId) {
-		JobKey key = JobKey.jobKey(grpId);
+		System.out.println("startJob 실행");
 		try {
-			if(scheduler.checkExists(key)==true) {
-				addJob(grpId);
-			}else {
+			if(checkExistsJobByGrpId(grpId)) {
+				System.out.println("jobkey등록");
+				JobKey key = JobKey.jobKey(grpId);
+				System.out.println("재실행");
+				
 				scheduler.resumeJob(key);
+				log.info(key + "를 재실행");
+			}else {
+				
+				addJob(grpId);
 			}
-			log.info(key + "를 재실행");
+			
 		}catch(SchedulerException e) {
 			// 그룹 로그 저장
 			BatGrpLog batGrpLog = new BatGrpLog();
@@ -133,6 +139,7 @@ public class JobService implements IJobService {
 
 	@Override
 	public void addJob(String grpId) {
+		System.out.println("addJob실행");
 		BatGrp vo = batchService.getBatGrpDetail(grpId);
 		
 		JobDetail job = JobBuilder.newJob(AgentJob.class)
@@ -144,7 +151,8 @@ public class JobService implements IJobService {
 							.build();
 		try {
 			scheduler.scheduleJob(job,trigger);
-			log.info("Job 추가 완료");
+			log.info("Job 추가 완료" );
+			log.info(scheduler.getJobDetail(new JobKey(grpId)).toString());
 		}catch(SchedulerException e) {
 			// 그룹 로그 저장
 			BatGrpLog batGrpLog = new BatGrpLog();
@@ -263,5 +271,21 @@ public class JobService implements IJobService {
 		vo.setPrmList(list);
 		agentJob.rtyExecute(batGrpLogId, vo, rtyCnt);
 		return result;
+	}
+	/*
+	 * Job이 등록된 그룹인지 확인하는 메서드
+	 * true일 경우 Job도 업데이트 해야함
+	 */
+	@Override
+	public boolean checkExistsJobByGrpId(String batGrpId) {
+		System.out.println(batGrpId);
+		try {
+			JobKey key = JobKey.jobKey(batGrpId);
+			if(scheduler.checkExists(key)) return true;
+			else return false;
+		} catch (SchedulerException e) {
+			e.printStackTrace();
+			return false;
+		}
 	}
 }

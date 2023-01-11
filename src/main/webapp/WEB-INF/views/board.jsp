@@ -4,6 +4,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ include file="common/header.jsp"%>
 <script src="https://code.jquery.com/jquery-3.6.2.js"></script>
+<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js" ></script>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
@@ -94,8 +95,15 @@
 .group-cron{
 	width:22%;
 }
+
 .group-conn{
 	width:10%;
+}
+.group-conn .conn_enabled{
+	color: green;
+}
+.group-conn .conn_disabled{
+	color: red;
 }
 .group-running {
 	width:10%;
@@ -129,7 +137,7 @@
 	padding-top:2.5px;
 }
 
-.insert-btn{
+.insert-grp-btn{
     width: 26px;
     height: 26px;
     border-radius: 6px;
@@ -231,6 +239,59 @@
 	width:23px;
 	height: 23px;
 }
+.sub-content .warning{
+	line-height:650px;
+	font-size: 2.5em;
+	color:white;
+	vertical-align:middle;
+	margin-left: 18px;
+	
+}
+
+.sub-content .grpId{
+	backgroud-color:none;
+	font-size:1.2em;
+	font-weight: bold;
+	color : white;
+	text-align: center;
+}
+.ord-btn-wrap{
+	background-color: white;
+    width: 90%;
+    margin: 10px auto;
+    height: 50px;
+    border-radius: 10px;
+    padding: 5px;
+    padding-top: 10px;
+    padding-left: 14px;
+    margin-top: 14px;
+    
+    padding: 0px;
+    line-height: 48px;
+    margin: auto;
+    text-align: center;
+    background-color: #79c2cc;
+    color: white;
+    font-size: 1.8em;
+    font-weight: bold;
+    cursor: pointer;
+}
+.ord-btn{
+}
+.change-ord{
+	cursor:move;
+}
+.insert-prm-btn{
+	color:white;
+	border: 1.5px solid white;
+	border-radius:50%;
+	font-size:1.2em;
+	width:30px;
+	height:30px;
+	line-height:26px;
+	margin-left:25px;
+	text-align:center;
+}
 /* 토글 */
 .toggleSwitch {
 	width: 47px;
@@ -269,6 +330,12 @@
 }
 
 
+/* 모달 */
+.inactive{
+	border: none;
+	background: none !important;
+}
+
 </style>
 <script type="text/javascript">
 //그룹 클릭하면 해당 프로그램 리스트 보여주는 함수
@@ -282,9 +349,9 @@ function prmList(grp){
 			target.empty();
 			var view = ``;
 			if(result.length==0){
-				view = `<span style="margin-left: 20px;line-height:670px;font-size: 2.5em;color:white;vertical-align:middle;">프로그램이 없습니다.</span>`;
+				view = `<span class='warning'">프로그램이 없습니다.</span>`;
 			}else{
-				view = `<ul>`;
+				view = `<ul id="sortable"><li><div class="grpId">` + grpId + `</div><div onclick="getInsertInfo(this)" data-bs-toggle="modal" data-bs-target="#insert-batch-program" class="insert-prm-btn">+</div>`;
 				for(var i=0;i<result.length;i++){
 					let obj = result[i];
 					view += `<li class="d-flex program">
@@ -292,18 +359,18 @@ function prmList(grp){
 								<div class="program-nm"><span>` + obj['batPrmNm'] + `</span></div>
 								<div class="program-path"><span>` + obj['path'] + `</span></div>
 								<div class="program-active">
-									<div onmouseenter="iconMouseOver(this)" onmouseleave="iconMouseLeave(this)"
-										onclick="" data-bs-toggl="modal" data-bs-target="#detail-batch-program">
-									<img src="/image/detail.png" class="menu-box" id="detail">
+									<div onmouseenter="iconMouseOver(this)" onmouseleave="iconMouseLeave(this)" onclick="getUpdatePrmInfo(this)"
+										data-bs-toggle="modal" data-bs-target="#detail-batch-program">
+									<img src="/image/common/action/detail.png" class="menu-box" id="detail">
 								</div> 
 								<div onmouseenter="iconMouseOver(this)" onmouseleave="iconMouseLeave(this)"
-									onclick="prmDelete(` + obj['batPrmId'] + `)">
-									<img src="/image/delete.png" class="menu-box" id="delete">
+									onclick="prmDelete(this)">
+									<img src="/image/common/action/delete.png" class="menu-box" id="delete">
 								</div></div>
 								<div class="program-ord"><span>` + obj['excnOrd'] + `</span></div>
 							</li>`;
 				}
-				view += `</ul>`;
+				view += `<li class="ord-btn-wrap"><div class="ord-btn" onclick="possibleChangeOrd(this)"><span>순서 변경</span></div></li></ul>`;
 			}
 			target.append(view);
 		},
@@ -316,45 +383,112 @@ function prmList(grp){
 //프로그램 리스트 아이콘 이벤트
 function iconMouseOver(obj){
 	$(obj).css("border","1.5px solid #374c70");
-	$(obj).find(".menu-box").prop("src", "/image/"+ $(obj).find(".menu-box").prop("id") +"_after2.png");
+	$(obj).find(".menu-box").prop("src", "/image/common/action/"+ $(obj).find(".menu-box").prop("id") +"_after2.png");
 }
 function iconMouseLeave(obj){
 	$(obj).css("border","1.5px solid #acb9c7");
-	$(obj).find(".menu-box").prop("src", "/image/"+ $(obj).find(".menu-box").prop("id") +".png");
+	$(obj).find(".menu-box").prop("src", "/image/common/action/"+ $(obj).find(".menu-box").prop("id") +".png");
 }
 
-window.onload = function(){
-	const $toggle = document.querySelector(".toggleSwitch");
-	const $active = document.querySelector(".group-active");
-	
-	$toggle.onclick = () => {
-		event.stopPropagation();
-	  $toggle.classList.toggle('active');
-	}
-	$active.onclick = () => {
-		event.stopPropagation();
-	}
-}
+
 
 //삭제확인
 function grpDelete(grpId){
 	event.stopPropagation();
 	if(window.confirm('정말 삭제하시겠습니까?')){
-		alert(grpId);
-		location.href='http://localhost:8080/';
+		alert(grpId + "그룹이 삭제되었습니다");
+		location.href='http://localhost:8080/batch/group/delete?grpId='  + grpId;
 	}
 }
+function prmDelete(btn){
+	event.stopPropagation();
+	const prmId=$(btn).parent().siblings(".program-id").text();
+	const grpId=$(".grpId").text();
+	if(window.confirm('정말 삭제하시겠습니까?')){
+		$.ajax({
+			url : "/batch/program/delete?prmId=" + prmId + "&&grpId=" + grpId,
+			method : "POST",
+			success : function(result){
+				alert(prmId + "가 삭제되었습니다");
+				var target = $(".sub-content");
+				target.empty();
+				var view = ``;
+				if(result.length==0){
+					view = `<span class='warning'">프로그램이 없습니다.</span>`;
+				}else{
+					view = `<ul id="sortable"><li><div class="grpId">` + grpId + `</div><div onclick="getInsertInfo(this)" data-bs-toggle="modal" data-bs-target="#insert-batch-program" class="insert-prm-btn">+</div>`;
+					for(var i=0;i<result.length;i++){
+						let obj = result[i];
+						view += `<li class="d-flex program">
+									<div class="program-id"><span>` + obj['batPrmId'] + `</span></div>
+									<div class="program-nm"><span>` + obj['batPrmNm'] + `</span></div>
+									<div class="program-path"><span>` + obj['path'] + `</span></div>
+									<div class="program-active">
+										<div onmouseenter="iconMouseOver(this)" onmouseleave="iconMouseLeave(this)"
+											onclick="" data-bs-toggle="modal" data-bs-target="#detail-batch-program">
+										<img src="/image/common/action/detail.png" class="menu-box" id="detail">
+									</div> 
+									<div onmouseenter="iconMouseOver(this)" onmouseleave="iconMouseLeave(this)"
+										onclick="prmDelete(this)">
+										<img src="/image/common/action/delete.png" class="menu-box" id="delete">
+									</div></div>
+									<div class="program-ord"><span>` + obj['excnOrd'] + `</span></div>
+								</li>`;
+					}
+					view += `<li class="ord-btn-wrap"><div class="ord-btn" onclick="possibleChangeOrd(this)"><span>순서 변경</span></div></li></ul>`;
+				}
+				target.append(view);
+			},
+			error: function(request,status,error){
+				alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+			}
+		}); 
+	}
+}  
 
 
 $(function(){
 	// 페이지별 메뉴 색 변경
 	 $(".group-active div").mouseover(function(){
 		$(this).css("border","1.5px solid #0CA3B9");
-		$(this).find(".menu-box").prop("src", "/image/"+ $(this).find(".menu-box").prop("id") +"_after.png");
+		$(this).find(".menu-box").prop("src", "/image/common/action/"+ $(this).find(".menu-box").prop("id") +"_after.png");
 	})
 	$(".group-active div").mouseleave(function(){
 		$(this).css("border","1.5px solid #acb9c7");
-		$(this).find(".menu-box").prop("src", "/image/"+ $(this).find(".menu-box").prop("id") +".png");
+		$(this).find(".menu-box").prop("src", "/image/common/action/"+ $(this).find(".menu-box").prop("id") +".png");
+	})
+	
+	//실행토글
+	const active = $(".group-active");
+	active.each(function(){
+		active.click(function(){
+			event.stopPropagation();
+		})
+	})
+		
+	//Job실행
+	const toggle = $(".toggleSwitch");
+	toggle.each(function(){
+		$(this).click(function(){
+			event.stopPropagation();
+			var execute = false;
+			const grpId = $(this).parent().siblings(".group-id").text();
+			console.log(grpId);
+			if($(this).hasClass('active')){
+				execute = true;
+			}
+			$(this).toggleClass('active');
+			$.ajax({
+				url: "/batch/Job/" + grpId,
+				data: {
+					execute : execute
+				},
+				method: "POST",
+				success : function(result){
+					console.log("성공")
+				}
+			})
+		})
 	})
 	
 	//cron 입력
@@ -382,42 +516,144 @@ $(function(){
 			}
 		});
 		
-		
 });
 
 //모달창 함수
+function getUpdateGrpInfo(btn){
+	//grpId가져오기
+	const grpId = $(btn).parent().siblings(".group-id").text();
+	console.log(grpId);
+	//ajax로 그룹정보 가져와서 심기
+	$.ajax({
+		url: "/batch/group/detail?grpId=" + grpId,
+		method: "GET",
+		success: function(result){
+			$("#detail-batch-group input[name=batGrpId]").val(result.batGrpId);
+			$("#detail-batch-group input[name=batGrpNm]").val(result.batGrpNm);
+			$("#detail-batch-group input[name=batGrpDsc]").val(result.batGrpDsc);
+			$("#detail-batch-group input[name=cron]").val(result.cron);
+			$("#detail-batch-group input[name=cronDsc]").val(result.cronDsc);
+			if(result.cronDsc == null || result.cronDsc == ''){
+				$("#detail-batch-group input[name=cronView]").val(result.cron);
+			}else{
+				$("#detail-batch-group input[name=cronView]").val(result.cronDsc);
+			}
+			$("#detail-batch-group select[name=hostId]").val(result.hostId).prop("selected", true);
+			$("#detail-batch-group select[name=autoExcnYn]").val(result.autoExcnYn).prop("selected", true);
+		}
+	})
+} 
+function getUpdatePrmInfo(btn){
+	//prmId가져오기
+	const prmId = $(btn).parent().siblings(".program-id").text();
+	console.log(prmId);
+	//ajax로 프로그램정보 가져와서 심기
+	$.ajax({
+		url: "/batch/program/detail?prmId=" + prmId,
+		method: "GET",
+		success: function(result){
+			$("#detail-batch-program input[name=batPrmId]").val(result.batPrmId);
+			$("#detail-batch-program input[name=batPrmNm]").val(result.batPrmNm);
+			$("#detail-batch-program input[name=batGrpId]").val(result.batGrpId);
+			$("#detail-batch-program input[name=param]").val(result.param);
+			$("#detail-batch-program textarea[name=paramDsc]").val(result.paramDsc);
+			$("#detail-batch-program input[name=excnOrd]").val(result.excnOrd);
+			
+			getPath(result.batGrpId, "detail");
+			
+			$("#detail-batch-program select[name=path]").val(result.path).prop("selected", true);
+		}
+	})
+} 
+//파라미터(grpId, 페이지종류)에 따라 path 받아오기
+function getPath(grpId, type){
+	$.ajax({
+		url: "/batch/path?grpId=" + grpId, 
+		method: "GET",
+		success: function(result){
+			var target = $("#" + type + "-batch-program select[name=path]");		
+			target.empty();
+			for(var i=0;i<result.length;i++){
+				let obj = result[i];
+				let view = `<option value="`+ obj + `">` + obj + `</option>`;
+				target.append(view);
+			}
+		},
+		error: function(request,status,error){
+			alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+		}
+	})
+}
 //수정 누르면 수정버전으로 변경
 function groupModify(table){
-	const obj = $(table);
+	const obj = $(table).closest(".modal-footer");
+	obj.empty();
 	var frm = $('.inactive');
-	const id = obj.attr("id")
+	//const id = obj.attr("id")
 	//class 변경 inacive->active
 	frm.removeClass('inactive');
 	frm.addClass('active');
 	//readonly 제거
 	$('.readwrite').prop('readonly', false);
 	//select readonly 제거
-	$(".readwrite option").not(":selected").attr("disabled", "");
+	$(".readwrite").attr("disabled", false);
 	//버튼 변경(수정삭제목록 -> 저장이전목록)
-	var view =`<button type="submit" class="btn btn-secondary">저장</button>
-        <button type="button" onclick="groupDetail(this)" class="btn btn-secondary">Back</button>
+	var view =`<button type="submit" class="btn btn-primary">저장</button>
+        <button type="reset" onclick="groupDetail(this)" class="btn btn-secondary">Back</button>
         <button type="button" class="btn btn-primary" data-bs-dismiss="modal">목록</button>`;
-	obj.closest(".modal-footer").html(view);
+	
+    obj.append(view);
+}
+function programModify(table){
+	const obj = $(table).closest(".modal-footer");
+	obj.empty();
+	var frm = $('.inactive');
+	//const id = obj.attr("id")
+	//class 변경 inacive->active
+	frm.removeClass('inactive');
+	frm.addClass('active');
+	//readonly 제거
+	$('.readwrite').prop('readonly', false);
+	//select readonly 제거
+	$(".readwrite").attr("disabled", false);
+	//버튼 변경(수정삭제목록 -> 저장이전목록)
+	var view =`<button type="submit" class="btn btn-primary">저장</button>
+        <button type="reset" onclick="programDetail(this)" class="btn btn-secondary">Back</button>
+        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">목록</button>`;
+	
+    obj.append(view);
 }
 //수정화면에사 취소 누르면 상세 페이지러 변경
 function groupDetail(table){
 	const obj = $(table);
 	var frm = $('.active');
-	const id = obj.attr("id")
+	//const id = obj.attr("id")
 	//class 변경
 	frm.removeClass('active');
 	frm.addClass('inactive');
 	//readonly 추가
 	$('.readwrite').prop('readonly', true);
 	//select readonly 제거
-	$(".readwrite option").not(":selected").attr("disabled", "disabled");
+	$(".readwrite").attr("disabled", true);
 	//버튼 변경(수정삭제목록 -> 저장이전목록)
-	var view =`<button type="button" onclick="appModify(this)" class="btn btn-secondary">수정</button>
+	var view =`<button type="button" onclick="groupModify(this)" class="btn btn-primary">수정</button>
+	<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">삭제</button>
+	<button type="button" class="btn btn-primary" data-bs-dismiss="modal">목록</button>`;
+	obj.closest(".modal-footer").html(view);
+}
+function programDetail(table){
+	const obj = $(table);
+	var frm = $('.active');
+	//const id = obj.attr("id")
+	//class 변경
+	frm.removeClass('active');
+	frm.addClass('inactive');
+	//readonly 추가
+	$('.readwrite').prop('readonly', true);
+	//select readonly 제거
+	$(".readwrite").attr("disabled", true);
+	//버튼 변경(수정삭제목록 -> 저장이전목록)
+	var view =`<button type="button" onclick="programModify(this)" class="btn btn-primary">수정</button>
 	<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">삭제</button>
 	<button type="button" class="btn btn-primary" data-bs-dismiss="modal">목록</button>`;
 	obj.closest(".modal-footer").html(view);
@@ -425,10 +661,170 @@ function groupDetail(table){
 //수정화면에서 저장 누르면 저장된 상세 페이지로 변경
 //수정화면에서 크론의 경우 변경 버튼을 눌러야 변경 가능
 //일단 호스트는 셀렉트
-//맨밑에 프로그램 순서 변경
 
 
+//프로그램 순서 변경 버튼 눌렀을 때(순서 변경 가능한 상태)
+function possibleChangeOrd(btn){
+	$(".program").toggleClass('change-ord');
+	$(".ord-btn-wrap").empty();
+	$(".ord-btn-wrap").append(`<div class="ord-btn" onclick="saveChangedOrd(this)"><span>저장하기</span></div>`);
+	$( "#sortable" ).sortable( {
+    	stop: function(e){
+    		const li = $(".program");
+    		
+    		li.each(function(index){
+    			const target = $(this);
+    			target.find(".program-ord span").text(index+1);
+    		});
+    	}
+    });
+}
+//프로그램 순서 저장 버튼 눌렀을 때(순서 변경 저장)
+function saveChangedOrd(btn){
+	
+	const grpId = $("#sortable .grpId").text();
+	
+	var prmList = [];
+	var prmCnt = $(".program").length;
 
+	for(var i=0;i<prmCnt;i++){
+		let id = $($(".program")[i]).find(".program-id span").text();
+		let ord = $($(".program")[i]).find(".program-ord span").text();
+		var BatPrm = {
+				'batPrmId' : id,
+				'excnOrd' : ord
+				
+		}
+		prmList.push(BatPrm);
+	} 
+	var vo = {
+			'batGrpId': grpId,
+			'prmList': prmList
+	};
+	console.log(prmList);
+ 	 $.ajax({
+		url: "/batch/program/update/ord" ,
+		type: "POST",
+		dataType: "json",
+		contentType: "application/json; charset=utf-8",
+		data: JSON.stringify(vo),
+		success: function(result){
+			var target = $(".sub-content");
+			target.empty();
+			var view = ``;
+			if(result.length==0){
+				view = `<span style="margin-left: 20px;line-height:670px;font-size: 2.5em;color:white;vertical-align:middle;">프로그램이 없습니다.</span>`;
+			}else{
+				view = `<ul id="sortable"><li><div class="grpId">` + grpId + `</div><div onclick="getInsertInfo(this)" data-bs-toggle="modal" data-bs-target="#insert-batch-program" class="insert-prm-btn">+</div>`;
+				for(var i=0;i<result.length;i++){
+					let obj = result[i];
+					view += `<li class="d-flex program">
+								<div class="program-id"><span>` + obj['batPrmId'] + `</span></div>
+								<div class="program-nm"><span>` + obj['batPrmNm'] + `</span></div>
+								<div class="program-path"><span>` + obj['path'] + `</span></div>
+								<div class="program-active">
+									<div onmouseenter="iconMouseOver(this)" onmouseleave="iconMouseLeave(this)"
+										onclick="" data-bs-toggle="modal" data-bs-target="#detail-batch-program">
+									<img src="/image/common/action/detail.png" class="menu-box" id="detail">
+								</div> 
+								<div onmouseenter="iconMouseOver(this)" onmouseleave="iconMouseLeave(this)"
+									onclick="prmDelete(this)">
+									<img src="/image/common/action/delete.png" class="menu-box" id="delete">
+								</div></div>
+								<div class="program-ord"><span>` + obj['excnOrd'] + `</span></div>
+							</li>`;
+				}
+				view += `<li class="ord-btn-wrap"><div class="ord-btn" onclick="possibleChangeOrd(this)"><span>순서 변경</span></div></li></ul>`;
+			}
+			target.append(view);
+		}
+	});  
+} 
+function getInsertInfo(btn){
+	//grpId랑 grpId로 Host찾고 path경로(controller) 비동기로 받아와서 insertPrm에 심기
+	const grpId = $("#sortable .grpId").text();
+	$.ajax({
+		url: "/batch/path?grpId=" + grpId, 
+		method: "GET",
+		success: function(result){
+			$("#insert-batch-program input[name=batGrpId]").val(grpId);
+			var target = $("#insert-batch-program select[name=path]");		
+			target.empty();
+			for(var i=0;i<result.length;i++){
+				let obj = result[i];
+				let view = `<option value="`+ obj + `">` + obj + `</option>`;
+				target.append(view);
+			}
+		},
+		error: function(request,status,error){
+			alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+		}
+	});
+}
+/*   $( function() {
+    $( "#sortable" ).sortable( {
+    	stop: function(e){
+    		const li = $("ul li");
+    		
+    		li.each(function(index){
+    			const target = $(this);
+    			target.find("input[name='excnOrd']").val(index+1);
+    		});
+    	}
+    } );
+    
+  }); */
+
+function changeCron(btn){
+	var sec = '*';
+	var min = '*';
+	var hour = '*';
+	var day = '*';
+	var mon = '*';	//선택x
+	var week = '?'; 
+	const method = $("#insert-batch-group input[name=cycle]:checked").val();
+	var cron = '';
+	var cronDsc = '';
+	if(method == "1") {	//일자반복
+		var cycle = $("#insert-batch-group select[name=cycle1]").val();
+		if(cycle=="day"){
+			cronDsc += '매일 ';
+		}else if(cycle=="week"){
+			day = '?';
+			week = $("#insert-batch-group select[name=cycleMF]").val();
+			cronDsc += ('매주 ' + $("#insert-batch-group #option-week option:selected").text() + ' ');
+		}else if(cycle=="month"){
+			week = '?';
+			day = $("#insert-batch-group input[name=cycleDay]").val();
+			cronDsc +=('매월 ' + $("#insert-batch-group #option-month").val() + '일 ');
+		}
+		var time_h = $("#insert-batch-group input[name=cycleTime]").val().split(":")[0];
+		var time_m = $("#insert-batch-group input[name=cycleTime]").val().split(":")[1];
+		cronDsc += time_h + '시 ' + time_m + '분';
+		min = time_m;
+		hour = time_h;
+		cron = sec + ' ' + min + ' ' + hour + ' ' + day + ' ' + mon + ' ' + week;
+	}else if(method=="2"){
+		var number = $("#insert-batch-group input[name=timeNumber]").val();
+		if($("#insert-batch-group input[name=time]").val()=="hour"){
+			hour = '/' + number;
+			cronDsc += number + '시간마다';
+		}else if($("#insert-batch-group input[name=time]").val()=="min"){
+			min = '/' + number;
+			cronDsc += number + '분마다';
+		}else if($("#insert-batch-group input[name=time]").val()=="sec"){
+			sec = '/' + number;
+			cronDsc += number + '초마다';
+		}
+		cron = sec + ' ' + min + ' ' + hour + ' ' + day + ' ' + mon + ' ' + year + ' ' + week;	
+	}else if(method=="3"){
+		cron = $("#insert-batch-group input[name=selectCron]").val();
+		cronDsc = '';
+	}
+	$("#insert-batch-group input[name=cron]").val(cron);
+	$("#insert-batch-group input[name=cronDsc]").val(cronDsc);   
+	
+}
 </script>
 </head>
 
@@ -440,7 +836,7 @@ function groupDetail(table){
 		<!-- <div class="search-content">검색</div> -->
 		<div class="main-content">
 			<h3>배치 그룹 관리&nbsp;
-				<button class="insert-btn">+</button></h3>
+				<button data-bs-toggle="modal" data-bs-target="#insert-batch-group" class="insert-grp-btn">+</button></h3>
 			<div class="main-list">
 				<ul>
 					<li class="d-flex list-header">
@@ -489,99 +885,55 @@ function groupDetail(table){
 								</c:if>
 							</div>
 							<div class="group-active">
-								<div 
+								<div onclick="getUpdateGrpInfo(this)"
 									data-bs-toggle="modal" data-bs-target="#detail-batch-group">
-									<img src="/image/detail.png" class="menu-box" id="detail">
+									<img src="/image/common/action/detail.png" class="menu-box" id="detail">
 								</div> 
-								<div onclick="grpDelete(${group.batGrpId})">
-									<img src="/image/delete.png" class="menu-box" id="delete">
+								<div onclick="grpDelete('${group.batGrpId}')">
+									<img src="/image/common/action/delete.png" class="menu-box" id="delete">
 								</div>
 							</div>
 						</li>
 					</c:forEach>
+						<li>
+							<c:if test="${pager.totalRows > 0}">
+								<div id="page-box">
+									<c:set var="url" value="/batch"/>
+									<c:if test="${not empty search}">
+										<c:set var="url" value="/batch" />
+									</c:if>
+								
+									<c:if test="${pager.groupNo>1}">
+										<a class="page-button" href="${url}?pageNo=${pager.startPageNo-1}${search}"><</a>
+									</c:if>
+									<c:forEach var="i" begin="${pager.startPageNo}" end="${pager.endPageNo}">
+										<c:if test="${pager.pageNo != i}">
+											<a class="page-button" href="${url}?pageNo=${i}${search}">${i}</a>
+										</c:if>
+										<c:if test="${pager.pageNo == i}">
+											<a class="page-button this-page" href="${url}?pageNo=${i}${search}">${i}</a>
+										</c:if>
+									</c:forEach>
+									
+									<c:if test="${pager.groupNo<pager.totalGroupNo}">
+										<a class="page-button" href="${url}?pageNo=${pager.endPageNo+1}${search}">></a>
+									</c:if>
+								</div>
+							</c:if>
+						</li>
 					<ul>
 			</div>
 		</div>
-		<div class="sub-content">
-			<ul>
-			<li class="d-flex program">
-								<div class="program-id"><span>PRM000000001</span></div>
-								<div class="program-nm"><span>프로그램 이름</span></div>
-								<div class="program-path"><span>C:/dev/batch-agent/test-app1.bat</span></div>
-								<div class="program-active">
-									<div onmouseenter="iconMouseOver(this)" onmouseleave="iconMouseLeave(this)" onclick="" 
-										data-bs-toggl="modal" data-bs-target="#detail-batch-program">
-										<img src="/image/detail.png" class="menu-box" id="detail">
-									</div> 
-									<div onmouseenter="iconMouseOver(this)" onmouseleave="iconMouseLeave(this)" onclick="prmDelete(` + obj['batPrmId'] + `)">
-										<img src="/image/delete.png" class="menu-box" id="delete">
-									</div>
-								</div>
-								<div class="program-ord"><span>1</span></div>
-			</li>
-			<li class="d-flex program">
-								<div class="program-id"><span>PRM000000001</span></div>
-								<div class="program-nm"><span>프로그램 이름</span></div>
-								<div class="program-path"><span>C:/dev/batch-agent/test-app1.bat</span></div>
-								<div class="program-ord"><span>1</span></div>
-								<div class="program-active">
-									<div onclick="" data-bs-toggl="modal" data-bs-target="#detail-batch-program">
-										<img src="/image/detail.png" class="menu-box" id="detail">
-									</div> 
-									<div onclick="prmDelete(` + obj['batPrmId'] + `)">
-										<img src="/image/delete.png" class="menu-box" id="delete">
-									</div>
-								</div>
-			</li>
-			<li class="d-flex program">
-								<div class="program-id"><span>PRM000000001</span></div>
-								<div class="program-nm"><span>프로그램 이름</span></div>
-								<div class="program-path"><span>C:/dev/batch-agent/test-app1.bat</span></div>
-								<div class="program-ord"><span>1</span></div>
-								<div class="program-active">
-									<div onclick="" data-bs-toggl="modal" data-bs-target="#detail-batch-program">
-										<img src="/image/detail.png" class="menu-box" id="detail">
-									</div> 
-									<div onclick="prmDelete(` + obj['batPrmId'] + `)">
-										<img src="/image/delete.png" class="menu-box" id="delete">
-									</div>
-								</div>
-			</li>
-			<li class="d-flex program">
-								<div class="program-id"><span>PRM000000001</span></div>
-								<div class="program-nm"><span>프로그램 이름</span></div>
-								<div class="program-path"><span>C:/dev/batch-agent/test-app1.bat</span></div>
-								<div class="program-ord"><span>1</span></div>
-								<div class="program-active">
-									<div onclick="" data-bs-toggl="modal" data-bs-target="#detail-batch-program">
-										<img src="/image/detail.png" class="menu-box" id="detail">
-									</div> 
-									<div onclick="prmDelete(` + obj['batPrmId'] + `)">
-										<img src="/image/delete.png" class="menu-box" id="delete">
-									</div>
-								</div>
-			</li>
-			<li class="d-flex program">
-								<div class="program-id"><span>PRM000000001</span></div>
-								<div class="program-nm"><span>프로그램 이름</span></div>
-								<div class="program-path"><span>C:/dev/batch-agent/test-app1.bat</span></div>
-								<div class="program-ord"><span>1</span></div>
-								<div class="program-active">
-									<div onclick="" data-bs-toggl="modal" data-bs-target="#detail-batch-program">
-										<img src="/image/detail.png" class="menu-box" id="detail">
-									</div> 
-									<div onclick="prmDelete(` + obj['batPrmId'] + `)">
-										<img src="/image/delete.png" class="menu-box" id="delete">
-									</div>
-								</div>
-			</li>
-			</ul>
-			<!-- <span style="line-height:670px;font-size: 2.5em;color:white;vertical-align:middle;">그룹을 선택해주세요.</span> -->
+		<div class="sub-content" value="">
+			<span class="warning">그룹을 선택해주세요.</span>
 		</div>
 	</div>
 </main>
 
 
-<%@ include file="/WEB-INF/views/modal/groupDetail.jsp" %>
+<%@ include file="/WEB-INF/views/batch/groupDetail.jsp" %>
+<%@ include file="/WEB-INF/views/batch/programDetail.jsp" %>
+<%@ include file="/WEB-INF/views/batch/insertGroup.jsp" %>
+<%@ include file="/WEB-INF/views/batch/insertProgram.jsp" %>
 
 <%@ include file="common/footer.jsp"%>

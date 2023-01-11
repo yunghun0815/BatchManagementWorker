@@ -3,7 +3,7 @@
 <mapper namespace="com.company.myapp.dao.IBatchDao">
   
   <select id="getTotalGroupNum" resultType="int">
-    SELECT count(*) FROM bat_grp
+    SELECT count(*) FROM bat_grp WHERE use_yn='Y'
   </select>
   
   <select id="getBatGrpListByPage" parameterType="Pager" resultType="BatGrp">
@@ -200,7 +200,7 @@
   	UPDATE 
   		bat_prm
   	SET
-		bat_grp_id = #{batGrpId}
+		bat_grp_id = #{batGrpId},
 		bat_prm_nm = #{batPrmNm},
 		path = #{path},
 		excn_ord = #{excnOrd},
@@ -233,11 +233,11 @@
 	WHERE a.use_yn = 'Y' and a.bat_grp_id = #{grpId}
   </update>
   
-  <select id="getLastExcnOrd" parameterType="String">
+  <select id="getLastExcnOrd" parameterType="String" resultType="int">
   	SELECT DISTINCT LAST_VALUE(excn_ord) 
   	OVER (PARTITION BY bat_grp_id ORDER BY bat_grp_id) 
   	FROM bat_prm 
-	WHERE use_yn = 'Y' AND bat_grp_id = #{grpId};
+	WHERE use_yn = 'Y' AND bat_grp_id = #{grpId}
   </select>
   
   <update id="sortByUsers" parameterType="BatPrm">

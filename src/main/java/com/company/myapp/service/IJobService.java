@@ -27,4 +27,6 @@ public interface IJobService {
 	
 	List<BatGrpLog> retryJob(String batGrpLogId, BatGrp vo);
 
+	boolean checkExistsJobByGrpId(String batGrpId);
+
 }
