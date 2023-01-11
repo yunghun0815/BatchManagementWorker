@@ -65,14 +65,12 @@ public class BatchService implements IBatchService {
 
 	@Override
 	public List<BatGrp> searchBatGrp(Pager pager, String keyword, List<String> filtering) {
-		System.out.println(filtering.getClass().getName());
 		List<BatGrp> resultList = batchDao.searchBatGrp(pager, keyword, filtering);
 		return resultList;
 	}
 
 	@Override
 	public int getTotalSearchNum(String keyword, List<String> filtering) {
-		System.out.println(filtering.getClass().getName());
 		return batchDao.getTotalSearchNum(keyword, filtering);
 	}
 
@@ -102,7 +100,6 @@ public class BatchService implements IBatchService {
 
 	@Override
 	public void deleteBatPrm(String prmId, String grpId) {
-		System.out.println(grpId);
 		batchDao.deleteBatPrm(prmId);
 		batchDao.sortByRownum(grpId);
 	}

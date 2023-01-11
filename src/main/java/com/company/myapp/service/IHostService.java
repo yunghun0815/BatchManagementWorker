@@ -1,6 +1,7 @@
 package com.company.myapp.service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.json.JSONObject;
@@ -24,7 +25,7 @@ public interface IHostService {
 	
 	Host getHostByBatGrpId(String batGrpId); // 그룹 아이디로 호스트 정보 조회
 	
-	JSONObject connectHost(Set<String> set); // 
+	Map<String, String> connectHost(Set<String> set); // 
 
 	List<Host> searchHost(Pager pager, Host host); // 호스트 검색 결과 리스트(페이징 처리)
 

@@ -100,7 +100,7 @@ function groupDetail(e){
 			let btn = '<img class="restart-btn" src="/image/reload.png" onclick="restart(this)">';
 			
 			// 마지막차수 실패면 재실행버튼 생성
-			btn = batGrpLog[batGrpLog.length-1]['batGrpStCd'] == '실패' ? btn : btn='a';  
+			btn = batGrpLog[batGrpLog.length-1]['batGrpStCd'] == '실패' ? btn : btn='';  
 			let view = `
 				<li>
 					<div class="sub-content-title">`

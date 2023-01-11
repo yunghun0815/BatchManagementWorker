@@ -2,6 +2,7 @@ package com.company.myapp.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.json.JSONObject;
@@ -59,7 +60,7 @@ public class HostService implements IHostService{
 	}
 
 	@Override
-	public JSONObject connectHost(Set<String> hostSet) {
+	public Map<String, String> connectHost(Set<String> hostSet) {
 		
 		List<Host> hostList = new ArrayList<>(); 
 		
@@ -67,7 +68,7 @@ public class HostService implements IHostService{
 			hostList.add(hostDao.getHostDetail(hostId));
 		}
 		
-		JSONObject connect = batchServer.healthCheck(hostList, 0);
+		Map<String ,String> connect = batchServer.healthCheck(hostList, 0);
 		
 		
 		return connect;

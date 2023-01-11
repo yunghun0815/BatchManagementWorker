@@ -8,7 +8,7 @@
 		<h1>
 			<span>호스트 관리</span>
 			<div id="title-action-box">
-				<img id="search" class="action-icon" src="/image/common/action/search_before.png">
+				<img id="search" class="action-icon" src="/image/common/action/search.png">
 				<div id="search-box" >
 					<form action="/host/search">
 						<table>

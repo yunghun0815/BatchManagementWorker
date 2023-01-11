@@ -80,12 +80,9 @@ public class JobService implements IJobService {
 
 	@Override
 	public void startJob(String grpId) {
-		System.out.println("startJob 실행");
 		try {
 			if(checkExistsJobByGrpId(grpId)) {
-				System.out.println("jobkey등록");
 				JobKey key = JobKey.jobKey(grpId);
-				System.out.println("재실행");
 				
 				scheduler.resumeJob(key);
 				log.info(key + "를 재실행");
@@ -141,7 +138,6 @@ public class JobService implements IJobService {
 
 	@Override
 	public void addJob(String grpId) {
-		System.out.println("addJob실행");
 		BatGrp vo = batchService.getBatGrpDetail(grpId);
 		
 		JobDetail job = JobBuilder.newJob(AgentJob.class)
@@ -280,7 +276,6 @@ public class JobService implements IJobService {
 	 */
 	@Override
 	public boolean checkExistsJobByGrpId(String batGrpId) {
-		System.out.println(batGrpId);
 		try {
 			JobKey key = JobKey.jobKey(batGrpId);
 			if(scheduler.checkExists(key)) return true;

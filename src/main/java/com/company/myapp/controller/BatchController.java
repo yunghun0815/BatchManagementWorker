@@ -2,9 +2,9 @@ package com.company.myapp.controller;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -62,10 +62,11 @@ public class BatchController {
 		for(BatGrp test : batGrpList) {
 			set.add(test.getHostId());
 		}
-		JSONObject connect = hostService.connectHost(set);
+		Map<String, String> connect = hostService.connectHost(set);
 		
 		for(BatGrp vo: batGrpList) {
-			vo.setConn(connect.getString(vo.getHostId()));
+			String conn = connect.get(vo.getHostId()) != null ? connect.get(vo.getHostId()) : "off" ;
+			vo.setConn(conn);
 			if(jobService.checkJob(vo.getBatGrpId())==true) vo.setRunCheck(true);
 			else vo.setRunCheck(false);
 		}
@@ -103,17 +104,13 @@ public class BatchController {
 	@ResponseBody
 	@GetMapping("/path")
 	public List<String> getPathListByGrpId(@RequestParam(value="grpId")String grpId){
-		System.out.println(grpId);
 		Host vo = hostService.getHostByBatGrpId(grpId);
-		System.out.println(vo);
 		List<String> pathList = batchServer.getPath(vo);
-		System.out.println(pathList);
 		return pathList;
 	}
 	
 	@PostMapping("/group/insert")
 	public String insertBatGrp(BatGrp vo) {
-		System.out.println(vo);
 		batchService.insertBatGrp(vo);
 		return "redirect:/batch";
 	}
@@ -167,9 +164,7 @@ public class BatchController {
 	@ResponseBody
 	@GetMapping("/program")
 	public List<BatPrm> getBatPrmList(String grpId){
-		System.out.println(grpId);
 		List<BatPrm> batPrmList = batchService.getBatPrmList(grpId);
-		System.out.println(batPrmList);
 		return batPrmList;
 	}
 	
@@ -225,15 +220,11 @@ public class BatchController {
 	@ResponseBody
 	@PostMapping("/Job/{grpId}")
 	public void schedule(boolean execute, @PathVariable String grpId) {
-		System.out.println(execute);
 		//boolean check = jobService.checkJob(grpId);
 		if (execute) {
-			System.out.println("정지서비스");
 			jobService.pauseJob(grpId);
 		}
 		else{
-
-			System.out.println("시작서비스");
 			jobService.startJob(grpId);
 			
 		}

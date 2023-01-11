@@ -14,7 +14,7 @@
 		<div class="main-content">
 			<h3>그룹 로그 관리
 				<div id="title-action-box">
-					<img id="search" class="action-icon" src="/image/common/action/search_before.png">
+					<img id="search" class="action-icon" src="/image/common/action/search.png">
 					<div id="search-box" >
 						<form action="/log/search">
 							<table>

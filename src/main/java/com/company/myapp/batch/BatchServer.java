@@ -8,7 +8,9 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -24,61 +26,63 @@ import com.company.myapp.service.ILogService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.extern.slf4j.Slf4j;
+
 /**
- * 1. 스레드풀, 서버소켓 관리
- * 2. Agent 서버 통신 및 메시지 교환
+ * 1. 스레드풀, 서버소켓 관리 2. Agent 서버 통신 및 메시지 교환
+ * 
  * @author 정영훈, 김나영
  *
  */
 @Slf4j
 @Component
 public class BatchServer {
-	
+
 	@Autowired
 	ILogService logService;
-	
+
 	Socket socket;
 	ServerSocket serverSocket;
 	ExecutorService threadPool;
-	
-	JSONObject connect = new JSONObject();
-	
+
+	//JSONObject connect = new JSONObject();
+	Map<String, String> connect = new HashMap<>();
 	/**
-	 * 스레드풀, 서버소켓 생성 및 연결 수락 
+	 * 스레드풀, 서버소켓 생성 및 연결 수락
+	 * 
 	 * @throws IOException
 	 */
 	public void start() throws IOException {
 		log.info("[서버] 시작");
-		
+
 		// 스레드풀 생성
 		threadPool = Executors.newFixedThreadPool(10);
-		
+
 		// 서버소켓 생성 및 포트 바인딩
 		serverSocket = new ServerSocket(50000);
 		// 작업 스레드 생성
 		threadPool.execute(new Runnable() {
-			
+
 			@Override
 			public void run() {
 				// 서버소켓이 열려있으면 실행
-				if(!serverSocket.isClosed()) {
+				if (!serverSocket.isClosed()) {
 					try {
 						// 연결 수락 및 메세지 처리 메소드 호출
-						while(true) {
+						while (true) {
 							Socket socket = serverSocket.accept();
 							receiveMessage(socket);
 						}
-					}
-					catch (Exception e) {
+					} catch (Exception e) {
 						log.info("[응답 에러]" + e.getMessage());
 					}
 				}
 			}
 		});
 	}
-	
+
 	/**
 	 * 스레드풀 종료, 서버소켓 닫음
+	 * 
 	 * @throws IOException
 	 */
 	public void shutDown() throws IOException {
@@ -86,40 +90,39 @@ public class BatchServer {
 		serverSocket.close();
 		threadPool.shutdown();
 	}
-	
+
 	/**
 	 * Agent 서버 연결 및 JSON 데이터 전송
+	 * 
 	 * @param host 아이피, 포트
-	 * @param json 넘길 json 형식 객체 
+	 * @param json 넘길 json 형식 객체
 	 */
 	public void sendMessage(Host host, List<JsonDto> jsonArray) {
 		// 연결 실패시 로그 실패 처리
 		BatGrpLog failGrpLog = new BatGrpLog();
 		failGrpLog.setBatBgngDt(new Date());
-		
+
 		try {
 			// 소켓 생성 및 Agent 서버 연결 요청
 			Socket socket = new Socket(host.getHostIp(), host.getHostPt());
 			DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
-			
-			
+
 			// cmd, message 담아 전송
 			JSONObject json = new JSONObject();
 			json.put("cmd", "run");
 			json.put("message", jsonArray);
 			String sendDataStr = json.toString();
-			
+
 			// Agent 서버로 데이터 전송 후 연결 종료
 			dos.writeUTF(sendDataStr);
 			dos.flush();
 			dos.close();
 			socket.close();
-			
-			
-		}catch(Exception e) {
+
+		} catch (Exception e) {
 			// Agent 서버로 연결 실패시 로그 실행중 -> 실패로 업데이트
 			log.info("[전송 실패] Agent서버로 메시지 전송에 실패하였습니다.");
-			for(JsonDto json : jsonArray) {
+			for (JsonDto json : jsonArray) {
 				BatPrmLog batPrmLog = new BatPrmLog();
 				batPrmLog.setBatPrmStCd(BatchStatusCode.FAIL.getCode());
 				batPrmLog.setRsltMsg("연결 실패");
@@ -134,16 +137,17 @@ public class BatchServer {
 			failGrpLog.setBatGrpRtyCnt(jsonArray.get(0).getBatGrpRtyCnt());
 			logService.updateBatGrpLog(failGrpLog);
 		}
-		
+
 	}
-	
+
 	/**
 	 * Agent 서버에서 넘어온 데이터 파싱 및 로그 저장
+	 * 
 	 * @param socket
 	 */
 	public void receiveMessage(Socket socket) {
 		threadPool.execute(new Runnable() {
-			
+
 			@Override
 			public void run() {
 				try {
@@ -153,24 +157,25 @@ public class BatchServer {
 					String data = dis.readUTF();
 					JSONObject json = new JSONObject(data);
 					JSONObject message = new JSONObject(json.get("message").toString());
-					if(json.get("cmd").equals("log")) {
+					if (json.get("cmd").equals("log")) {
 						ObjectMapper mapper = new ObjectMapper();
 						BatPrmLog batPrmLog = mapper.readValue(message.toString(), BatPrmLog.class);
-						
+
 						// 프로그램 로그 DB에 저장
 						logService.updateBatPrmLog(batPrmLog);
-						
+
 						// 마지막 순번일 경우 그룹 로그 업데이트
-						if(message.get("lastYn").equals("Y")) {
-							
+						if (message.get("lastYn").equals("Y")) {
+
 							// 받은 결과가 속한 그룹 로그 조회
-							BatGrpLog batGrpLog = logService.getBatGrpLogDetail(batPrmLog.getBatGrpLogId(), batPrmLog.getBatGrpRtyCnt());
+							BatGrpLog batGrpLog = logService.getBatGrpLogDetail(batPrmLog.getBatGrpLogId(),
+									batPrmLog.getBatGrpRtyCnt());
 							// 그룹 로그의 상태코드, 배치 종료 일자를 업데이트
 							batGrpLog.setBatGrpStCd(batPrmLog.getBatPrmStCd());
 							batGrpLog.setBatEndDt(batPrmLog.getBatEndDt());
-							
+
 							// 마지막 프로그램이 실패일 경우 먼저 실행한 프로그램들 중 가장 먼저 실패한 배치 시작시간 조회
-							if(batPrmLog.getBatPrmStCd().equals(BatchStatusCode.FAIL.getCode())) {
+							if (batPrmLog.getBatPrmStCd().equals(BatchStatusCode.FAIL.getCode())) {
 								BatPrmLog firstFailLog = logService.getBatPrmLogByFirstFail(batGrpLog);
 								batGrpLog.setBatEndDt(firstFailLog.getBatEndDt());
 							}
@@ -180,14 +185,16 @@ public class BatchServer {
 
 					dis.close();
 					socket.close();
-				}catch(Exception e) {
+				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
 		});
 	}
+
 	/**
 	 * Agent 서버 배치 파일 리스트 조회
+	 * 
 	 * @param host 연결 정보
 	 * @return
 	 */
@@ -197,12 +204,12 @@ public class BatchServer {
 		List<String> pathList = new ArrayList<>();
 		try {
 			Socket socket = new Socket(host.getHostIp(), host.getHostPt());
-			
+
 			// Agent서버로 경로 요청
 			DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
-			dos.writeUTF(json.toString());  
+			dos.writeUTF(json.toString());
 			dos.flush();
-			
+
 			DataInputStream dis = new DataInputStream(socket.getInputStream());
 			String data = dis.readUTF();
 			ObjectMapper mapper = new ObjectMapper();
@@ -214,75 +221,83 @@ public class BatchServer {
 			// Agent서버 연결 실패시 경로에 '연결 실패' 추가
 			log.info("[연결 실패] Agent서버 연결에 실패해 경로를 받아올 수 없습니다.");
 			pathList.add("연결 실패");
-		} 
-		
+		}
+
 		return pathList;
 	}
-	
+
+	public JSONObject test() {
+
+		return null;
+	}
+
 	/**
-	 * 호스트의 수만큼 쓰레드를 생성해 Agent 서버의 상태 체크 
-	 * 1초마다 메소드를 재귀시켜 완료 여부를 확인 
+	 * 호스트의 수만큼 쓰레드를 생성해 Agent 서버의 상태 체크 1초마다 메소드를 재귀시켜 완료 여부를 확인
+	 * 
 	 * @param host 연결 정보
 	 * @return
 	 */
-	public JSONObject healthCheck(List<Host> hostList, int count) {
-		
-		if(count == 0) {
-			for(Host host : hostList) {
+	public Map<String, String> healthCheck(List<Host> hostList, int count) {
+		if (count == 0) {
+			for (Host host : hostList) {
 				threadPool.execute(new Runnable() {
-					
+
 					@Override
 					public void run() {
 						try {
 							JSONObject json = new JSONObject();
 							json.put("cmd", "healthCheck");
-							
+
 							Socket socket = new Socket();
 							socket.connect(new InetSocketAddress(host.getHostIp(), host.getHostPt()), 2000); // 2초후 소멸
-							log.info("[연결 시도] : " + host.getHostIp() + ":" + host.getHostPt()+"("+ host.getHostId() +")");
-							
+							log.info("[연결 시도] : " + host.getHostIp() + ":" + host.getHostPt() + "(" + host.getHostId()
+									+ ")");
+
 							// healthCheck 요청
 							DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
 							dos.writeUTF(json.toString());
 							dos.flush();
-							
+
 							// echo
 							DataInputStream dis = new DataInputStream(socket.getInputStream());
 							String data = dis.readUTF();
 							
-							if(socket.isConnected()) {
+							if (socket.isConnected()) {
 								connect.put(host.getHostId(), data);
-							}else {
+							} else {
 								connect.put(host.getHostId(), "off");
 							}
-							
+
 							dos.close();
 							dis.close();
 							socket.close();
+							log.info(connect.get(host.getHostId()));
 						} catch (Exception e) {
 							log.info("[연결 실패] : " + host.getHostIp() + ":" + host.getHostPt());
 							connect.put(host.getHostId(), "off");
-						} 
-					}	
+						}
+					}
 				});
 			}
 		}
-		
-		if(hostList.size() == connect.length()) {
-			JSONObject result = connect;
-			connect = new JSONObject();
+
+		if (hostList.size() <= connect.size() || count == 5) {
+			Map<String, String> result = connect;
+			connect = new HashMap<>();
 			return result;
-		}else {
+		} else {
 			try {
 				Thread.sleep(1000L);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
 			// 작업이 완료 안됐으면 재귀시킴
-			log.info("[메소드 재실행]" + connect.toString());
-			count ++;
+			log.info("[메소드 재실행]" + connect.toString() + " & [connect 사이즈]" + connect.size());
+			log.info("[호스트 사이즈 : " + hostList.size() + "] & [connect 사이즈 : " + connect.size() + "]" );
+			count++;
 			return healthCheck(hostList, count);
 		}
-		
+
 	}
+	
 }

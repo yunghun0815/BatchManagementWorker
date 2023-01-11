@@ -36,5 +36,6 @@ public class Host {
    
    private String lastMdfrNm;	// 최종 수정자명	      
    
-   private Date lastMdfcnDttm; // 최종 수정 일자      
+   private Date lastMdfcnDttm; // 최종 수정 일자    
+   
 }
