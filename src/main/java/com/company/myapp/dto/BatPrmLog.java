@@ -29,6 +29,8 @@ public class BatPrmLog {
 	private int excnOrd;		// 실행 순서
 	private String lastMdfrNm;	// 최종 수정자명
 	private Date lastMdfcnDttm;	// 최종 수정 일자
+	private String frstRegNm;	// 최초 등록자명
+	private Date frstRegDttm; 	// 최초 등록 일자
 	
 	/* 배치 프로그램 정보 */
 	private String batPrmNm;	// 배치 프로그램명

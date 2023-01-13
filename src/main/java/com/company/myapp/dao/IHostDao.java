@@ -31,6 +31,8 @@ public interface IHostDao {
 
 	int getHostCountBySearch(Host host);
 
+	int getBatGrpCntByHostId(String hostId);
+
 	
 
 }

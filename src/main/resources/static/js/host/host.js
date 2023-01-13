@@ -103,32 +103,75 @@ $(function(){
 		});
 	})
 	
+	// 호스트에 등록된 배치그룹 수
+	function getBatGrpCnt(hostId){
+		
+		let cnt;
+		
+		 $.ajax({
+			url: "/host/grp/cnt",
+			method: "get",
+			async: false,
+			data: {
+				hostId: hostId
+			},
+			success: function(result){
+				cnt = result;
+			}
+		});
+		return cnt;
+	}
+	
 	// 호스트 삭제
 	$(".host-delete").click(function(){
 		let hostId = $(this).parent().parent().find("input[type='hidden']").val();
+		let cnt = getBatGrpCnt(hostId);
+		
+		let message = '"'+ hostId + '"에 '+ cnt +'개의 배치 그룹이 등록되어 있습니다.';
 		
 		swal({
 		  title: "정말로 삭제하시겠습니까?",
-		  text: "삭제시 복구가 불가능합니다.",
+		  text: message,
 		  icon: "warning",
-		  buttons: true,
-		  dangerMode: true,
+		  content : {
+			  element: "input",
+			  attributes: {
+				  placeholder: "삭제를 원하시면 호스트 ID를 입력해주세요.",
+				  id: "delete-hostId"
+			  }
+		  },
+		  buttons: {
+			  삭제: {
+				  value: "delete"
+			  },
+			  취소: {
+				  value: "cancel"
+			  }
+		  }
+		  
 		})
-		.then((willDelete) => {
-		  if (willDelete) {
-		     $.ajax({
-				url: "/host/delete",
-				method: "post",
-				data: {
-					hostId: hostId
-				},
-				success: function(result){
-					console.log(result);
-				}
-			});
+		.then((value) => {
+		  if (value == "delete") {
+			 if(hostId == $("#delete-hostId").val()){
+				  $.ajax({
+					url: "/host/delete",
+					method: "post",
+					data: {
+						hostId: hostId
+					},
+					success: function(result){
+						console.log(result);
+					}
+				});
 			swal("", "삭제가 완료되었습니다.", "success").then(() => {
 				location.reload();
 			});
+			 }else{
+				 swal("아이디가 일치하지 않습니다.","","error").then(() =>{
+					$(this).trigger("click");	 
+				 });
+				
+			 }
 		  }
 		}); 
 	});

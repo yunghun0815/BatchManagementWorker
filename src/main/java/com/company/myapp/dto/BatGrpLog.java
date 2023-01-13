@@ -22,6 +22,8 @@ public class BatGrpLog {
 	private Date batEndDt;		// 배치 종료 일자
 	private String lastMdfrNm;	// 최종 수정자명
 	private Date lastMdfcnDttm;	// 최종 수정 일자
+	private String frstRegNm;	// 최초 등록자명
+	private Date frstRegDttm; 	// 최초 등록 일자
 	
 	private List<BatPrmLog> prmLogList;	// 해당 그룹 로그를 참조하는 프로그램 로그 리스트
 	
