@@ -14,19 +14,34 @@
 						<table>
 							<tr>
 								<td>
-									<span>호스트ID</span>
-									<input type="text" name="hostId">
+									<span>호스트명</span>
 								</td>
 								<td>
-									<span>호스트명</span>
-									<input type="text" name="hostNm">
+									<input type="text" name="hostNm" value="${param.hostNm}">
 								</td>
 								<td>
 									<span>아이피</span>
-									<input type="text" name="hostIp">
 								</td>	
+								<td>
+									<input type="text" name="hostIp" value="${param.hostIp}">
+								</td>
 							</tr>
 							<tr>
+								<td>
+									<span>포트</span>
+								</td>
+								<td>
+									<input type="number" name="searchPt" value="${param.searchPt}">
+								</td>
+								<td>
+									<span>사용유무</span>
+								</td>
+								<td>
+									<select name="useYn">
+										<option value="Y">Y</option>
+										<option value="N" <c:if test="${param.useYn eq 'N'}">selected</c:if>>N</option>
+									</select>
+								</td>
 								<td colspan="3" id="search-action">
 									<input class="submit-btn" type="submit" value="검색"> 
 									<input class="reset-btn" type="reset" value="취소">
@@ -63,16 +78,23 @@
 					<div>
 						<input id="error-update-hostPt" type="text" name="hostPt" value="${host.hostPt}" readonly="readonly">
 					</div>
-					<div>
-						<div class="action-icon-box">
-							<img src="/image/common/action/update.png" id="update" class="action-icon host-update">
-							<img src="/image/common/action/check.png" id="check" class="action-icon host-update-complete" style="display: none;">
+					<c:if test="${empty param.useYn or param.useYn eq 'Y'}">
+						<div>
+							<div class="action-icon-box">
+								<img src="/image/common/action/update.png" id="update" class="action-icon host-update">
+								<img src="/image/common/action/check.png" id="check" class="action-icon host-update-complete" style="display: none;">
+							</div>
+							<div class="action-icon-box">
+								<img src="/image/common/action/delete.png" id="delete" class="action-icon host-delete">
+							</div>
+	 						<input type="hidden" name="hostId" value="${host.hostId}">
 						</div>
-						<div class="action-icon-box">
-							<img src="/image/common/action/delete.png" id="delete" class="action-icon host-delete">
+					</c:if>
+					<c:if test="${not empty param.useYn and param.useYn eq 'N'}">
+						<div>
+							<button class="rollback-btn" onclick="rollback(this)">복구</button>
 						</div>
- 						<input type="hidden" name="hostId" value="${host.hostId}">
-					</div>
+					</c:if>
 				</li>
 			</c:forEach>
 			<li>
@@ -101,6 +123,18 @@
 					</div>
 				</c:if>
 			</li>
+			<c:if test="${pager.totalRows == 0}">
+				<c:if test="${empty search}">
+					<li id="empty-rows">
+						<div>등록된 호스트가 없습니다.</div>
+					</li>
+				</c:if>
+				<c:if test="${not empty search }">
+					<li id="empty-rows">
+						<div>검색하신 조건의 호스트가 존재하지 않습니다.</div>
+					</li>
+				</c:if>
+			</c:if>
 		</ul>	
 	</div>
 

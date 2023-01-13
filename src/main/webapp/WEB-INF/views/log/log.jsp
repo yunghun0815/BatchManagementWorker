@@ -20,30 +20,53 @@
 								<tr>
 									<td>
 										<span>로그ID</span>
-										<input type="text" name="batGrpLogId">
 									</td>
 									<td>
-										<span>그룹ID</span>
-										<input type="text" name="batGrpId">
+										<input type="text" name="batGrpLogId" value="${param.batGrpLogId}">
 									</td>
-									<td>
-										<span>배치결과</span>
-										<select name="batGrpStCd">
-											<option value="">선택해주세요</option>
-											<option value="BSSC">성공</option>
-											<option value="BSFL">실패</option>
-											<option value="BSRN">실행중</option>
-											<option value="BSWT">대기</option>
-										</select>
-									</td>	
 								</tr>
 								<tr>
-									<td colspan="2">
-										<span>배치시작시간</span>
-										<input type="datetime-local" name="batBgngDtStart">&nbsp;&nbsp;~&nbsp;
-										<input type="datetime-local" name="batBgngDtEnd">
+									<td>
+										<span>그룹ID</span>
 									</td>
-									<td colspan="3" id="search-action">
+									<td>
+										<input type="text" name="batGrpId" value="${param.batGrpId}">
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<span>배치결과</span>
+									</td>
+									<td>
+										<select name="batGrpStCd">
+											<option value="">전체</option>
+											<option value="BSSC" <c:if test="${param.batGrpStCd eq 'BSSC'}">selected</c:if>>성공</option>
+											<option value="BSFL" <c:if test="${param.batGrpStCd eq 'BSFL'}">selected</c:if>>실패</option>
+											<option value="BSRN" <c:if test="${param.batGrpStCd eq 'BSRN'}">selected</c:if>>실행중</option>
+											<option value="BSWT" <c:if test="${param.batGrpStCd eq 'BSWT'}">selected</c:if>>대기</option>
+										</select>
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<span>배치시작시간</span>
+									</td>
+									<td>
+										<input type="datetime-local" name="batBgngDtStart" value="${param.batBgngDtStart}">&nbsp;&nbsp;~&nbsp;
+										<input type="datetime-local" name="batBgngDtEnd" value="${param.batBgngDtEnd}">
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<span>배치종료시간</span>
+									</td>
+									<td>
+										<input type="datetime-local" name="batEndDtStart" value="${param.batEndDtStart}">&nbsp;&nbsp;~&nbsp;
+										<input type="datetime-local" name="batEndDtEnd" value="${param.batEndDtEnd}">
+									</td>
+								</tr>
+								<tr>
+									<td id="search-action" colspan="2">
 										<input class="submit-btn" type="submit" value="검색"> 
 										<input class="reset-btn" type="reset" value="취소">
 									</td>
@@ -122,6 +145,18 @@
 							</div>
 						</c:if>
 					</li>
+					<c:if test="${pager.totalRows == 0}">
+						<c:if test="${empty search}">
+							<li id="empty-rows">
+								<div>등록된 호스트가 없습니다.</div>
+							</li>
+						</c:if>
+						<c:if test="${not empty search }">
+							<li id="empty-rows">
+								<div>검색하신 조건의 로그가 존재하지 않습니다.</div>
+							</li>
+						</c:if>
+					</c:if>
 				<ul>
 			</div>
 		</div>

@@ -63,7 +63,8 @@ public class LogController {
 		// yyyy-mm-dd hh24:mm 으로 맞추기 위해 T 제거
 		log.setBatBgngDtStart(log.getBatBgngDtStart().replaceFirst("T", " "));
 		log.setBatBgngDtEnd(log.getBatBgngDtEnd().replaceFirst("T", " "));
-		
+		log.setBatEndDtStart(log.getBatEndDtStart().replaceFirst("T", " "));
+		log.setBatEndDtEnd(log.getBatEndDtEnd().replaceFirst("T", " "));
 		// 검색한 전체 그룹 로그 조회
 		int batGrpLogSize = logService.getBatGrpLogCountBySearch(log);
 		// 페이저 객체 생성

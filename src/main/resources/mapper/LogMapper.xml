@@ -283,15 +283,27 @@
 				</if>		
 		 		<if test="batBgngDtStart != '' and batBgngDtEnd == ''">
 					AND
-						to_char(bat_bgng_dt, 'yyyy-mm-dd hh24:mm') &gt;= #{batBgngDtStart}	
+						to_char(bat_bgng_dt, 'yyyy-mm-dd hh24:mi') &gt;= #{batBgngDtStart}	
 				</if>		        	
 				<if test="batBgngDtStart == '' and batBgngDtEnd != ''">
 					AND
-						to_char(bat_bgng_dt, 'yyyy-mm-dd hh24:mm') &lt;= #{batBgngDtEnd}	
+						to_char(bat_bgng_dt, 'yyyy-mm-dd hh24:mi') &lt;= #{batBgngDtEnd}	
 				</if>		        	
 				<if test="batBgngDtStart != '' and batBgngDtEnd != ''">
 					AND
-						to_char(bat_bgng_dt, 'yyyy-mm-dd hh24:mm') between #{batBgngDtStart} and #{batBgngDtEnd}	
+						to_char(bat_bgng_dt, 'yyyy-mm-dd hh24:mi') between #{batBgngDtStart} and #{batBgngDtEnd}	
+				</if>
+				<if test="batEndDtStart != '' and batEndDtEnd != ''">
+					AND
+						to_char(bat_end_dt, 'yyyy-mm-dd hh24:mi') between #{batEndDtStart} and #{batEndDtEnd}	
+				</if>		        	
+				<if test="batEndDtStart != '' and batEndDtEnd == ''">
+					AND
+						to_char(bat_end_dt, 'yyyy-mm-dd hh24:mi') &gt;= #{batEndDtStart}	
+				</if>		        	
+				<if test="batEndDtStart == '' and batEndDtEnd != ''">
+					AND
+						to_char(bat_end_dt, 'yyyy-mm-dd hh24:mi') &lt;= #{batEndDtEnd}	
 				</if>
 			ORDER BY 
         		bat_grp_log_id DESC
@@ -335,16 +347,28 @@
 				</if>		
 				<if test="log.batBgngDtStart != '' and log.batBgngDtEnd != ''">
 					AND
-						to_char(bat_bgng_dt, 'yyyy-mm-dd hh24:mm') between #{log.batBgngDtStart} and #{log.batBgngDtEnd}	
+						to_char(bat_bgng_dt, 'yyyy-mm-dd hh24:mi') between #{log.batBgngDtStart} and #{log.batBgngDtEnd}	
 				</if>		        	
 				<if test="log.batBgngDtStart != '' and log.batBgngDtEnd == ''">
 					AND
-						to_char(bat_bgng_dt, 'yyyy-mm-dd hh24:mm') &gt;= #{log.batBgngDtStart}	
+						to_char(bat_bgng_dt, 'yyyy-mm-dd hh24:mi') &gt;= #{log.batBgngDtStart}	
 				</if>		        	
 				<if test="log.batBgngDtStart == '' and log.batBgngDtEnd != ''">
 					AND
-						to_char(bat_bgng_dt, 'yyyy-mm-dd hh24:mm') &lt;= #{log.batBgngDtEnd}	
+						to_char(bat_end_dt, 'yyyy-mm-dd hh24:mi') &lt;= #{log.batBgngDtEnd}	
+				</if>
+				<if test="log.batEndDtStart != '' and log.batEndDtEnd != ''">
+					AND
+						to_char(bat_end_dt, 'yyyy-mm-dd hh24:mi') between #{log.batEndDtStart} and #{log.batEndDtEnd}	
 				</if>		        	
+				<if test="log.batEndDtStart != '' and log.batEndDtEnd == ''">
+					AND
+						to_char(bat_end_dt, 'yyyy-mm-dd hh24:mi') &gt;= #{log.batEndDtStart}	
+				</if>		        	
+				<if test="log.batEndDtStart == '' and log.batEndDtEnd != ''">
+					AND
+						to_char(bat_end_dt, 'yyyy-mm-dd hh24:mi') &lt;= #{log.batEndDtEnd}	
+				</if>
 		        ORDER BY 
 		        	bat_grp_log_id DESC
 		    )

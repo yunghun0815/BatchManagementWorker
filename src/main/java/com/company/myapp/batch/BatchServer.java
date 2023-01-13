@@ -46,7 +46,7 @@ public class BatchServer {
 	ExecutorService threadPool;
 
 	//JSONObject connect = new JSONObject();
-	Map<String, String> connect = new Hashtable<>();
+	
 	/**
 	 * 스레드풀, 서버소켓 생성 및 연결 수락
 	 * 
@@ -238,7 +238,7 @@ public class BatchServer {
 	 * @param host 연결 정보
 	 * @return
 	 */
-	public Map<String, String> healthCheck(List<Host> hostList, int count) {
+	public Map<String, String> healthCheck(List<Host> hostList, Hashtable<String, String> connect , int count) {
 		if (count == 0) {
 			for (Host host : hostList) {
 				threadPool.execute(new Runnable() {
@@ -278,7 +278,6 @@ public class BatchServer {
 
 		if (hostList.size() <= connect.size() || count == 5) {
 			Map<String, String> result = connect;
-			connect = new HashMap<>();
 			return result;
 		} else {
 			try {
@@ -289,7 +288,7 @@ public class BatchServer {
 			// 작업이 완료 안됐으면 재귀시킴
 			log.info("[메소드 재실행]" + connect.toString());
 			count++;
-			return healthCheck(hostList, count);
+			return healthCheck(hostList, connect, count);
 		}
 
 	}

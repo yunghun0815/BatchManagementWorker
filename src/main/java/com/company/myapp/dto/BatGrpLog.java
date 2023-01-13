@@ -30,4 +30,6 @@ public class BatGrpLog {
 	// 시간 검색용 필드
 	private String batBgngDtStart;
 	private String batBgngDtEnd;
+	private String batEndDtStart;
+	private String batEndDtEnd;
 }
