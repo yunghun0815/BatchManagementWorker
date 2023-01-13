@@ -47,7 +47,7 @@ th {
 						<td>
 							<input class="form-check-input" type="radio" name="cycle" id="cycle-date" value="1" checked> 
 							<label style="font-size: 14px; vertical-align: text-bottom; color: darkblue;" for="cycle-date">일자 반복</label>
-							<div style="margin-bottom: 15px;">
+							<div class="cron-date-select">
 								<select class="form-select ib width-20per" id="cron-box" name="cycle1">
 									<option value="day">매일</option>
 									<option value="week">매주</option>

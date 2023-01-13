@@ -57,8 +57,8 @@
   
   
   <insert id="insertBatGrp" parameterType="BatGrp">
-  	INSERT INTO bat_grp(bat_grp_id, bat_grp_nm, bat_grp_dsc, host_id, auto_excn_yn, cron, cron_dsc, last_mdfr_nm, last_mdfcn_dttm) 
-  	VALUES('BGR'||LPAD(SEQ_BAT_GROUP.NEXTVAL, 8, '0'), #{batGrpNm}, #{batGrpDsc}, #{hostId}, #{autoExcnYn}, #{cron}, #{cronDsc}, 'admin', sysdate)
+  	INSERT INTO bat_grp(bat_grp_id, bat_grp_nm, bat_grp_dsc, host_id, auto_excn_yn, cron, cron_dsc, frst_reg_nm, frst_reg_dttm, last_mdfr_nm, last_mdfcn_dttm) 
+  	VALUES('BGR'||LPAD(SEQ_BAT_GROUP.NEXTVAL, 8, '0'), #{batGrpNm}, #{batGrpDsc}, #{hostId}, #{autoExcnYn}, #{cron}, #{cronDsc}, 'admin', sysdate, 'admin', sysdate)
   </insert>
   
   <update id="updateBatGrp" parameterType="BatGrp">
@@ -193,8 +193,8 @@
 	WHERE use_yn='Y' and bat_prm_id = #{prmId}
   </select>
   <insert id="insertBatPrm" parameterType="BatPrm">
-  	INSERT INTO bat_prm(bat_prm_id, bat_grp_id, bat_prm_nm, path, excn_ord, param, param_dsc, last_mdfr_nm, last_mdfcn_dttm)
-  	VALUES ('PRM'||LPAD(SEQ_BAT_PRM.NEXTVAL, 8, '0'), #{batGrpId}, #{batPrmNm}, #{path}, #{excnOrd}, #{param}, #{paramDsc}, 'admin', sysdate)
+  	INSERT INTO bat_prm(bat_prm_id, bat_grp_id, bat_prm_nm, path, excn_ord, param, param_dsc,  frst_reg_nm, frst_reg_dttm, last_mdfr_nm, last_mdfcn_dttm)
+  	VALUES ('PRM'||LPAD(SEQ_BAT_PRM.NEXTVAL, 8, '0'), #{batGrpId}, #{batPrmNm}, #{path}, #{excnOrd}, #{param}, #{paramDsc}, 'admin', sysdate, 'admin', sysdate)
   </insert>
   <update id="updateBatPrm" parameterType="BatPrm">
   	UPDATE 

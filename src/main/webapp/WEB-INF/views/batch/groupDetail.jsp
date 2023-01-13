@@ -19,18 +19,18 @@ th{
 					<tr>
 	      				<th>그룹ID</th>
 	      				<td>
-	      					<input name="batGrpId" class="onlyread form-control inactive" type="text" value="" readonly>    					
+	      					<input name="batGrpId" class="onlyread form-control inactive" type="text" value="" readonly disabled>    					
 	      				</td>
 	      			</tr>
 					<tr>
 						<th>그룹명</th>
 						<td style="width: 80%;">
-							<input name="batGrpNm" class="readwrite form-control inactive" type="text" readonly>
+							<input name="batGrpNm" class="readwrite form-control inactive" type="text" disabled>
 						</td>
 					</tr>
 					<tr>
 						<th>그룹설명</th>
-						<td><input name="batGrpDsc" class="readwrite form-control inactive"  type="text" readonly></td>
+						<td><input name="batGrpDsc" class="readwrite form-control inactive"  type="text" disabled></td>
 					</tr>
 					<tr>
 						<th>호스트명(IP)</th>
@@ -51,7 +51,7 @@ th{
 					<tr>
 						<th>cron</th>
 						<td>
-							<input class="onlyread form-control inactive" type="text" name="cronView" readonly>
+							<input class="onlyread form-control inactive" type="text" name="cronView" disabled>
 							<input type="hidden" name="cron"><input type="hidden" name="cronDsc">
 						</td></tr>
 					<tr style="display:none;">
