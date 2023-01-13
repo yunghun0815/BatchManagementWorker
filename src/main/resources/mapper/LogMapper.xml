@@ -18,17 +18,15 @@
 		    bat_grp_id as batGrpId,
 		    bat_grp_st_cd as batGrpStCd,
 		    bat_bgng_dt as batBgngDt,
-		    bat_end_dt as batEndDt,
-		    last_mdfr_nm as lastMdfrNm,
-		    last_mdfcn_dttm as lastMdfcnDttm
+		    bat_end_dt as batEndDt
 		FROM (
 		    SELECT 
 		        ROWNUM as rnum, bat_grp_log_id, bat_grp_rty_cnt, bat_grp_id, 
-		        bat_grp_st_cd, bat_bgng_dt, bat_end_dt, last_mdfr_nm, last_mdfcn_dttm
+		        bat_grp_st_cd, bat_bgng_dt, bat_end_dt
 		    FROM (
 		        SELECT 
 		            bat_grp_log_id, bat_grp_rty_cnt, bat_grp_id, 
-		            bat_grp_st_cd, bat_bgng_dt, bat_end_dt, last_mdfr_nm, last_mdfcn_dttm
+		            bat_grp_st_cd, bat_bgng_dt, bat_end_dt
 		        FROM 
 		            bat_grp_log 
 		        WHERE 
@@ -54,17 +52,15 @@
 			rslt_msg as rsltMsg,
 			bat_bgng_dt as batBgngDt,
 			bat_end_dt as batEndDt,
-			excn_ord as excnOrd,
-			last_mdfr_nm as lastMdfrNm,
-			last_mdfcn_dttm as lastMdfcnDttm
+			excn_ord as excnOrd
 		FROM (
 			SELECT 
 				ROWNUM as rnum, bat_grp_log_id, bat_grp_rty_cnt, bat_prm_id, param, bat_prm_st_cd
-				rslt_msg, bat_bgng_dt, bat_end_dt, excn_ord, last_mdfr_nm, last_mdfcn_dttm
+				rslt_msg, bat_bgng_dt, bat_end_dt, excn_ord
 			FROM (
 				SELECT 
 					bat_grp_log_id, bat_grp_rty_cnt, bat_prm_id, param, bat_prm_st_cd
-					rslt_msg, bat_bgng_dt, bat_end_dt, excn_ord, last_mdfr_nm, last_mdfcn_dttm
+					rslt_msg, bat_bgng_dt, bat_end_dt, excn_ord
 				FROM
 					bat_prm_log
 				ORDER BY 
@@ -82,9 +78,7 @@
 		    bat_grp_id as batGrpId,
 		    bat_grp_st_cd as batGrpStCd,
 		    bat_bgng_dt as batBgngDt,
-		    bat_end_dt as batEndDt,
-		    last_mdfr_nm as lastMdfrNm,
-		    last_mdfcn_dttm as lastMdfcnDttm
+		    bat_end_dt as batEndDt
 		FROM
 			bat_grp_log
 		WHERE
@@ -100,9 +94,7 @@
 		    bat_grp_id as batGrpId,
 		    bat_grp_st_cd as batGrpStCd,
 		    bat_bgng_dt as batBgngDt,
-		    bat_end_dt as batEndDt,
-		    last_mdfr_nm as lastMdfrNm,
-		    last_mdfcn_dttm as lastMdfcnDttm
+		    bat_end_dt as batEndDt
 		FROM
 			bat_grp_log
 		WHERE
@@ -121,9 +113,7 @@
 			pl.rslt_msg as rsltMsg,
 			pl.bat_bgng_dt as batBgngDt,
 			pl.bat_end_dt as batEndDt,
-			pl.excn_ord as excnOrd,
-			pl.last_mdfr_nm as lastMdfrNm,
-			pl.last_mdfcn_dttm as lastMdfcnDttm,
+			pl.excn_ord as excnOrd
 			p.bat_prm_nm as batPrmNm
 		FROM
 			bat_prm_log pl
@@ -146,22 +136,22 @@
 	
 		INSERT INTO bat_grp_log(
 			bat_grp_log_id, bat_grp_rty_cnt, bat_grp_id, bat_grp_st_cd, 
-        	bat_bgng_dt, last_mdfr_nm, last_mdfcn_dttm
+        	bat_bgng_dt, last_mdfr_nm, last_mdfcn_dttm, frst_reg_nm, frst_reg_dttm
 		)
 		VALUES(
 			#{batGrpLogId}, #{batGrpRtyCnt}, #{batGrpId}, #{batGrpStCd},
-			sysdate, 'system', sysdate			
+			sysdate ,'system', sysdate, 'system', sysdate			
 		)
 	</insert>
 	  
 	<insert id="insertBatPrmLog" parameterType="BatPrmLog">
 		INSERT INTO bat_prm_log(
 			bat_grp_log_id, bat_grp_rty_cnt, bat_prm_id, param, bat_prm_st_cd,
-			excn_ord, last_mdfr_nm, last_mdfcn_dttm
+			excn_ord, last_mdfr_nm, last_mdfcn_dttm, frst_reg_nm, frst_reg_dttm
 		)
 		VALUES(
 			#{batGrpLogId}, #{batGrpRtyCnt}, #{batPrmId}, #{param}, #{batPrmStCd},
-			#{excnOrd}, 'system', sysdate
+			#{excnOrd}, 'system', sysdate, 'system', sysdate
 		)
 	</insert>  
 	
@@ -222,11 +212,11 @@
 	<insert id="insertRtyBatGrpLog" parameterType="BatGrpLog">
 		INSERT INTO bat_grp_log(
 			bat_grp_log_id, bat_grp_rty_cnt, bat_grp_id, bat_grp_st_cd, 
-        	bat_bgng_dt, last_mdfr_nm, last_mdfcn_dttm
+        	bat_bgng_dt, last_mdfr_nm, last_mdfcn_dttm, frst_reg_nm, frst_reg_dttm
 		)
 		VALUES(
 			#{batGrpLogId}, #{batGrpRtyCnt}, #{batGrpId}, #{batGrpStCd},
-			sysdate, 'system', sysdate
+			sysdate, 'system', sysdate, 'system', sysdate
 		)	
 	</insert>
 	
@@ -237,9 +227,7 @@
 		    bat_grp_id as batGrpId,
 		    bat_grp_st_cd as batGrpStCd,
 		    bat_bgng_dt as batBgngDt,
-		    bat_end_dt as batEndDt,
-		    last_mdfr_nm as lastMdfrNm,
-		    last_mdfcn_dttm as lastMdfcnDttm
+		    bat_end_dt as batEndDt
 		FROM
 			bat_grp_log
 		WHERE
@@ -258,9 +246,7 @@
 			rslt_msg as rsltMsg,
 			bat_bgng_dt as batBgngDt,
 			bat_end_dt as batEndDt,
-			excn_ord as excnOrd,
-			last_mdfr_nm as lastMdfrNm,
-			last_mdfcn_dttm as lastMdfcnDttm
+			excn_ord as excnOrd
 		FROM 
 			bat_prm_log
 		WHERE
@@ -276,7 +262,7 @@
 	    	(
 	        SELECT 
 	            bat_grp_log_id, bat_grp_rty_cnt, bat_grp_id, 
-	            bat_grp_st_cd, bat_bgng_dt, bat_end_dt, last_mdfr_nm, last_mdfcn_dttm
+	            bat_grp_st_cd, bat_bgng_dt, bat_end_dt
 	        FROM 
 	            bat_grp_log 
 	        WHERE 
@@ -320,9 +306,7 @@
 		    bat_grp_id as batGrpId,
 		    bat_grp_st_cd as batGrpStCd,
 		    bat_bgng_dt as batBgngDt,
-		    bat_end_dt as batEndDt,
-		    last_mdfr_nm as lastMdfrNm,
-		    last_mdfcn_dttm as lastMdfcnDttm
+		    bat_end_dt as batEndDt
 		FROM (
 		    SELECT 
 		        ROWNUM as rnum, bat_grp_log_id, bat_grp_rty_cnt, bat_grp_id, 
@@ -379,9 +363,7 @@
 			pl.rslt_msg as rsltMsg,
 			pl.bat_bgng_dt as batBgngDt,
 			pl.bat_end_dt as batEndDt,
-			pl.excn_ord as excnOrd,
-			pl.last_mdfr_nm as lastMdfrNm,
-			pl.last_mdfcn_dttm as lastMdfcnDttm,
+			pl.excn_ord as excnOrd
 			p.bat_prm_nm as batPrmNm
 		FROM
 			bat_prm_log pl

@@ -30,4 +30,7 @@ public interface IHostService {
 	List<Host> searchHost(Pager pager, Host host); // 호스트 검색 결과 리스트(페이징 처리)
 
 	int getHostCountBySearch(Host host); // 검색 결과에 따른 호스트 수
+
+	int getBatGrpCntByHostId(String hostId); // 호스트에 등록된 배치 그룹 수
+
 }

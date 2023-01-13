@@ -85,6 +85,11 @@ public class HostService implements IHostService{
 		return hostDao.getHostCountBySearch(host);
 	}
 
+	@Override
+	public int getBatGrpCntByHostId(String hostId) {
+		return hostDao.getBatGrpCntByHostId(hostId);
+	}
+
 
 
 }

@@ -30,20 +30,16 @@
         host_ip as hostIp, 
         host_pt as hostPt, 
         host_nm as hostNm, 
-        use_yn as useYn, 
-        last_mdfr_nm as lastMdfrNm, 
-        last_mdfcn_dttm as lastMdfcnDttm
+        use_yn as useYn
       FROM (
-        SELECT ROWNUM as rnum, host_id, host_ip, host_pt, host_nm, use_yn, last_mdfr_nm, last_mdfcn_dttm
+        SELECT ROWNUM as rnum, host_id, host_ip, host_pt, host_nm, use_yn
         FROM (
            SELECT 
-               host_id,
-            host_ip,
-            host_pt, 
-            host_nm, 
-            use_yn, 
-            last_mdfr_nm, 
-            last_mdfcn_dttm
+	           host_id,
+	           host_ip,
+	           host_pt, 
+	           host_nm, 
+	           use_yn
          FROM
             host
          WHERE 
@@ -61,9 +57,7 @@
          host_ip as hostIp, 
          host_pt as hostPt, 
          host_nm as hostNm, 
-         use_yn as useYn, 
-         last_mdfr_nm as lastMdfrNm, 
-         last_mdfcn_dttm as lastMdfcnDttm
+         use_yn as useYn
       FROM
          host
       WHERE
@@ -73,8 +67,8 @@
    </select>
    
    <insert id="insertHost" parameterType="Host">
-      INSERT INTO HOST(host_id, host_ip, host_pt, host_nm, last_mdfr_nm, last_mdfcn_dttm)
-      VALUES('HOST'||LPAD(SEQ_HOST.NEXTVAL, 8, '0'), #{hostIp}, #{hostPt}, #{hostNm}, 'admin', sysdate)
+      INSERT INTO HOST(host_id, host_ip, host_pt, host_nm, last_mdfr_nm, last_mdfcn_dttm, frst_reg_nm, frst_reg_dttm)
+      VALUES('HOST'||LPAD(SEQ_HOST.NEXTVAL, 8, '0'), #{hostIp}, #{hostPt}, #{hostNm}, 'admin', sysdate, 'admin', sysdate)
    </insert>
    
    <update id="updateHost" parameterType="Host">
@@ -120,20 +114,16 @@
         host_ip as hostIp, 
         host_pt as hostPt, 
         host_nm as hostNm, 
-        use_yn as useYn, 
-        last_mdfr_nm as lastMdfrNm, 
-        last_mdfcn_dttm as lastMdfcnDttm
+        use_yn as useYn
       FROM (
-        SELECT ROWNUM as rnum, host_id, host_ip, host_pt, host_nm, use_yn, last_mdfr_nm, last_mdfcn_dttm
+        SELECT ROWNUM as rnum, host_id, host_ip, host_pt, host_nm, use_yn
         FROM (
            SELECT 
                host_id,
             host_ip,
             host_pt, 
             host_nm, 
-            use_yn, 
-            last_mdfr_nm, 
-            last_mdfcn_dttm
+            use_yn
          FROM
             host
          WHERE 
@@ -173,5 +163,18 @@
       	AND 
       		host_nm like '%'||#{hostNm}||'%'
       </if>       		    
+   </select>
+   
+   <select id="getBatGrpCntByHostId" parameterType="String" resultType="int">
+      SELECT
+      	count(bat_grp_id)
+      FROM
+      	host h 
+      JOIN
+      	bat_grp b
+      ON
+      	h.host_id = b.host_id
+      WHERE
+      	h.host_id = #{hostId}				
    </select>
 </mapper>

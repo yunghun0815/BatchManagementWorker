@@ -7,6 +7,7 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -21,7 +22,7 @@ import lombok.Setter;
 public class Host {
    private String hostId; // 호스트 아이디	
    
-   @Pattern(regexp = "^(([1-9]?\\d|1\\d{2}|2([0-4]\\d)|25[0-5])\\.){3}([1-9]?\\d|1\\d{2}|2([0-4]\\d)|25[0-5])$", message = "아이피를 확인해주세요.")
+   @Pattern(regexp = "^(([1-9]?\\d|1\\d{2}|2([0-4]\\d)|25[0-5])\\.){3}([1-9]?\\d|1\\d{2}|2([0-4]\\d)|25[0-5])$", message = "아이피를 형식을 확인해주세요.")
    private String hostIp;	// 호스트 아이피	
    
    @NotNull(message = "포트 번호를 입력해주세요.")
@@ -29,6 +30,7 @@ public class Host {
    @Min(value = 0, message = "포트번호를 확인해주세요.")
    private int hostPt;	// 호스트 포트		
    
+   @Size(min = 1, max = 50, message = "호스트명은 50자를 넘을 수 없습니다.")
    @NotBlank(message = "호스트명을 입력해주세요.")   
    private String hostNm;	// 호스트명         
    
@@ -38,4 +40,7 @@ public class Host {
    
    private Date lastMdfcnDttm; // 최종 수정 일자    
    
+	private String frstRegNm;	// 최초 등록자명
+	
+	private Date frstRegDttm; 	// 최초 등록 일자
 }

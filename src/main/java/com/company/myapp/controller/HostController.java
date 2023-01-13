@@ -143,4 +143,13 @@ public class HostController {
 		}
 	}
 	
+	@ResponseBody
+	@GetMapping("/grp/cnt")
+	public int getBatGrpCnt(String hostId) {
+		
+		int cnt = hostService.getBatGrpCntByHostId(hostId);
+		
+		return cnt;
+	}
+	
 }
