@@ -57,7 +57,7 @@ public class JobService implements IJobService {
 		
 		List<BatGrp> batGrpList = batchService.getBatGrpList();
 		for(BatGrp vo: batGrpList) {
-			if(vo.getAutoExcnYn() == 'Y' && batchService.getBatPrmList(vo.getBatGrpId()).size()!=0) {
+			if(vo.getAutoExcnYn().equals("Y") && batchService.getBatPrmList(vo.getBatGrpId()).size()!=0) {
 				addJob(vo.getBatGrpId());
 			}
 		}

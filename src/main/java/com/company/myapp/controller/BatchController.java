@@ -1,9 +1,12 @@
 package com.company.myapp.controller;
 
+import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -45,30 +48,30 @@ public class BatchController {
 	IHostService hostService;
 	@Autowired
 	BatchServer batchServer;
-	
+
 	/*** 배치 그룹 ***/
-	
+
 	/**
 	 * 배치 관리 메뉴 메인 페이지
 	 * @param pageNo 현재페이지
 	 */
 	@GetMapping("")
 	public String getBatGrpList(@RequestParam(defaultValue = "1") int pageNo, Model model) {
-		
+
 		//데이터의 전체 행수 가져온 후 페이징 처리
 		int totalRows = batchService.getTotalGroupNum();
 		Pager pager = new Pager(8, 5, totalRows, pageNo);
-		
+
 		//현재 페이지에 맞는 데이터 가져오기
 		List<BatGrp> batGrpList = batchService.getBatGrpList(pager);
-		
+
 		//Set으로 호스트Id 중복제거 한 후 연결상태 확인 
 		Set<String> set = new HashSet<>();
 		for(BatGrp test : batGrpList) {
 			set.add(test.getHostId());
 		}
 		Map<String, String> connect = hostService.connectHost(set);
-		
+
 		//위에서 받아온 배치 그룹 리스트에 연결/실행상태 체크 후 세팅
 		for(BatGrp vo: batGrpList) {
 			String conn = connect.get(vo.getHostId()) != null ? connect.get(vo.getHostId()) : "off" ;
@@ -76,17 +79,17 @@ public class BatchController {
 			if(jobService.checkExistsJobByGrpId(vo.getBatGrpId())==true) vo.setRunCheck(true);
 			else vo.setRunCheck(false);
 		}
-		
+
 		//그룹 등록할 때 필요한 등록된 호스트 리스트
 		List<Host> hostList = hostService.getHostList();
-		
+
 		model.addAttribute("hostList", hostList);
 		model.addAttribute("pager", pager);
 		model.addAttribute("batGrpList", batGrpList);
 		model.addAttribute("menu","batch");
 		return "board";
 	}
-	
+
 	/**
 	 * 배치그룹 상세페이지 모달창(비동기 작업)
 	 * @param grpId 그룹아이디
@@ -109,20 +112,22 @@ public class BatchController {
 		batchService.insertBatGrp(vo);
 		return "redirect:/batch";
 	}
-	
+
 	/**
 	 * 배치그룹에 대한 정보 업데이트 및 Job에 대한 업데이트 실행
 	 */
 	@PostMapping("/group/update")
 	public String updateBatGrp(BatGrp vo) {
 		batchService.updateBatGrp(vo);
+		System.out.println(vo.getBatGrpId());
 		//만약 Job에 해당 그룹이 등록되어 있다면 Job에도 업데이트 실행
 		if(jobService.checkExistsJobByGrpId(vo.getBatGrpId())) {
+			System.out.println(vo.getBatGrpId());
 			jobService.updateJob(vo);
 		}
 		return "redirect:/batch";
 	}
-	
+
 	/**
 	 * 스케줄링 일시중지 후 Job에서 그룹정보 삭제한 후, 해당 배치그룹 정보를 DB에서 삭제
 	 */
@@ -136,7 +141,7 @@ public class BatchController {
 		batchService.deleteBatGrp(batGrpId);
 		return "redirect:/batch";
 	}
-	
+
 	/**
 	 * 각 속성별 키워드를 통해 검새
 	 * @param keyword 검색값
@@ -145,24 +150,51 @@ public class BatchController {
 	 */
 	@GetMapping("/group/search")
 	public String searchBatGrp(@RequestParam(defaultValue = "1") int pageNo, 
-			                          @RequestParam(value="keyword") String keyword,
-			                             @RequestParam List<String> filtering, Model model){
-		
+			BatGrp vo, Model model, HttpServletRequest request){
 		//데이터의 전체 행수 가져온 후 페이징 처리
-		int totalRows = batchService.getTotalSearchNum(keyword, filtering);
+		int totalRows = batchService.getTotalSearchNum(vo);
 		Pager pager = new Pager(5, 5, totalRows, pageNo);
 
 		//검색된 배치그룹리스트
-		List<BatGrp> searchResult = batchService.searchBatGrp(pager, keyword, filtering);	
-		
+		List<BatGrp> searchResult = batchService.searchBatGrp(pager, vo);	
+
+		//Set으로 호스트Id 중복제거 한 후 연결상태 확인 
+		Set<String> set = new HashSet<>();
+		for(BatGrp test : searchResult) {
+			set.add(test.getHostId());
+		}
+		Map<String, String> connect = hostService.connectHost(set);
+
+		//위에서 받아온 배치 그룹 리스트에 연결/실행상태 체크 후 세팅
+		for(BatGrp grpVo: searchResult) {
+			String conn = connect.get(grpVo.getHostId()) != null ? connect.get(grpVo.getHostId()) : "off" ;
+			grpVo.setConn(conn);
+			if(jobService.checkExistsJobByGrpId(grpVo.getBatGrpId())==true) grpVo.setRunCheck(true);
+			else grpVo.setRunCheck(false);
+		}
+
 		model.addAttribute("pager", pager);
 		model.addAttribute("batGrpList", searchResult);
-		return "group/batchManagment";
+
+		model.addAttribute("menu","batch");
+
+		// view 페이지 페이징 버튼 url 생성
+		StringBuilder sb = new StringBuilder();
+
+		Enumeration<String> paramKeys = request.getParameterNames();
+		while(paramKeys.hasMoreElements()) {
+			String key = paramKeys.nextElement();
+			String value = request.getParameter(key);
+			// 요청 파라미터 중 pageNo 제외 저장
+			if(!key.equals("pageNo"))sb.append("&" + key + "=" + value);
+		}
+		model.addAttribute("search", sb.toString());
+		return "board";
 	}
 
-	
+
 	/*** 배치 프로그램 ***/
-	
+
 	/**
 	 * 배치그룹Id에 등록된 전체 프로그램 리스트 가져오기(비동기작업)
 	 */
@@ -172,7 +204,7 @@ public class BatchController {
 		List<BatPrm> batPrmList = batchService.getBatPrmList(batGrpId);
 		return batPrmList;
 	}
-	
+
 	/**
 	 * 프로그램의 경우, 선택된 호스트Id별로 접근 가능한 파일 경로 리스트 return(비동기작업)
 	 */
@@ -183,9 +215,10 @@ public class BatchController {
 		Host vo = hostService.getHostByBatGrpId(batGrpId);
 		//위에서 가져온 호스트DTO를 통해 서버에서 접근 가능한 파일의 경로 리스트 가져오기
 		List<String> pathList = batchServer.getPath(vo);
+		
 		return pathList;
 	}
-	
+
 	/**
 	 * 프로그램 상세 페이지 모달창(비동기작업)
 	 */
@@ -194,7 +227,7 @@ public class BatchController {
 	public BatPrm getBatPrmDetail(@RequestParam(value="prmId")String batPrmId) {
 		return batchService.getBatPrmDetail(batPrmId);
 	}
-	
+
 	/**
 	 * 배치프로그램 등록
 	 * 등록된 후 돌아가는 페이지에 따라 향후 변동 가능성 있음
@@ -210,7 +243,7 @@ public class BatchController {
 		batchService.insertBatPrm(vo);
 		return "redirect:/batch";
 	} 
-	
+
 	/**
 	 * 배치프로그램 정보 업데이트
 	 * 수정된 후 돌아가는 페이지에 따라 향후 변동 가능성 있음
@@ -233,28 +266,25 @@ public class BatchController {
 	 */
 	@ResponseBody
 	@PostMapping("/program/update/ord")
-	public List<BatPrm> updateExcnOrd(@RequestBody BatGrp vo){
+	public void updateExcnOrd(@RequestBody BatGrp vo){
 		batchService.updateExcnOrd(vo.getPrmList());
-		return batchService.getBatPrmList(vo.getBatGrpId());
 	}
-	
+
 	/**
 	 * 등록된 프로그램을 삭제한 후 프로그램 리스트 반환
 	 * @param prmId 삭제할 프로그램Id
 	 * @param grpId 프로그램이 삭제된 후, 프로그램 순서 변동 및 프로그램 리스트 반환에 필요한 그룹Id 
 	 * @return
 	 */
-	@ResponseBody
 	@PostMapping("/program/delete")
-	public List<BatPrm> deleteBatPrm(@RequestParam(value="prmId")String batPrmId,
-										@RequestParam(value="grpId")String batGrpId) {
+	public void deleteBatPrm(@RequestParam(value="prmId")String batPrmId,
+			@RequestParam(value="grpId")String batGrpId) {
 		batchService.deleteBatPrm(batPrmId, batGrpId);
-		return batchService.getBatPrmList(batGrpId);
 	}
-	
-	
+
+
 	/*** Job ***/
-	
+
 	/**
 	 * 스케줄링 실행
 	 */
@@ -264,7 +294,7 @@ public class BatchController {
 		log.info("스케줄링 시작");
 		jobService.startSchedule();
 	}
-	
+
 	/**
 	 * 스케줄링 정지
 	 */
@@ -291,7 +321,7 @@ public class BatchController {
 		}
 	}
 
-	
+
 	/**
 	 * 그룹내 모든 프로그램 재실행
 	 * @param batGrpLogId 그룹 로그 아이디
@@ -305,7 +335,7 @@ public class BatchController {
 		log.info("전부 재실행");
 		return jobService.retryJob(param.get("batGrpLogId"), cmd, param);
 	}
-	
+
 	/**
 	 * 그룹내 실패한 프로그램 재실행
 	 * @param batGrpLogId 그룹 로그 아이디

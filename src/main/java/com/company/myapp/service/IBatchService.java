@@ -21,9 +21,9 @@ public interface IBatchService {
 	
 	public void deleteBatGrp(String batGrpId);
 
-	public List<BatGrp> searchBatGrp(Pager pager, String keyword, List<String> filtering);
+	public List<BatGrp> searchBatGrp(Pager pager, BatGrp vo);
 	
-	public int getTotalSearchNum(String keyword, List<String> filtering);
+	public int getTotalSearchNum(BatGrp vo);
 	
 	public List<BatGrp> getBatGrpList();
 	

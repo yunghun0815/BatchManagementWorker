@@ -22,9 +22,9 @@ public class BatGrp {
 	private String batGrpNm;	// 배치 그룹명
 	private String batGrpDsc;	// 배치 그룹 설명
 	private String hostId;		// 호스트 아이디
-	private char autoExcnYn;	// 자동 실행 유무
+	private String autoExcnYn;	// 자동 실행 유무
 	private String cron;		// 크론 표현식
-	private char useYn;			// 사용 유무
+	private String useYn;			// 사용 유무
 	private String lastMdfrNm;	// 최종 수정자명
 	private Date lastMdfcnDttm;	// 최종 수정 일자
 	private String cronDsc;		// 크론 설명		
