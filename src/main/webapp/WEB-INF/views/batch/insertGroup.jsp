@@ -69,19 +69,19 @@ th {
 							<input class="form-check-input" type="radio" name="cycle" id="cycle-time" value="2"> 
 							<label style="font-size: 14px; vertical-align: text-bottom; color: darkblue;" for="cycle-time">시간 반복</label>
 							<div id="add-time-box" style="margin-bottom: 15px;">
-								<input class="form-check-input align-baseline" type="radio" name="time" id="hour" value="hour" disabled> 
+								<input class="form-check-input align-baseline" type="radio" name="time" id="hour" value="hour" > 
 								<label class="form-check-label" for="hour"> 시 </label> 
-								<input class="form-check-input align-baseline" type="radio" name="time" id="min" value="min" disabled> 
+								<input class="form-check-input align-baseline" type="radio" name="time" id="min" value="min" > 
 								<label class="form-check-label" for="min"> 분 </label> 
-								<input class="form-check-input align-baseline" type="radio" name="time" id="sec" value="sec" disabled> 
+								<input class="form-check-input align-baseline" type="radio" name="time" id="sec" value="sec" > 
 								<label class="form-check-label" for="sec"> 초 </label> 
-								<input class="form-control ib width-40per" type="text" name="timeNumber" placeholder="반복할 시간을 입력해주세요" disabled>
+								<input class="form-control ib width-40per" type="text" name="timeNumber" placeholder="반복할 시간을 입력해주세요" >
 							</div> 
 					
 							<input class="form-check-input" type="radio" name="cycle" id="cycle-cron" value="3"> 
 							<label style="font-size: 14px; vertical-align: text-bottom; color: darkblue;" for="cycle-cron">크론 표현식</label>
 							<div id="add-time-box">
-								<input class="form-control ib width-50per" name="selectCron" type="text" placeholder="ex) 0/5 * * * * ?" disabled>
+								<input class="form-control ib width-50per" name="selectCron" type="text" placeholder="ex) 0/5 * * * * ?" >
 							</div>
 							
 						</td>

@@ -26,7 +26,7 @@
 					</tr>
 					<tr>
 						<th>경로</th>
-						<td><select class="form-control" name="path">
+						<td><select id="prmPath" class="form-control" name="path">
 							</select></td>
 					</tr>
 					<tr>

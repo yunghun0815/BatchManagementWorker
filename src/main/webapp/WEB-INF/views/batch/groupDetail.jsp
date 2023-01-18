@@ -19,7 +19,7 @@ th{
 					<tr>
 	      				<th>그룹ID</th>
 	      				<td>
-	      					<input name="batGrpId" class="onlyread form-control inactive" type="text" value="" readonly disabled>    					
+	      					<input name="batGrpId" class="onlyread form-control inactive" type="text" readonly disabled>    					
 	      				</td>
 	      			</tr>
 					<tr>
@@ -51,7 +51,7 @@ th{
 					<tr>
 						<th>cron</th>
 						<td>
-							<input class="onlyread form-control inactive" type="text" name="cronView" disabled>
+							<input class="onlyread form-control inactive" type="text" name="cronView" readonly disabled>
 							<input type="hidden" name="cron"><input type="hidden" name="cronDsc">
 						</td></tr>
 					<tr style="display:none;">

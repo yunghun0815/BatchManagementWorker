@@ -18,32 +18,32 @@
 				<table class="table table-bordered align-middle bg-white">
 					<tr>
 						<th>프로그램ID</th>
-						<td><input class="onlyread form-control inactive" type="text" name="batPrmId" readonly></td>
+						<td><input class="onlyread form-control inactive" type="text" name="batPrmId" readonly disabled></td>
 					</tr>
 					<tr>
 						<th>프로그램명</th>
-						<td><input class="readwrite form-control inactive" type="text" name="batPrmNm" readonly></td>
+						<td><input class="readwrite form-control inactive" type="text" name="batPrmNm" disabled ></td>
 					</tr>
 					<tr>
 						<th>그룹ID</th>
-						<td><input class="onlyread form-control inactive" type="text" name="batGrpId" readonly></td>
+						<td><input class="onlyread form-control inactive" type="text" name="batGrpId" readonly disabled></td>
 					</tr>
 					<tr>
 						<th>경로</th>
-						<td><select class="readwrite form-control inactive" name="path" disabled>
+						<td><select id="prmPath" class="readwrite form-control inactive" name="path" disabled>
 							</select></td>
 					</tr>
 					<tr>
 						<th>파라미터(Default)</th>
-						<td><input class="readwrite form-control inactive" type="text" name="param" readonly></td>
+						<td><input class="readwrite form-control inactive" type="text" name="param" disabled></td>
 					</tr>
 					<tr>
 						<th>파라미터 설명</th>
-						<td><textarea class="readwrite form-control inactive" cols="10" rows="20" name="paramDsc" readonly></textarea></td>
+						<td><textarea class="readwrite form-control inactive" cols="20" rows="10" name="paramDsc" disabled></textarea></td>
 					</tr>
 					<tr>
 						<th>실행순서</th>
-						<td><input class="onlyread form-control inactive" type="text" name="excnOrd" readonly></td>
+						<td><input class="onlyread form-control inactive" type="text" name="excnOrd" readonly disabled></td>
 					</tr>
 				</table>
 			</div>

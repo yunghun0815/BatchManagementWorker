@@ -80,91 +80,119 @@
   		bat_grp
   	SET
   		use_yn = 'N',
-    	last_mdfcn_dttm = sysdate
+    	last_mdfcn_dttm = sysdate               
   	WHERE bat_grp_id = #{grpId}
   </update>
 
   <select id="searchBatGrp" parameterType="map" resultType="BatGrp">
-  	SELECT b.rnum,
-  		   b.bat_grp_id as "batGrpId", 
-    	   b.bat_grp_nm as "batGrpNm", 
-    	   b.bat_grp_dsc as "batGrpDsc", 
-    	   b.host_id as "hostId", 
-    	   h.host_nm as "hostNm", 
-    	   h.host_ip as "hostIp", 
-    	   h.host_pt as "hostPt", 
-    	   b.auto_excn_yn as "autoExcnYn", 
-    	   b.cron as "cron",
-    	   b.cron_dsc as "cronDsc"
-	FROM ( 
-	  SELECT ROWNUM as rnum, bat_grp_id, bat_grp_nm, bat_grp_dsc, host_id, auto_excn_yn, cron, cron_dsc, use_yn 
-      FROM ( 
-      	SELECT 
-      		bat_grp_id, 
-      		bat_grp_nm, 
-      		bat_grp_dsc, 
-      		host_id, 
-      		auto_excn_yn, 
-      		cron,
-      		cron_dsc,
-      		use_yn
-        FROM 
-        	bat_grp 
-        ORDER BY bat_grp_id desc
-        ) 
-      WHERE rownum &lt;= #{pager.endRowNo}
-    ) b LEFT OUTER JOIN host h ON b.host_id=h.host_id 
-	WHERE b.use_yn='Y' and b.rnum &gt;= #{pager.startRowNo} 
-		and <foreach item="item" index="index" collection="filtering" separator="or" open="(" close=")">
-  			<choose>
-				<when test="item == 'ID'.toString()">
-					b.bat_grp_id like '%'||#{keyword}||'%'
-				</when>
-				<when test="item == 'NAME'.toString()">
-					b.bat_grp_nm like '%'||#{keyword}||'%'
-				</when>
-				<when test="item == 'DSC'.toString()">
-					b.bat_grp_dsc like '%'||#{keyword}||'%'
-				</when>
-				<when test="item == 'HNM'.toString()">
-					h.host_nm like '%'||#{keyword}||'%'
-				</when>
-				<when test="item == 'HPT'.toString()">
-					h.host_pt like '%'||#{keyword}||'%'
-				</when>
-			</choose>
-  		</foreach>
+  	SELECT 
+			b.rnum,
+			b.bat_grp_id as "batGrpId", 
+			b.bat_grp_nm as "batGrpNm", 
+			b.bat_grp_dsc as "batGrpDsc", 
+			b.host_id as "hostId", 
+			h.host_nm as "hostNm", 
+			h.host_ip as "hostIp", 
+			h.host_pt as "hostPt", 
+			b.auto_excn_yn as "autoExcnYn", 
+			b.cron as "cron",
+			b.cron_dsc as "cronDsc"
+	FROM 
+		(
+			SELECT 
+	            ROWNUM as rnum, bat_grp_id, bat_grp_nm, bat_grp_dsc, host_id, auto_excn_yn, cron, cron_dsc, use_yn 
+	        FROM 
+	            (SELECT 
+      				bat_grp_id, 
+      				bat_grp_nm, 
+      				bat_grp_dsc, 
+      				host_id, 
+      				auto_excn_yn, 
+      				cron,
+      				cron_dsc,
+      				use_yn
+        		FROM 
+        			bat_grp 
+        		ORDER BY bat_grp_id DESC)
+	        WHERE rownum &lt;= #{pager.endRowNo}
+	        	<if test="vo.batGrpNm != null and vo.batGrpNm != ''">
+					AND
+						bat_grp_nm like '%'||#{vo.batGrpNm}||'%'	
+				</if>		
+				<if test="vo.batGrpDsc != null and vo.batGrpDsc != ''">
+					AND
+						bat_grp_dsc like '%'||#{vo.batGrpDsc}||'%'	
+				</if>		
+				<if test="vo.autoExcnYn != 0 and vo.autoExcnYn != '0'">
+					AND
+						auto_excn_yn=#{vo.autoExcnYn}	
+				</if>		
+			 	<if test="vo.cronDsc != null and vo.cronDsc != ''">
+					AND
+						(cron like '%'||#{vo.cron}||'%'		
+					OR
+						cron_dsc like '%'||#{vo.cronDsc}||'%')
+				</if>		        	
+					AND
+						use_yn=#{vo.useYn}	
+		) b LEFT OUTER JOIN host h ON b.host_id=h.host_id 
+	WHERE b.rnum &gt;= #{pager.startRowNo} 
+	<if test="vo.hostNm != null and vo.hostNm != ''">
+		AND
+			(h.host_nm like '%'||#{vo.hostNm}||'%'		
+		OR
+			h.host_ip like '%'||#{vo.hostNm}||'%'	
+		OR
+			h.host_pt like '%'||#{vo.hostNm}||'%')
+	</if>		
+				
   </select>
   
-  <select id="getTotalSearchNum" parameterType="map" resultType="int">
-  	SELECT COUNT(*) 
-  		FROM bat_grp b LEFT OUTER JOIN host h 
-  			ON b.host_id=h.host_id  
-  		WHERE b.use_yn='Y' and <foreach item="item" index="index" collection="filtering" separator="or">
-  			<choose>
-				<when test="item == 'ID'.toString()">
-					b.bat_grp_id like '%'||#{keyword}||'%'
-				</when>
-				<when test="item == 'NAME'.toString()">
-					b.bat_grp_nm like '%'||#{keyword}||'%'
-				</when>
-				<when test="item == 'DSC'.toString()">
-					b.bat_grp_dsc like '%'||#{keyword}||'%'
-				</when>
-				<when test="item == 'HNM'.toString()">
-					h.host_nm like '%'||#{keyword}||'%'
-				</when>
-				<when test="item == 'HPT'.toString()">
-					h.host_pt like '%'||#{keyword}||'%'
-				</when>
-			</choose>
-  		</foreach>
+  <select id="getTotalSearchNum" parameterType="BatGrp" resultType="int">
+  	SELECT 
+			count(*)
+	FROM 
+		(
+			SELECT 
+	            bat_grp_id, bat_grp_nm, bat_grp_dsc, host_id, auto_excn_yn, cron, cron_dsc, use_yn 
+	        FROM 
+	            bat_grp
+			WHERE use_yn=#{useYn}
+		        	<if test="batGrpNm != null and batGrpNm != ''">
+						AND
+							bat_grp_nm like '%'||#{batGrpNm}||'%'	
+					</if>		
+					<if test="batGrpDsc != null and batGrpDsc != ''">
+						AND
+							bat_grp_dsc like '%'||#{batGrpDsc}||'%'	
+					</if>		
+					<if test="autoExcnYn != null and autoExcnYn != ''">
+						AND
+							auto_excn_yn=#{autoExcnYn}	
+					</if>	
+				 	<if test="cronDsc != null and cronDsc != ''">
+						AND
+							(cron like '%'||#{cron}||'%'		
+						OR
+							cron_dsc like '%'||#{cronDsc}||'%')
+					</if>	
+		) b JOIN host h ON b.host_id=h.host_id 
+	<if test="hostNm != null and hostNm != ''">
+		WHERE 
+			h.host_nm like '%'||#{hostNm}||'%'		
+		OR
+			h.host_ip like '%'||#{hostNm}||'%'	
+		OR
+			h.host_pt like '%'||#{hostNm}||'%'
+	</if>
   </select>
   
   <select id="getBatGrpList" resultType="BatGrp">
   	SELECT bat_grp_id as "batGrpId",
   			bat_grp_nm as "batGrpNm",
-  			bat_grp_dsc as "batGrpDsc"
+  			bat_grp_dsc as "batGrpDsc",
+  			auto_excn_yn as "autoExcnYn",
+  			cron
   	 FROM bat_grp
   	 WHERE use_yn='Y'
   </select>

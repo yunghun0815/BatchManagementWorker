@@ -24,10 +24,9 @@ public interface IBatchDao {
 
 	public void deleteBatGrp(String grpId);
 
-	public List<BatGrp> searchBatGrp(@Param("pager")Pager pager, @Param("keyword")String keyword, 
-			                          @Param("filtering")List<String> filtering);
+	public List<BatGrp> searchBatGrp(@Param("pager")Pager pager, @Param("vo")BatGrp vo);
 	
-	public int getTotalSearchNum(@Param("keyword")String keyword, @Param("filtering")List<String> filtering);
+	public int getTotalSearchNum(BatGrp vo);
 
 	public List<BatGrp> getBatGrpList();
 	

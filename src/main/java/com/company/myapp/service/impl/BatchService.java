@@ -85,16 +85,18 @@ public class BatchService implements IBatchService {
 	 * 검색된 그룹의 총개수 반환
 	 */
 	@Override
-	public int getTotalSearchNum(String keyword, List<String> filtering) {
-		return batchDao.getTotalSearchNum(keyword, filtering);
+	public int getTotalSearchNum(BatGrp vo) {
+		System.out.println(batchDao.getTotalSearchNum(vo));
+		return batchDao.getTotalSearchNum(vo);
 	}
 	
 	/**
 	 * 키워드로 특정 배치 그룹 검색
 	 */
 	@Override
-	public List<BatGrp> searchBatGrp(Pager pager, String keyword, List<String> filtering) {
-		List<BatGrp> resultList = batchDao.searchBatGrp(pager, keyword, filtering);
+	public List<BatGrp> searchBatGrp(Pager pager, BatGrp vo) {
+		//System.out.println(vo);
+		List<BatGrp> resultList = batchDao.searchBatGrp(pager, vo);
 		return resultList;
 	}
 
