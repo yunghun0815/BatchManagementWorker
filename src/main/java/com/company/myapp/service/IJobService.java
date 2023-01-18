@@ -1,6 +1,7 @@
 package com.company.myapp.service;
 
 import java.util.List;
+import java.util.Map;
 
 import com.company.myapp.dto.BatGrp;
 import com.company.myapp.dto.BatGrpLog;
@@ -23,7 +24,7 @@ public interface IJobService {
 	
 	void updateJob(BatGrp vo);
 	
-	String retryJob(String batGrpLogId, String cmd);
+	String retryJob(String batGrpLogId, String cmd, Map<String, String> param);
 	
 	List<BatGrpLog> retryJob(String batGrpLogId, BatGrp vo);
 

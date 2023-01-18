@@ -27,10 +27,10 @@
 								</tr>
 								<tr>
 									<td>
-										<span>그룹ID</span>
+										<span>그룹명</span>
 									</td>
 									<td>
-										<input type="text" name="batGrpId" value="${param.batGrpId}">
+										<input type="text" name="batGrpNm" value="${param.batGrpNm}">
 									</td>
 								</tr>
 								<tr>
@@ -66,6 +66,18 @@
 									</td>
 								</tr>
 								<tr>
+									<td>정렬</td>
+									<td>
+										<select name="filter">
+											<option value="">기본값(최신등록로그)</option>
+											<option value="batBgngDtASC" <c:if test="${param.filter eq 'batBgngDtASC'}">selected</c:if>>배치시작시간(최신순)</option>
+											<option value="batBgngDtDESC" <c:if test="${param.filter eq 'batBgngDtDESC'}">selected</c:if>>배치시작시간(오래된순)</option>
+											<option value="batEndDtASC" <c:if test="${param.filter eq 'batEndDtASC'}">selected</c:if>>배치종료시간(최신순)</option>
+											<option value="batEndDtDESC" <c:if test="${param.filter eq 'batEndDtDESC'}">selected</c:if>>배치종료시간(오래된순)</option>
+										</select>
+									</td>
+								</tr>
+								<tr>
 									<td id="search-action" colspan="2">
 										<input class="submit-btn" type="submit" value="검색"> 
 										<input class="reset-btn" type="reset" value="취소">
@@ -80,7 +92,7 @@
 				<ul>
 					<li class="d-flex list-header">
 						<div><span>로그ID</span></div>
-						<div><span>그룹ID</span></div>
+						<div><span>그룹명</span></div>
 						<div><span>배치결과</span></div>
 						<div><span>배치시작시간</span></div>
 						<div><span>배치종료시간</span></div>
@@ -90,8 +102,8 @@
 							<div>
 								<span>${log.batGrpLogId}</span>
 							</div>
-							<div>
-								<span>${log.batGrpId}</span>
+							<div class="grpNm">
+								<span>${log.batGrpNm}</span>
 							</div>
 							<div>
 								<c:choose>

@@ -34,4 +34,5 @@ public class BatPrmLog {
 	
 	/* 배치 프로그램 정보 */
 	private String batPrmNm;	// 배치 프로그램명
+	private String defaultParam;
 }

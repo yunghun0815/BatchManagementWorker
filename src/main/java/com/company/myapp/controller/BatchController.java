@@ -299,11 +299,11 @@ public class BatchController {
 	 */
 	@ResponseBody
 	@PostMapping("/retry/all")
-	public String retryAll(String batGrpLogId) {
+	public String retryAll(@RequestBody Map<String, String> param) {
 		// 마지막 차수 조회
 		String cmd = "all";
 		log.info("전부 재실행");
-		return jobService.retryJob(batGrpLogId, cmd);
+		return jobService.retryJob(param.get("batGrpLogId"), cmd, param);
 	}
 	
 	/**
@@ -313,10 +313,10 @@ public class BatchController {
 	 */	
 	@ResponseBody
 	@PostMapping("/retry/fail")
-	public String retryFail(String batGrpLogId) {
+	public String retryFail(String batGrpLogId,  Map<String, String> param) {
 		String cmd = "fail";
 		log.info("실패한것만 재실행");
-		return jobService.retryJob(batGrpLogId, cmd);
+		return jobService.retryJob(batGrpLogId, cmd, param);
 	}
 
 }

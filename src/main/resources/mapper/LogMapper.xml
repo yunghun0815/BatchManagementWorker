@@ -15,20 +15,25 @@
 		    rnum,
 		    bat_grp_log_id as batGrpLogId,
 		    bat_grp_rty_cnt as batGrpRtyCnt,
-		    bat_grp_id as batGrpId,
+		    bat_grp_nm as batGrpNm,
 		    bat_grp_st_cd as batGrpStCd,
 		    bat_bgng_dt as batBgngDt,
-		    bat_end_dt as batEndDt
+		    bat_end_dt as batEndDt,
+		    bat_grp_nm as batGrpNm
 		FROM (
 		    SELECT 
 		        ROWNUM as rnum, bat_grp_log_id, bat_grp_rty_cnt, bat_grp_id, 
 		        bat_grp_st_cd, bat_bgng_dt, bat_end_dt
 		    FROM (
 		        SELECT 
-		            bat_grp_log_id, bat_grp_rty_cnt, bat_grp_id, 
-		            bat_grp_st_cd, bat_bgng_dt, bat_end_dt
+		            l.bat_grp_log_id, l.bat_grp_rty_cnt, l.bat_grp_id, 
+		            l.bat_grp_st_cd, l.bat_bgng_dt, l.bat_end_dt, g.bat_grp_nm
 		        FROM 
-		            bat_grp_log 
+		            bat_grp_log l
+		        JOIN
+		        	bat_grp g
+		        ON
+		        	l.bat_grp_id = g.bat_grp_id	    
 		        WHERE 
 		            (bat_grp_log_id, bat_grp_rty_cnt)
 		        IN 
@@ -37,8 +42,13 @@
 		        	bat_grp_log_id DESC
 		    )
 		    WHERE rownum &lt;= #{endRowNo}  
-		)
+		) l
+		JOIN
+        	bat_grp g
+        ON
+        	l.bat_grp_id = g.bat_grp_id
 		WHERE rnum &gt;= #{startRowNo} 
+		ORDER BY bat_grp_log_id DESC
 	</select>  
 	  
 	<select id="getBatPrmLogList" parameterType="Pager" resultType="BatPrmLog">
@@ -113,7 +123,7 @@
 			pl.rslt_msg as rsltMsg,
 			pl.bat_bgng_dt as batBgngDt,
 			pl.bat_end_dt as batEndDt,
-			pl.excn_ord as excnOrd
+			pl.excn_ord as excnOrd,
 			p.bat_prm_nm as batPrmNm
 		FROM
 			bat_prm_log pl
@@ -318,17 +328,22 @@
 		    bat_grp_id as batGrpId,
 		    bat_grp_st_cd as batGrpStCd,
 		    bat_bgng_dt as batBgngDt,
-		    bat_end_dt as batEndDt
+		    bat_end_dt as batEndDt,
+		    bat_grp_nm as batGrpNm
 		FROM (
 		    SELECT 
 		        ROWNUM as rnum, bat_grp_log_id, bat_grp_rty_cnt, bat_grp_id, 
-		        bat_grp_st_cd, bat_bgng_dt, bat_end_dt, last_mdfr_nm, last_mdfcn_dttm
+		        bat_grp_st_cd, bat_bgng_dt, bat_end_dt, last_mdfr_nm, last_mdfcn_dttm, bat_grp_nm
 		    FROM (
 		        SELECT 
-		            bat_grp_log_id, bat_grp_rty_cnt, bat_grp_id, 
-		            bat_grp_st_cd, bat_bgng_dt, bat_end_dt, last_mdfr_nm, last_mdfcn_dttm
+		            l.bat_grp_log_id, l.bat_grp_rty_cnt, l.bat_grp_id, 
+		            l.bat_grp_st_cd, l.bat_bgng_dt, l.bat_end_dt, l.last_mdfr_nm, l.last_mdfcn_dttm, bat_grp_nm
 		        FROM 
-		            bat_grp_log 
+		            bat_grp_log l
+				JOIN
+		        	bat_grp g
+		        ON
+		        	l.bat_grp_id = g.bat_grp_id
 		        WHERE 
 	            	(bat_grp_log_id, bat_grp_rty_cnt)
 	       	 	IN 
@@ -337,9 +352,9 @@
 					AND
 						bat_grp_log_id like '%'||#{log.batGrpLogId}||'%'	
 				</if>		
-				<if test="log.batGrpId != null">
+				<if test="log.batGrpNm != null">
 					AND
-						bat_grp_id like '%'||#{log.batGrpId}||'%'	
+						bat_grp_nm like '%'||#{log.batGrpNm}||'%'	
 				</if>		
 				<if test="log.batGrpStCd != null">
 					AND
@@ -369,8 +384,24 @@
 					AND
 						to_char(bat_end_dt, 'yyyy-mm-dd hh24:mi') &lt;= #{log.batEndDtEnd}	
 				</if>
-		        ORDER BY 
-		        	bat_grp_log_id DESC
+				ORDER BY
+				<choose>
+					<when test="log.filter == 'batBgngDtASC'">
+						bat_bgng_dt  				
+					</when>
+					<when test="log.filter == 'batBgngDtDESC'">
+						bat_bgng_dt DESC  				
+					</when>
+					<when test="log.filter == 'batEndDtASC'">
+						bat_end_dt   				
+					</when>
+					<when test="log.filter == 'batEndDtDESC'">
+						bat_end_dt DESC  				
+					</when>
+					<otherwise> 
+	        			bat_grp_log_id DESC
+					</otherwise>
+				</choose>
 		    )
 		    WHERE rownum &lt;= #{pager.endRowNo}  
 		)
@@ -382,13 +413,14 @@
 			pl.bat_grp_log_id as batGrpLogId,
 			pl.bat_grp_rty_cnt as batGrpRtyCnt,
 			pl.bat_prm_id as batPrmId,
-			pl.param,
+			pl.param as param,
 			pl.bat_prm_st_cd as batPrmStCd,
 			pl.rslt_msg as rsltMsg,
 			pl.bat_bgng_dt as batBgngDt,
 			pl.bat_end_dt as batEndDt,
-			pl.excn_ord as excnOrd
-			p.bat_prm_nm as batPrmNm
+			pl.excn_ord as excnOrd,
+			p.bat_prm_nm as batPrmNm,
+			p.param as defaultParam
 		FROM
 			bat_prm_log pl
 		JOIN

@@ -8,7 +8,6 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
@@ -19,6 +18,8 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.company.myapp.batch.code.BatchStatusCode;
+import com.company.myapp.batch.code.CommandCode;
 import com.company.myapp.dto.BatGrpLog;
 import com.company.myapp.dto.BatPrmLog;
 import com.company.myapp.dto.Host;
@@ -37,7 +38,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Component
 public class BatchServer {
-
+	
 	@Autowired
 	ILogService logService;
 
@@ -110,7 +111,7 @@ public class BatchServer {
 
 			// cmd, message 담아 전송
 			JSONObject json = new JSONObject();
-			json.put("cmd", "run");
+			json.put("cmd", CommandCode.RUN.getCode());
 			json.put("message", jsonArray);
 			String sendDataStr = json.toString();
 
@@ -153,15 +154,20 @@ public class BatchServer {
 			public void run() {
 				try {
 					DataInputStream dis = new DataInputStream(socket.getInputStream());
-					log.info("데이터 받음");
 					// Agent 서버에서 넘어온 결과 DTO에 저장
 					String data = dis.readUTF();
+					
 					JSONObject json = new JSONObject(data);
 					JSONObject message = new JSONObject(json.get("message").toString());
-					if (json.get("cmd").equals("log")) {
+					if (json.get("cmd").equals(CommandCode.LOG.getCode())) {
 						ObjectMapper mapper = new ObjectMapper();
 						BatPrmLog batPrmLog = mapper.readValue(message.toString(), BatPrmLog.class);
-
+						
+						if(batPrmLog.getBatPrmId() == null) throw new Exception();
+						
+						log.info("로그ID: '{}' / 프로그램ID: '{}' {}회차 로그가 저장되었습니다.", 
+								batPrmLog.getBatGrpLogId(), batPrmLog.getBatPrmId(), batPrmLog.getBatGrpRtyCnt()+1);
+						
 						// 프로그램 로그 DB에 저장
 						logService.updateBatPrmLog(batPrmLog);
 
@@ -187,7 +193,7 @@ public class BatchServer {
 					dis.close();
 					socket.close();
 				} catch (Exception e) {
-					e.printStackTrace();
+					log.error("[로그 저장 에러] {}", e.getMessage());
 				}
 			}
 		});
@@ -201,7 +207,7 @@ public class BatchServer {
 	 */
 	public List<String> getPath(Host host) {
 		JSONObject json = new JSONObject();
-		json.put("cmd", "path");
+		json.put("cmd", CommandCode.PATH.getCode());
 		List<String> pathList = new ArrayList<>();
 		try {
 			Socket socket = new Socket();
@@ -209,18 +215,18 @@ public class BatchServer {
 			// Agent서버로 경로 요청
 			DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
 			dos.writeUTF(json.toString());
-			dos.flush();
-
+			
 			DataInputStream dis = new DataInputStream(socket.getInputStream());
 			String data = dis.readUTF();
 			ObjectMapper mapper = new ObjectMapper();
 			pathList = mapper.readValue(data, List.class); // 경로 저장
-			dos.close();
+			
 			dis.close();
+			dos.close();
 			socket.close();
 		} catch (Exception e) {
 			// Agent서버 연결 실패시 경로에 '연결 실패' 추가
-			log.info("[연결 실패] Agent서버 연결에 실패해 경로를 받아올 수 없습니다.");
+			log.error("[PATH 요청 에러] {}", e.getMessage());
 			pathList.add("연결 실패");
 		}
 
@@ -247,12 +253,10 @@ public class BatchServer {
 					public void run() {
 						try {
 							JSONObject json = new JSONObject();
-							json.put("cmd", "healthCheck");
+							json.put("cmd", CommandCode.CHECK.getCode());
 
 							Socket socket = new Socket();
 							socket.connect(new InetSocketAddress(host.getHostIp(), host.getHostPt()), 2000); // 2초후 소멸
-							log.info("[연결 시도] : " + host.getHostIp() + ":" + host.getHostPt() + "(" + host.getHostId()
-									+ ")");
 
 							// healthCheck 요청
 							DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
@@ -268,7 +272,6 @@ public class BatchServer {
 							dis.close();
 							socket.close();
 						} catch (Exception e) {
-							log.info("[연결 실패] : " + host.getHostIp() + ":" + host.getHostPt());
 							connect.put(host.getHostId(), "off");
 						}
 					}
@@ -286,7 +289,6 @@ public class BatchServer {
 				e.printStackTrace();
 			}
 			// 작업이 완료 안됐으면 재귀시킴
-			log.info("[메소드 재실행]" + connect.toString());
 			count++;
 			return healthCheck(hostList, connect, count);
 		}
