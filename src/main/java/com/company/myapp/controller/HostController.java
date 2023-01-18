@@ -62,7 +62,9 @@ public class HostController {
 	 */
 	@GetMapping("/search")
 	public String searchHost(@RequestParam(defaultValue = "1") int pageNo, Host host, Model model, HttpServletRequest request) {
-		
+		if(host.getSearchPt() != null && !host.getSearchPt().equals("")) {
+			host.setHostPt(Integer.parseInt(host.getSearchPt()));
+		}
 		
 		// 검색한 전체 호스트 수
 		int hostSize = hostService.getHostCountBySearch(host);
@@ -152,4 +154,13 @@ public class HostController {
 		return cnt;
 	}
 	
+	@ResponseBody
+	@PostMapping("/rollback")
+	public void rollback(String hostId) {
+		
+		Host host = new Host();
+		host.setHostId(hostId);
+		host.setUseYn('Y');
+		hostService.updateHost(host);
+	}
 }

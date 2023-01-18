@@ -75,9 +75,18 @@
       UPDATE 
          host
       SET 
-         host_ip = #{hostIp},
-         host_pt = #{hostPt},
-         host_nm = #{hostNm},
+      	<if test="hostIp != null and hostIp != ''">
+         	host_ip = #{hostIp},
+      	</if>
+      	<if test="hostPt != null and hostPt != 0">
+         	host_pt = #{hostPt},
+         </if>
+         <if test="hostNm != null and hostNm != ''">
+         	host_nm = #{hostNm},
+         </if>
+         <if test="useYn != null and useYn != ''">
+         	use_yn = #{useYn},
+         </if>
          last_mdfcn_dttm = sysdate
       WHERE
          host_id = #{hostId}
@@ -127,15 +136,15 @@
          FROM
             host
          WHERE 
-            use_yn = 'Y'
-       	<if test="host.hostId != null and host.hostId != ''">
-    		AND	host_id like '%'||#{host.hostId}||'%'	
-    	</if>   
+            use_yn = #{host.useYn}
     	<if test="host.hostIp != null and host.hostIp != ''">
     		AND	host_ip like '%'||#{host.hostIp}||'%' 
      	</if>   
   	    <if test="host.hostNm != null and host.hostNm != ''">
   	 		AND	host_nm like '%'||#{host.hostNm}||'%'
+   	 	</if>
+  	    <if test="host.hostPt != null and host.hostPt != '' and host.hostPt != 0">
+  	 		AND	host_pt = #{host.hostPt}
    	 	</if>
          ORDER BY host_id DESC
         )
@@ -150,11 +159,7 @@
       FROM 
       	host
       WHERE 
-      	use_yn = 'Y' 
-      <if test="hostId != null">
-      	AND
-      		host_id like '%'||#{hostId}||'%'	
-      </if>   
+      	use_yn = #{useYn} 
       <if test="hostIp != null">
       	AND
       		host_ip like '%'||#{hostIp}||'%' 
@@ -162,7 +167,10 @@
       <if test="hostNm != null">
       	AND 
       		host_nm like '%'||#{hostNm}||'%'
-      </if>       		    
+      </if>   
+	  <if test="hostPt != null and hostPt != '' and hostPt != 0">
+ 	 	AND	host_pt = #{hostPt}
+  	  </if>          		    
    </select>
    
    <select id="getBatGrpCntByHostId" parameterType="String" resultType="int">

@@ -1,9 +1,9 @@
+
 /**
  * 호스트 관련 자바스크립트
  */
 
 import * as util from '../util.js';
- 
 $(function(){
 	
 	//호스트 등록 함수
@@ -35,7 +35,7 @@ $(function(){
 		
 		$.ajax({
 			url: "/host/insert",
-			method: "post",
+			type: "post",
 			data: {
 				hostNm: e.target.hostNm.value,
 				hostIp: e.target.hostIp.value,
@@ -80,7 +80,7 @@ $(function(){
 		const input = $(this).closest(".content-main").find("input");
 		$.ajax({
 			url: "/host/update",
-			method: "post",
+			type: "post",
 			data: {
 				hostNm: input.eq(0).val(),
 				hostIp: input.eq(1).val(),
@@ -91,9 +91,9 @@ $(function(){
 				if(result.length > 0){
 					// 에러메세지
 					//alert(result[0]['defaultMessage']);
-					swal("[수정 실패] " + result[0]['defaultMessage']);
+					swal("수정 실패 ",result[0]['defaultMessage'],"error");
 				}else{
-					swal("수정에 성공하였습니다");
+					swal("수정이 완료되었습니다.","", "success");
 					e.hide();
 					e.prev().show();
 					input.removeAttr("readonly", "true");
@@ -102,7 +102,6 @@ $(function(){
 			}
 		});
 	})
-	
 	// 호스트에 등록된 배치그룹 수
 	function getBatGrpCnt(hostId){
 		
@@ -110,7 +109,7 @@ $(function(){
 		
 		 $.ajax({
 			url: "/host/grp/cnt",
-			method: "get",
+			type: "get",
 			async: false,
 			data: {
 				hostId: hostId
@@ -155,7 +154,7 @@ $(function(){
 			 if(hostId == $("#delete-hostId").val()){
 				  $.ajax({
 					url: "/host/delete",
-					method: "post",
+					type: "post",
 					data: {
 						hostId: hostId
 					},
@@ -167,7 +166,7 @@ $(function(){
 				location.reload();
 			});
 			 }else{
-				 swal("아이디가 일치하지 않습니다.","","error").then(() =>{
+				 swal("삭제 실패","아이디가 일치하지 않습니다.","error").then(() =>{
 					$(this).trigger("click");	 
 				 });
 				
@@ -176,5 +175,20 @@ $(function(){
 		}); 
 	});
 	
-
+	
+	// 복구
+	$(".rollback-btn").click(function(){
+		const hostId = $(this).closest(".content-main").find("div:first-child span").text();
+		console.log(hostId);
+		$.ajax({
+			url: "/host/rollback",
+			type: "post",
+			data:{
+				hostId : hostId
+			},
+			success: function(){
+				swal("복구가 완료되었습니다.","", "success").then(() => location.reload());
+			}
+		});
+	});
 });

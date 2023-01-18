@@ -1,6 +1,7 @@
 package com.company.myapp.service.impl;
 
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -68,7 +69,7 @@ public class HostService implements IHostService{
 			hostList.add(hostDao.getHostDetail(hostId));
 		}
 		
-		Map<String ,String> connect = batchServer.healthCheck(hostList, 0);
+		Map<String ,String> connect = batchServer.healthCheck(hostList, new Hashtable<String,String>(), 0);
 		
 		
 		return connect;

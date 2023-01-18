@@ -250,6 +250,26 @@
 	left: 287px;
 }
 
+#title-action-box #search-box{
+	width: 490px;
+    right: 37px;
+    bottom: -285px;
+}
+#title-action-box #search-box input[type="text"], #title-action-box #search-box select{
+	width: 327px;
+}
+#title-action-box #search-box input[type="datetime-local"]{
+	font-size:10px;
+	font-weight: bold;
+	text-align: center;
+} 
+#title-action-box #search-box tr td:first-child{
+	width: 120px;	
+}
+#title-action-box #search-box tr td:last-child{
+	padding-right: 10px;
+}
+
 /* 모달창 */
 #detail-log-modal .log-detail td{
 	text-align: center;
