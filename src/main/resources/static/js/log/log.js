@@ -50,7 +50,7 @@ function toggleProgram(e){
 							</tr>
 							<tr>
 								<th>프로그램명</th>
-								<td>` + batPrmLog['batPrmNm'] + `</td>
+								<td class="batPrmNm">` + batPrmLog['batPrmNm'] + `</td>
 							</tr>
 							<tr>
 								<th>실행결과</th>
@@ -100,8 +100,7 @@ function groupDetail(e){
 			const batPrmLogList = result['batPrmLogList'];
 			const batGrpLog = result['batGrpLog'];
 			
-			let btn = '<img class="restart-btn" src="/image/reload.png" onclick="restart(this)">';
-			
+			let btn = '<img class="restart-btn" src="/image/common/action/restart.png" onclick="restart(this)">';
 			// 마지막차수 실패면 재실행버튼 생성
 			btn = batGrpLog[batGrpLog.length-1]['batGrpStCd'] == '실패' ? btn : btn='';  
 			let view = `
@@ -122,7 +121,7 @@ function groupDetail(e){
 						</tr>
 						<tr>
 							<th>프로그램명</th>
-							<td>테스트</td>
+							<td class="batPrmNm">`+ batPrmLogList[i]['batPrmNm'] +`</td>
 						</tr>
 						<tr>
 							<th>실행결과</th>
@@ -203,7 +202,6 @@ function programDetail(e){
 // 배치 재실행 (Sweet Alert 라이브러리 사용)
 function restart(e){
 	const batGrpLogId = $(e).prev().text();
-	console.log(batGrpLogId);
 	
 	swal("재실행할 범위를 지정해 주세요", {
 		buttons: {
@@ -222,33 +220,105 @@ function restart(e){
   		switch (value) {
  
 			case "all":
-				$.ajax({
-				 	url: "/batch/retry/all?batGrpLogId=" + batGrpLogId,
-				 	type: "POST",
-				 	success: function(result){
-						console.log(result);
-			 			} 
-		  		});
-				swal("", "그룹이 재실행되었습니다.", "success")
-      			.then(() => {
-					location.reload();  
-	  			});
+				
+				// 해당 그룹 로그의 0회차 프로그램 리스트
+				let batPrmLogList = getBatPrmLogListByGrpLog(batGrpLogId,0);
+				
+				restartFailLog(batGrpLogId, batPrmLogList);
       		break;
  
 			case "onlyFail":
-				$.ajax({
-				 	url: "/batch/retry/fail?batGrpLogId=" + batGrpLogId,
-				 	type: "POST",
-				 	success: function(result){
-						console.log(result);
-			 			} 
-		  		});
-		      	swal("", "실패한 프로그램이 재실행되었습니다.", "success")
-		      	.then(() => {
-				  location.reload();
-		  		});
+				let batGrpRtyCnt = $(".rty-list").length;
+				batGrpRtyCnt = batGrpRtyCnt == 0 ? 0 : batGrpRtyCnt-1;
+				// 해당 그룹 로그의 0회차 프로그램 리스트
+				let failPrmLogList = getBatPrmLogListByGrpLog(batGrpLogId,batGrpRtyCnt);
+				
+				restartFailLog(batGrpLogId, failPrmLogList);
+			
 	      		break;
 	      		
 		}
 	});
+}
+
+/**
+	재실행 요청 함수
+	@param batGrplogId = 배치 그룹 로그 아이디
+	@param failPrmLogList = 원하는 회차의 프로그램 로그 리스트
+ */
+function restartFailLog(batGrpLogId, failPrmLogList){
+	// 파라미터 입력 form 생성
+	let failDiv = document.createElement("div");
+	failDiv.id = "param-box";
+	failPrmLogList.forEach((e)=>{
+		let p = document.createElement("p");
+		let span = document.createElement("span");
+		span.innerText = e.batPrmNm;
+		let input = document.createElement("input");
+		input.id = e.batPrmId;
+		input.value = e.defaultParam != null ? e.defaultParam : '';
+		p.append(span, input);
+		failDiv.append(p);
+	});
+	
+	
+	swal({
+	  title: "파라미터를 입력해주세요.",
+	  text: "현재 입력된 값은 프로그램에 등록된 파라미터입니다.",
+	  icon: "info",
+	  content: failDiv,
+	  buttons: {
+		  재실행: {
+			  value: "restart"
+		  },
+		  취소: {
+			  value: "cancel"
+		  }
+	  }
+	  
+	})
+	.then((value) => {
+		if(value == "restart"){
+			let param = {batGrpLogId: batGrpLogId};
+			
+			$("#param-box p").each((index, element)=>{
+				let id = $(element).find("input").prop("id");
+				let val = $(element).find("input").val();
+				param[id] = val;	
+			});
+			console.log(param);
+			$.ajax({
+			 	url: "/batch/retry/all",
+			 	type: "POST",
+			 	contentType: "application/json; charset=utf-8",
+			 	data: JSON.stringify(param),	 
+			 	success: function(result){
+					console.log(result);
+		 			} 
+	  		});
+			swal("", "그룹이 재실행되었습니다.", "success")
+  			.then(() => {
+				location.reload();  
+  			});
+			
+			swal("", "재실행이 완료되었습니다.", "success").then(() => {
+				location.reload();
+			});
+		}
+	});
+}
+
+// 그룹 로그 회차별 배치 프로그램 리스트
+function getBatPrmLogListByGrpLog(batGrpLogId, batGrpRtyCnt){
+	let programList;
+	
+	$.ajax({
+		url: "/log/group/detail/retry?batGrpLogId="+batGrpLogId+"&batGrpRtyCnt="+batGrpRtyCnt,
+		type: "GET",
+		async: false,
+		success: function(result){
+			programList = result;
+		}
+	});
+	return programList;
 }

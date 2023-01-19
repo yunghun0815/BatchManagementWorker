@@ -29,4 +29,6 @@ public class JsonDto {
 	private Date batBgngDt;		// 배치 시작 시간
 	private Date batEndDt;		// 배치 종료 시간
 	private String lastYn;		// 마지막 체크
+	
+	private String[] adminEmail = {"yunghun0815@gmail.com", "nayoungkim90@gmail.com"}; // 통신 오류시 결과 보낼 관리자 이메일 -> 추후 회원 기능 추가시 삭제될 필드
 }

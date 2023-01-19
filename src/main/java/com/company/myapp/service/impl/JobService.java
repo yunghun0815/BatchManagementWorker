@@ -2,6 +2,7 @@ package com.company.myapp.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.quartz.CronScheduleBuilder;
 import org.quartz.CronTrigger;
@@ -17,7 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.company.myapp.batch.AgentJob;
-import com.company.myapp.batch.BatchStatusCode;
+import com.company.myapp.batch.code.BatchStatusCode;
 import com.company.myapp.dao.IBatchDao;
 import com.company.myapp.dao.ILogDao;
 import com.company.myapp.dto.BatGrp;
@@ -267,7 +268,7 @@ public class JobService implements IJobService {
 	 * 프로그램 단위로 Job 재실행(수동)
 	 */
 	@Override
-	public String retryJob(String batGrpLogId, String cmd) {
+	public String retryJob(String batGrpLogId, String cmd, Map<String, String> param) {
 		BatGrp vo = batchDao.getBatGrpByGrpLogId(batGrpLogId);
 		List<BatPrm> list = new ArrayList<>();
 		String result = "성공";
@@ -279,6 +280,11 @@ public class JobService implements IJobService {
 		}else if(cmd.equals("fail")) {		// 실패한것만 재실행 -> 그룹 + 실패한 프로그램
 			list = batchDao.getBatPrmListByFailLogId(batGrpLogId);
 		}
+		
+		for(BatPrm prm : list) {
+			prm.setParam(param.get(prm.getBatPrmId()));
+		}
+		
 		vo.setPrmList(list);
 		agentJob.rtyExecute(batGrpLogId, vo, rtyCnt);
 		return result;

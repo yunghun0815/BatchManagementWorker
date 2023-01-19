@@ -15,10 +15,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.company.myapp.batch.BatchStatusCode;
+import com.company.myapp.batch.code.BatchStatusCode;
 import com.company.myapp.dto.BatGrpLog;
 import com.company.myapp.dto.BatPrmLog;
 import com.company.myapp.dto.Pager;
+import com.company.myapp.service.IBatchService;
 import com.company.myapp.service.ILogService;
 
 @Controller
@@ -27,6 +28,9 @@ public class LogController {
 	
 	@Autowired
 	ILogService logService;
+	
+	@Autowired
+	IBatchService batchService;
 	
 	/**
 	 * 로그 관리 페이지
@@ -60,6 +64,7 @@ public class LogController {
 	 */
 	@GetMapping("/search")
 	public String searchBatGrpLog(@RequestParam(defaultValue = "1") int pageNo, BatGrpLog log, Model model, HttpServletRequest request) {
+		
 		// yyyy-mm-dd hh24:mm 으로 맞추기 위해 T 제거
 		log.setBatBgngDtStart(log.getBatBgngDtStart().replaceFirst("T", " "));
 		log.setBatBgngDtEnd(log.getBatBgngDtEnd().replaceFirst("T", " "));
@@ -141,4 +146,5 @@ public class LogController {
 		
 		return batPrmLog;
 	}
+	
 }

@@ -1,4 +1,4 @@
-package com.company.myapp.batch;
+package com.company.myapp.batch.code;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

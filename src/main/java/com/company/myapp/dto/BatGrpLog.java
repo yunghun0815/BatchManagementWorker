@@ -2,6 +2,7 @@ package com.company.myapp.dto;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -25,6 +26,8 @@ public class BatGrpLog {
 	private String frstRegNm;	// 최초 등록자명
 	private Date frstRegDttm; 	// 최초 등록 일자
 	
+	private String batGrpNm; // 배치 그룹명
+	
 	private List<BatPrmLog> prmLogList;	// 해당 그룹 로그를 참조하는 프로그램 로그 리스트
 	
 	// 시간 검색용 필드
@@ -32,4 +35,7 @@ public class BatGrpLog {
 	private String batBgngDtEnd;
 	private String batEndDtStart;
 	private String batEndDtEnd;
+	
+	// 정렬 필드
+	private String filter;
 }

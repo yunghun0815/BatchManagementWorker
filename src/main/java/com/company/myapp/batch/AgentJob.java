@@ -10,6 +10,7 @@ import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.company.myapp.batch.code.BatchStatusCode;
 import com.company.myapp.dto.BatGrp;
 import com.company.myapp.dto.BatGrpLog;
 import com.company.myapp.dto.BatPrm;

@@ -36,6 +36,9 @@
 .group div {
 	text-align: center;
 }
+.group .grpNm{ 
+	overflow: hidden;
+}
 .group:hover {
 	cursor: pointer;
 	border: 2px solid #79c2cc;
@@ -93,10 +96,10 @@
 	position: relative;
 }
 .sub-content .restart-btn{ /* 재실행 버튼  */
-	position: absolute;
-    width: 25px;
-    left: 343px;
-    bottom: -2px;
+    position: absolute;
+    width: 28px;
+    left: 341px;
+    bottom: -8px;
     cursor: pointer;
 }
 
@@ -287,3 +290,16 @@
 .swal-footer .swal-button-container:nth-child(3) .swal-button{ /* 취소버튼  */
 	background-color: #efefef;
 } 
+#param-box span{
+	text-align: left;
+    display: inline-block;
+    width: 110px;
+    overflow: hidden;
+    margin-right: 10px;
+    height: 25px;
+    vertical-align: middle;
+}
+#param-box input{
+	padding-left: 10px;
+	
+}
