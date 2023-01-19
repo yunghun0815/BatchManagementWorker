@@ -7,10 +7,13 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -82,7 +85,8 @@ public class BatchController {
 
 		//그룹 등록할 때 필요한 등록된 호스트 리스트
 		List<Host> hostList = hostService.getHostList();
-
+		
+		model.addAttribute("group", new BatGrp());
 		model.addAttribute("hostList", hostList);
 		model.addAttribute("pager", pager);
 		model.addAttribute("batGrpList", batGrpList);
@@ -107,10 +111,14 @@ public class BatchController {
 	/**
 	 * 배치그룹 등록
 	 */
+	@ResponseBody
 	@PostMapping("/group/insert")
-	public String insertBatGrp(BatGrp vo) {
+	public List<ObjectError> insertBatGrp(@Valid BatGrp vo, BindingResult result) {
+		if(result.hasErrors()) {
+			return result.getAllErrors();
+		}
 		batchService.insertBatGrp(vo);
-		return "redirect:/batch";
+		return null;
 	}
 
 	/**
@@ -232,12 +240,7 @@ public class BatchController {
 	 * 배치프로그램 등록
 	 * 등록된 후 돌아가는 페이지에 따라 향후 변동 가능성 있음
 	 */
-	/*
-	 * @ResponseBody
-	 * 
-	 * @PostMapping("/program/insert") public String insertBatPrm(BatPrm vo) {
-	 * batchService.insertBatPrm(vo); return "redirect:/batch"; }
-	 */
+	//@ResponseBody
 	@PostMapping("/program/insert")
 	public String insertBatPrm(BatPrm vo) {
 		batchService.insertBatPrm(vo);
@@ -276,6 +279,7 @@ public class BatchController {
 	 * @param grpId 프로그램이 삭제된 후, 프로그램 순서 변동 및 프로그램 리스트 반환에 필요한 그룹Id 
 	 * @return
 	 */
+	@ResponseBody
 	@PostMapping("/program/delete")
 	public void deleteBatPrm(@RequestParam(value="prmId")String batPrmId,
 			@RequestParam(value="grpId")String batGrpId) {

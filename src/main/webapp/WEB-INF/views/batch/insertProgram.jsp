@@ -8,7 +8,7 @@
 </style>
 <div id="insert-batch-program" class="modal" tabindex="-1">
 	<div class="modal-dialog modal-lg">
-		<form action="/batch/program/insert" method="post"> <div class="modal-content">
+		<form id="insert-program" action="/batch/program/insert" method="post"> <div class="modal-content">
 			<div class="modal-header">
 				<h5 id="log-add-id" class="modal-title">프로그램 정보</h5>
 				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -18,7 +18,8 @@
 				<table class="table table-bordered align-middle bg-white">
 					<tr>
 						<th>프로그램명</th>
-						<td><input class="form-control" type="text" name="batPrmNm"></td>
+						<td><input class="form-control" type="text" name="batPrmNm">
+						<span id="error-insert-batPrmNm" class="error-message"></span></td>
 					</tr>
 					<tr>
 						<th>그룹ID</th>
@@ -31,11 +32,13 @@
 					</tr>
 					<tr>
 						<th>파라미터(Default)</th>
-						<td><input class="form-control" type="text" name="param"></td>
+						<td><input class="form-control" type="text" name="param">
+						<span id="error-insert-param" class="error-message"></span></td>
 					</tr>
 					<tr>
 						<th>파라미터 설명</th>
-						<td><textarea class="form-control" cols="20" rows="10" name="paramDsc"></textarea></td>
+						<td><textarea class="form-control" cols="20" rows="10" name="paramDsc">
+						<span id="error-insert-paramDsc" class="error-message"></span></textarea></td>
 					</tr>
 				</table>
 			</div>
