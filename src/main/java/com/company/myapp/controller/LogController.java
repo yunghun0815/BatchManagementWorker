@@ -98,8 +98,12 @@ public class LogController {
 		model.addAttribute("search", sb.toString());	
 		return "log/log";
 	}
-
 	
+	/**
+	 * 그룹로그 클릭시 sub-content에 프로그램 로그 출력
+	 * @param batGrpLogId 그룹로그ID
+	 * @return
+	 */
 	@ResponseBody
 	@GetMapping("/group/detail") 
 	public Map<String, Object> getBatGrpLogDetail(String batGrpLogId) {
@@ -122,7 +126,12 @@ public class LogController {
 		
 		return jsonObj;
 	}
-	
+	/**
+	 * sub-content에서 재실행 그룹로그 클릭시 해당하는 프로그램 로그 출력 
+	 * @param batGrpLogId 그룹로그ID
+	 * @param batGrpRtyCnt 재실행 차수
+	 * @return
+	 */
 	@ResponseBody
 	@GetMapping("/group/detail/retry")
 	public List<BatPrmLog> getBatPrmLogListByGrpLog(String batGrpLogId, int batGrpRtyCnt) {
@@ -135,7 +144,13 @@ public class LogController {
 		
 		return batPrmLog;
 	}
-	
+	/**
+	 * 프로그램 로그 상세보기
+	 * @param batGrpLogId 그룹로그ID
+	 * @param batGrpRtyCnt 재실행 차수
+	 * @param batPrmId 프로그램 ID
+	 * @return
+	 */
 	@ResponseBody
 	@GetMapping("/program/detail")
 	public BatPrmLog getBatPrmLogDetail(String batGrpLogId, int batGrpRtyCnt, String batPrmId) {

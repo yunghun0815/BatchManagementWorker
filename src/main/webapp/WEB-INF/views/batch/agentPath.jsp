@@ -53,7 +53,7 @@ function getPath(path){
 	if(path != 'C:\\'){
 		view += `
 			<div class="exp-box" onclick="activeExpBox(this)" ondblclick="getPath('`+ lastPath +`')">
-				<img class="exp-img" src="/image/folder.png"><br>
+				<img class="exp-img" src="/image/fileExplorer/folder.png"><br>
 				<span class="exp-name">이전폴더</span>
 			</div>
 		`;
@@ -66,7 +66,7 @@ function getPath(path){
 		 dir = dir.replaceAll("\\", "\\\\");
 		 view += `
 		 	<div class="exp-box" onclick="activeExpBox(this)" ondblclick="getPath('`+ dir +`')">
-				<img class="exp-img" src="/image/folder.png"><br>
+				<img class="exp-img" src="/image/fileExplorer/folder.png"><br>
 				<span class="exp-name">` + realDir + `</span>
 		 	</div>
 		 `;				 
@@ -80,7 +80,7 @@ function getPath(path){
 		 
 		 view += `
 		 	<div class="exp-box" onclick="activeExpBox(this)" ondblclick="selectFile('`+ file +`')">
-				<img class="exp-img" src="/image/file.png"><br>
+				<img class="exp-img" src="/image/fileExplorer/file.png"><br>
 				<span class="exp-name">` + realFile + `</span>
 		 	</div>
 		 `;				 

@@ -93,7 +93,7 @@ public class BatchController {
 		model.addAttribute("pager", pager);
 		model.addAttribute("batGrpList", batGrpList);
 		model.addAttribute("menu", "batch");
-		return "board";
+		return "batch/batch";
 	}
 
 	/**
@@ -205,7 +205,7 @@ public class BatchController {
 				sb.append("&" + key + "=" + value);
 		}
 		model.addAttribute("search", sb.toString());
-		return "board";
+		return "batch";
 	}
 
 	/*** 배치 프로그램 ***/
@@ -351,7 +351,7 @@ public class BatchController {
 	}
 
 	/**
-	 * 
+	 * 그룹 수동 실행
 	 */
 	@ResponseBody
 	@PostMapping("/group/run")

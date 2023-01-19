@@ -2,7 +2,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@ include file="common/header.jsp"%>
+<%@ include file="/WEB-INF/views/common/header.jsp"%>
 
 <link rel="stylesheet" type="text/css" href="/css/batch/batch.css">
 <script type="text/javascript" src="/js/batch/batch.js"></script>
@@ -193,4 +193,4 @@
 <%@ include file="/WEB-INF/views/batch/insertGroup.jsp" %>
 <%@ include file="/WEB-INF/views/batch/insertProgram.jsp" %>
 
-<%@ include file="common/footer.jsp"%>
+<%@ include file="/WEB-INF/views/common/footer.jsp"%>
