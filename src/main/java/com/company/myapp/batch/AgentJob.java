@@ -21,6 +21,8 @@ import com.company.myapp.service.IBatchService;
 import com.company.myapp.service.IHostService;
 import com.company.myapp.service.ILogService;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * 배치 그룹에 등록된 주기별로 실행되는 Job 구현체
  * 1. 그룹 로그 및 프로그램 로그 저장 
@@ -29,6 +31,7 @@ import com.company.myapp.service.ILogService;
  * @author 정영훈, 김나영
  *
  */
+@Slf4j
 @Component
 public class AgentJob implements Job{
 	
@@ -94,6 +97,7 @@ public class AgentJob implements Job{
 	      Host host = hostService.getHostByBatGrpId(batGrpId); 
 	      // Agent 서버와 통신 및 JSON 객체 전송
 	      batchServer.sendMessage(host, jsonArray);
+	      log.info("'{}' 그룹의 작업을 요청하였습니다.", batGrpId);
 	   }
 
 	

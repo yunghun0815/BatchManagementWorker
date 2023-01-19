@@ -8,21 +8,32 @@
 </head>
 <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
 <script>
-	
+const grpId = opener.$(".sub-content .grp").prop("id");
 
+$(function(){
+	getPath("C:\\");
+});
+
+// 클릭시 배경색 변경
 function activeExpBox(e){
 	$("#file-explorer .exp-box").css("background-color", "white");
 	$(e).css("background-color", "rgb(0 0 255 / 10%)");
 }
+// 파일 클릭시 부모창으로 값 전송 및 close 
+function selectFile(e){
+	opener.$(".modal #path").val(e);
+	window.close();
+}
+
+// dir 클릭시 하위 폴더 및 파일 조회
 function getPath(path){
  //let path="C:\\";
 	$.ajax({
-		url: "/path",
+		url: "/batch/path",
 		type: "GET",
 		data:{
-		hostIp: "127.0.0.1",
-		hostPt: 50001,
-		path: path
+			grpId: grpId,
+			path: path
 	},
 	success: function(result){
 		if(result == '' || result == null){
@@ -68,7 +79,7 @@ function getPath(path){
 		 file = file.replaceAll("\\", "\\\\");
 		 
 		 view += `
-		 	<div class="exp-box" onclick="activeExpBox(this)">
+		 	<div class="exp-box" onclick="activeExpBox(this)" ondblclick="selectFile('`+ file +`')">
 				<img class="exp-img" src="/image/file.png"><br>
 				<span class="exp-name">` + realFile + `</span>
 		 	</div>
@@ -86,11 +97,17 @@ function getPath(path){
   </script>
 <style>
 #file-explorer {
-	width: 900px;
-	height: 700px;
-	border: 1px solid black;
-	padding: 20px;
-	overflow: hidden;
+	width: 840px;
+    height: 590px;
+    padding: 20px;
+    overflow: auto;
+    margin: 0 auto;
+    border: 2px solid gray;
+    border-radius: 10px;
+}
+
+#file-explorer::-webkit-scrollbar {
+  display: none;
 }
 
 #file-explorer .exp-img {
@@ -122,12 +139,11 @@ function getPath(path){
 	margin-bottom: 10px;
 }
 
-h4 {
-	padding-left: 20px;
+h3 {
+	padding-left: 25px;
 }
 </style>
 <body>
-	<button onclick="getPath('C:\\')">파일 탐색기</button>
 	<div id="file-explorer">
 		<h3>C:\</h3>
 	</div>

@@ -311,6 +311,14 @@
 #insert-batch-group .cron-date-select *{
 	margin-block: 10px;
 }
+
+.path-btn{
+	position: absolute;
+    bottom: 13px;
+    left: 391px;
+    border: none;
+}
+
 /* 검색 및 추가 */
 #title-action-box{
     line-height: 41px;

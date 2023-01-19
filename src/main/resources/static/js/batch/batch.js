@@ -11,11 +11,12 @@ $(function(){
 			let target = $(".sub-content .grp");
 			target.empty();
 			target.append(grpNm);
-			getPath(grpId, "insert");
 			getPrmList(grpId, "view");
+			$(".sub-content .grp").prop("id", grpId);
+			$(".modal-body input[name=batGrpId]").val(grpId);
 		});
 	});
-	
+
 	/* actions Events */
 	// action 메뉴 아이콘 색 변경하는 마우스 이벤트
 	 $(".group-active div").mouseover(function(){
@@ -137,6 +138,8 @@ function readProgramInfo(prmId){
 			$("#detail-batch-program input[name=param]").val(result.param);
 			$("#detail-batch-program textarea[name=paramDsc]").val(result.paramDsc);
 			$("#detail-batch-program input[name=excnOrd]").val(result.excnOrd);
+			$("#detail-batch-program input[name=path]").val(result.path);
+			$("#detail-batch-program .path-btn").hide(); // 파일 찾기 버튼 숨김 
 			
 			let name = $('#prmPath').prop('tagName');
 			if(name == "INPUT"){
@@ -161,6 +164,12 @@ function readProgramInfo(prmId){
 	obj.append(view);
 }
 
+// 프로그램 등록 클릭 시 모달 초기화
+function initModal(){
+	const grpId = $(".sub-content .grp").prop("id");
+	$(".modal input").val("");
+	$("#insert-batch-program input[name=batGrpId]").val(grpId);
+}
 
 /* 프로그램 관련 함수 */
 
@@ -178,13 +187,12 @@ function getPrmList(grpId, method){
 			len = result.length;
 			
 			if(method=='view'){
-				getPath(grpId, "detail");
 				var target = $(".prmList");
 				target.empty();
 				let btnWrap = $(".btn-wrap");
 				btnWrap.empty();
 				var view = ``;
-				let btn = `<div class="insert-btn" data-bs-toggle="modal" data-bs-target="#insert-batch-program"><span>프로그램 등록</span></div>`;
+				let btn = `<div class="insert-btn" data-bs-toggle="modal" data-bs-target="#insert-batch-program" onclick="initModal()"><span>프로그램 등록</span></div>`;
 				if(result.length==0){
 					view += `<span class='warning'">프로그램이 없습니다.</span>`;
 				}else{
@@ -221,8 +229,20 @@ function getPrmList(grpId, method){
 	return len;
 }
 
+/**
+	@description path 호출 함수 수정했음
+	@author 정영훈
+	@since 2023-01-19 10:11
+ */
 //그룹별 등록 가능한 프로그램 경로 가져오기
-function getPath(grpId, type){
+function getPath(){
+	let left = (window.screen.width / 2) - (900/2);
+	let top = (window.screen.height / 2) - (700/2);
+	window.open("/batch/popup/path", "배치 파일 등록", "width=900px, height=700px, left="+ left +", top="+ top +"");
+}
+
+//그룹별 등록 가능한 프로그램 경로 가져오기
+/*function getPath(grpId, type){
 	$.ajax({
 		url: "/batch/path?grpId=" + grpId, 
 		method: "GET",
@@ -257,7 +277,7 @@ function getPath(grpId, type){
 			alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
 		}
 	})
-}
+} */
 
 // 프로그램 insert 
 /*function getInsertInfo(btn){
@@ -416,6 +436,7 @@ function groupModify(table){
     obj.append(view);
 }
 function programModify(table){
+	$("#detail-batch-program .path-btn").show(); // 파일 찾기 버튼 생김
 	const obj = $(table).closest(".modal-footer");
 	obj.empty();
 	var frm = $('.inactive');

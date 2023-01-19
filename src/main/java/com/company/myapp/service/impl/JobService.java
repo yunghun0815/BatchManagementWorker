@@ -277,8 +277,10 @@ public class JobService implements IJobService {
 		
 		if(cmd.equals("all")) {		// 전체 재실행 -> 그룹 + 프로그램 전체
 			list = batchDao.getBatPrmListByLogId(batGrpLogId);
+			log.info("'{}' 로그 {}회차 작업(전부 재실행)을 요청하였습니다.", batGrpLogId, rtyCnt+1);
 		}else if(cmd.equals("fail")) {		// 실패한것만 재실행 -> 그룹 + 실패한 프로그램
 			list = batchDao.getBatPrmListByFailLogId(batGrpLogId);
+			log.info("'{}' 로그 {}회차 작업(실패 재실행)을 요청하였습니다.", batGrpLogId, rtyCnt+1);
 		}
 		
 		for(BatPrm prm : list) {

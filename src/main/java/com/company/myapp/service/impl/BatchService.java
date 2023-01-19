@@ -1,6 +1,7 @@
 package com.company.myapp.service.impl;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -156,8 +157,8 @@ public class BatchService implements IBatchService {
 	 * 호스트별 접근 가능한 파일에 대한 경로 리스트 반환
 	 */
 	@Override
-	public List<String> getAgentBatchPath(Host host) {
-		return batchServer.getPath(host);
+	public Map<String, Object> getAgentBatchPath(Host host, String dir) {
+		return batchServer.getPath(host, dir);
 	}
 
 	/**

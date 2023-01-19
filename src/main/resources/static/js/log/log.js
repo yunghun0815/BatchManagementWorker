@@ -224,7 +224,7 @@ function restart(e){
 				// 해당 그룹 로그의 0회차 프로그램 리스트
 				let batPrmLogList = getBatPrmLogListByGrpLog(batGrpLogId,0);
 				
-				restartFailLog(batGrpLogId, batPrmLogList);
+				restartFailLog(batGrpLogId, batPrmLogList, 'all');
       		break;
  
 			case "onlyFail":
@@ -233,7 +233,7 @@ function restart(e){
 				// 해당 그룹 로그의 0회차 프로그램 리스트
 				let failPrmLogList = getBatPrmLogListByGrpLog(batGrpLogId,batGrpRtyCnt);
 				
-				restartFailLog(batGrpLogId, failPrmLogList);
+				restartFailLog(batGrpLogId, failPrmLogList, 'fail');
 			
 	      		break;
 	      		
@@ -246,7 +246,7 @@ function restart(e){
 	@param batGrplogId = 배치 그룹 로그 아이디
 	@param failPrmLogList = 원하는 회차의 프로그램 로그 리스트
  */
-function restartFailLog(batGrpLogId, failPrmLogList){
+function restartFailLog(batGrpLogId, failPrmLogList, cmd){
 	// 파라미터 입력 form 생성
 	let failDiv = document.createElement("div");
 	failDiv.id = "param-box";
@@ -288,7 +288,7 @@ function restartFailLog(batGrpLogId, failPrmLogList){
 			});
 			console.log(param);
 			$.ajax({
-			 	url: "/batch/retry/all",
+			 	url: "/batch/retry/"+cmd,
 			 	type: "POST",
 			 	contentType: "application/json; charset=utf-8",
 			 	data: JSON.stringify(param),	 

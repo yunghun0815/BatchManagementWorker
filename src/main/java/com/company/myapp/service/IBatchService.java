@@ -1,6 +1,7 @@
 package com.company.myapp.service;
 
 import java.util.List;
+import java.util.Map;
 
 import com.company.myapp.dto.BatGrp;
 import com.company.myapp.dto.BatPrm;
@@ -37,7 +38,7 @@ public interface IBatchService {
 
 	public void updateBatPrm(BatPrm vo);
 
-	public List<String> getAgentBatchPath(Host host);
+	public Map<String, Object> getAgentBatchPath(Host host, String dir);
 
 	public List<String> getBatGrpIdListByHostId(String hostId);
 

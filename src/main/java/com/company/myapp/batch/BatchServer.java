@@ -8,6 +8,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
@@ -120,7 +121,6 @@ public class BatchServer {
 			dos.flush();
 			dos.close();
 			socket.close();
-
 		} catch (Exception e) {
 			// Agent 서버로 연결 실패시 로그 실행중 -> 실패로 업데이트
 			log.info("[전송 실패] Agent서버로 메시지 전송에 실패하였습니다.");
@@ -205,10 +205,12 @@ public class BatchServer {
 	 * @param host 연결 정보
 	 * @return
 	 */
-	public List<String> getPath(Host host) {
+	public Map<String, Object> getPath(Host host, String dir) {
 		JSONObject json = new JSONObject();
 		json.put("cmd", CommandCode.PATH.getCode());
-		List<String> pathList = new ArrayList<>();
+		json.put("message", dir);
+		//List<String> pathList = new ArrayList<>();
+		Map<String, Object> path = new HashMap<>();
 		try {
 			Socket socket = new Socket();
 			socket.connect(new InetSocketAddress(host.getHostIp(), host.getHostPt()), 500);
@@ -219,7 +221,7 @@ public class BatchServer {
 			DataInputStream dis = new DataInputStream(socket.getInputStream());
 			String data = dis.readUTF();
 			ObjectMapper mapper = new ObjectMapper();
-			pathList = mapper.readValue(data, List.class); // 경로 저장
+			path = mapper.readValue(data, Map.class); // 경로 저장
 			
 			dis.close();
 			dos.close();
@@ -227,10 +229,10 @@ public class BatchServer {
 		} catch (Exception e) {
 			// Agent서버 연결 실패시 경로에 '연결 실패' 추가
 			log.error("[PATH 요청 에러] {}", e.getMessage());
-			pathList.add("연결 실패");
+			path=null;
 		}
 
-		return pathList;
+		return path;
 	}
 
 	public JSONObject test() {

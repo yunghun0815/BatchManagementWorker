@@ -26,8 +26,9 @@
 					</tr>
 					<tr>
 						<th>경로</th>
-						<td><select id="prmPath" class="form-control" name="path">
-							</select></td>
+						<td style="position: relative"><input id="path" class="form-control" type="text" name="path" readonly>
+							<button class="path-btn" type="button" onclick="getPath()">파일 찾기</button>
+						</td>
 					</tr>
 					<tr>
 						<th>파라미터(Default)</th>
