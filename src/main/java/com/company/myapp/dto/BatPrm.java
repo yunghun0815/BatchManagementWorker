@@ -20,8 +20,8 @@ import lombok.ToString;
 public class BatPrm {
 	private String batPrmId;	// 배치 프로그램 아이디
 	
-	@NotBlank(message = "그룹명을 입력해주세요.")
-	@Size(min = 1, max = 50, message = "그룹명은 50자를 넘을 수 없습니다.")
+	@NotBlank(message = "프로그램명을 입력해주세요.")
+	@Size(min = 1, max = 50, message = "프로그램명은 50자를 넘을 수 없습니다.")
 	private String batPrmNm;	// 배치 프로그램명
 	
 	@NotBlank
@@ -33,7 +33,7 @@ public class BatPrm {
 	@NotBlank
 	private int excnOrd;		// 실행 순서
 	
-	@Size(min = 0, max = 150, message = "파라미터값은 100자를 넘을 수 없습니다.")
+	@Size(min = 0, max = 100, message = "파라미터값은 100자를 넘을 수 없습니다.")
 	private String param;		// 파라미터
 	@Size(min = 0, max = 2000, message = "설명은 2000자를 넘을 수 없습니다.")
 	private String paramDsc;	// 파라미터 설명

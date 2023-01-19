@@ -51,7 +51,7 @@ $(function(){
 			//현재 실행 여부
 			var execute = $(this).hasClass('active');
 			//연결 상태
-			var conn = $(this).closest(".group").find(".group-conn span").hasClass('conn_enabled');
+			var conn = $(this).closest(".group").find(".group-conn img").hasClass('conn_enabled');
 			
 			if(execute || conn){
 				if(execute || length != 0){

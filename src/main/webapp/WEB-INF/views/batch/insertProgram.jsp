@@ -38,8 +38,8 @@
 					</tr>
 					<tr>
 						<th>파라미터 설명</th>
-						<td><textarea class="form-control" cols="20" rows="10" name="paramDsc">
-						<span id="error-insert-paramDsc" class="error-message"></span></textarea></td>
+						<td><textarea class="form-control" cols="20" rows="10" name="paramDsc"></textarea>
+						<span id="error-insert-paramDsc" class="error-message"></span></td>
 					</tr>
 				</table>
 			</div>

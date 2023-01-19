@@ -341,7 +341,7 @@
 	width:85px;
 }
 #search-box input[type=text]{
-	width: 215px;
+	width: 215px !important;
 	margin-left:10px;
 }
 #title-action-box table td {
@@ -349,5 +349,5 @@
     font-weight: bold;
 }
 #search-box select{
-	width:55px;
+	width:55px !important;
 }

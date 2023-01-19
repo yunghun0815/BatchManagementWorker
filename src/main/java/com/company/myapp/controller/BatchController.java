@@ -251,11 +251,14 @@ public class BatchController {
 	/**
 	 * 배치프로그램 등록 등록된 후 돌아가는 페이지에 따라 향후 변동 가능성 있음
 	 */
-	//@ResponseBody
+	@ResponseBody
 	@PostMapping("/program/insert")
-	public String insertBatPrm(BatPrm vo) {
+	public List<ObjectError> insertBatPrm(@Valid BatPrm vo, BindingResult result) {
+		if(result.hasErrors()) {
+			return result.getAllErrors();
+		}
 		batchService.insertBatPrm(vo);
-		return "redirect:/batch";
+		return null;
 	}
 
 	/**
