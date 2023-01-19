@@ -1,3 +1,8 @@
+
+/**
+ * 배치 관련 자바스크립트
+ */
+
 $(function(){
 	
 	/* group별 프로그램 목록 출력 Event */
@@ -40,17 +45,17 @@ $(function(){
 	const toggle = $(".toggleSwitch");
 	toggle.each(function(){
 		$(this).click(function(){
-			// 서버와 연결이 되어있고
-			if(!$(this).closest(".group").find(".group-conn span").hasClass('conn_disabled')){
-				let grpId = $(this).closest(".group").find(".group-id span").text();
-				let length = getPrmList(grpId, "length");
-				//그룹안에 등록된 프로그램이 1개 이상인 경우 Job 실행 및 중단
-				if(length != 0){
-					//active 클래스가 있는 경우 해당 그룹은 Job 실행 중으로 판단
-					var execute = false;
-					if($(this).hasClass('active')){
-						execute = true;
-					}
+			let grpId = $(this).closest(".group").find(".group-id span").text();
+			//등록된 프로그램 개수
+			let length = getPrmList(grpId, "length");
+			//현재 실행 여부
+			var execute = $(this).hasClass('active');
+			//연결 상태
+			var conn = $(this).closest(".group").find(".group-conn span").hasClass('conn_enabled');
+			
+			if(execute || conn){
+				if(execute || length != 0){
+					$(this).toggleClass('active');
 					$.ajax({
 						url: "/batch/Job/" + grpId,
 						data: {
@@ -58,38 +63,63 @@ $(function(){
 						},
 						method: "POST",
 						success : function(result){
-							$(this).toggleClass('active');
 						}
 					});
+				}else{
+					swal({
+						  title: "실행 불가능",
+						  text: "실행할 프로그램이 없습니다.",
+						  icon: "error",
+						  button: "확인"
+					});
 				}
+			}else{
+				swal({
+					title: "실행 불가능",
+					text: "서버 연결 상태를 확인해주세요",
+					icon: "error",
+					button: "확인"
+				});
 			}
 		});
 	});
 	
 	/* cron 등록 박스 Event */
-	$("#option-week").hide();
-		$("#option-month").hide();
+	$("select[name=cycleMF]").each(function(){
+		$("select[name=cycleMF]").attr("disabled", true);
+	});
+	$("input[name=cycleDay]").each(function(){
+		$("input[name=cycleDay]").attr("disabled", true);
+	});
+	
+	$("input[name='cycle']:not(:checked)").next().next().find("input, select").attr("disabled", true);
 		
-		$("input[name='cycle']").change(function(){
-			$(this).parent().find("input, select").attr("disabled", "disabled");
-			$("input[name='cycle']").removeAttr("disabled");
-			$(this).next().next().find("input, select").removeAttr("disabled");
-		});
-				
-		$("#cron-box").change(function(){
+	$("input[name='cycle']").change(function(){
+		$(this).parent().find("input, select").attr("disabled", true);
+		$("input[name='cycle']").removeAttr("disabled");
+		$(this).next().next().find("input, select").removeAttr("disabled");
+	});
+	
+	
+	$("select[name=cycle1]").each(function(){
+		$(this).change(function(){
 			const option = $(this).val();
 			if(option == 'week'){
-				$("#option-week").show();
-				$("#option-month").hide();		
+				$(this).next("#option-week").attr("disabled", false);
+				$(this).next().next("#option-month").attr("disabled", true);		
 			}else if(option == 'month'){
-				$("#option-week").hide();
-				$("#option-month").show();
+				$(this).next("#option-week").attr("disabled", true);
+				$(this).next().next("#option-month").attr("disabled", false);
 			}else{
-				$("#option-week").hide();
-				$("#option-month").hide();		
+				$(this).next("#option-week").attr("disabled", false);
+				$(this).next().next("#option-month").attr("disabled", false);		
 			}
 		});
+	});
+	
+	
 });
+
 
 /* 그룹, 프로그램 상세페이지 세팅 */
 function readGroupInfo(grpId){
@@ -379,7 +409,7 @@ function grpDelete(grpId){
 function prmDelete(btn){
 	event.stopPropagation();
 	const prmId=$(btn).parent().siblings(".program-id").text();
-	const grpId=$(".grpId").text();
+	const grpId=$("#detail-batch-program input[name=batGrpId]").val();
 	swal({
 		  title: "정말로 삭제하시겠습니까?",
 		  text: "삭제시 복구가 불가능합니다.",
@@ -468,7 +498,7 @@ function programDetail(table){
 
 /* 입력한 주기를 크론으로 변경하는 함수 */
 function changeCron(btn){
-	var sec = '*';
+	var sec = '0';
 	var min = '*';
 	var hour = '*';
 	var day = '*';
@@ -500,9 +530,10 @@ function changeCron(btn){
 		var number = $("#insert-batch-group input[name=timeNumber]").val();
 		if($("#insert-batch-group input[name=time]:checked").val()=="hour"){
 			hour = '/' + number;
+			min = '0';
 			cronDsc += number + '시간마다';
 		}else if($("#insert-batch-group input[name=time]:checked").val()=="min"){
-			min = '/' + number;
+			min = '0/' + number;
 			cronDsc += number + '분마다';
 		}else if($("#insert-batch-group input[name=time]:checked").val()=="sec"){
 			sec = '/' + number;

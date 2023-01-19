@@ -66,6 +66,10 @@
 .group-conn{
 	width:10%;
 }
+
+.group-conn img{
+	width:36px;
+}
 .group-conn .conn_enabled{
 	color: green;
 }

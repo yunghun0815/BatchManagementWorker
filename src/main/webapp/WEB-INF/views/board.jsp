@@ -6,6 +6,7 @@
 
 <link rel="stylesheet" type="text/css" href="/css/batch/batch.css">
 <script type="text/javascript" src="/js/batch/batch.js"></script>
+<script type="module" src="/js/batch/batchValid.js"></script>
 <head>
 
 </head>
@@ -119,10 +120,10 @@
 							</div>
 							<div class="group-conn">
 								<c:if test="${group.conn == 'on'}">
-									<span class="conn_enabled">enabled</span>
+									<img src="/image/common/action/conn.png" class="conn_enabled">
 								</c:if>
 								<c:if test="${group.conn == 'off'}">
-									<span class="conn_disabled">disabled</span>
+									<img src="/image/common/action/disConn.png" class="conn_disabled">
 								</c:if>
 							</div> 
 							<div class="group-running">
