@@ -107,7 +107,7 @@ public class AgentJob implements Job{
 	 * @param vo 수동 실행할 그룹
 	 * @param rtyCnt 해당 그룹 로그의  마지막 차수
 	 */
-	public void rtyExecute(String batGrpLogId, BatGrp vo, int rtyCnt){
+	public void manuallyRun(String batGrpLogId, BatGrp vo, int rtyCnt){
 		String batGrpId = vo.getBatGrpId(); 
 
 		List<JsonDto> jsonArray = new ArrayList<>();

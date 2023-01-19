@@ -434,4 +434,8 @@
 		ORDER BY
 			pl.excn_ord			
 	</select>
+	
+	<select id="getBatGrpLogSeq" resultType="String">
+		SELECT 'BGL'||LPAD(SEQ_BAT_GRP_LOG.NEXTVAL, 8, '0') FROM DUAL
+	</select>
 </mapper>

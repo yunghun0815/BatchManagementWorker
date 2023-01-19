@@ -183,6 +183,8 @@
       ON
       	h.host_id = b.host_id
       WHERE
-      	h.host_id = #{hostId}				
+      	h.host_id = #{hostId}
+      AND
+      	b.use_yn = 'Y'					
    </select>
 </mapper>

@@ -51,7 +51,7 @@ $(function(){
 			//현재 실행 여부
 			var execute = $(this).hasClass('active');
 			//연결 상태
-			var conn = $(this).closest(".group").find(".group-conn span").hasClass('conn_enabled');
+			var conn = $(this).closest(".group").find(".group-conn img").hasClass('conn_enabled');
 			
 			if(execute || conn){
 				if(execute || length != 0){
@@ -493,9 +493,6 @@ function programDetail(table){
 	readProgramInfo(prmId);
 }
 
-
-
-
 /* 입력한 주기를 크론으로 변경하는 함수 */
 function changeCron(btn){
 	var sec = '0';
@@ -547,4 +544,47 @@ function changeCron(btn){
 	$("#insert-batch-group input[name=cron]").val(cron);
 	$("#insert-batch-group input[name=cronDsc]").val(cronDsc);   
 	
+}
+
+function startGrp(e,batGrpId){
+	
+	let length = getPrmList(batGrpId, "length");
+	var conn = $(e).closest(".group").find(".group-conn img").hasClass('conn_enabled');
+	if(length == 0){
+		swal({
+			title: "실행 불가능",
+			text: "실행할 프로그램이 없습니다.",
+			icon: "error",
+			button: "확인"
+		});
+	}else if(conn && length>0){
+		$.ajax({
+			url: "/batch/group/run?batGrpId="+batGrpId,
+			type: "POST",
+			success: function(){
+				swal({
+						title: "실행 완료",
+						text: "실행이 성공적으로 완료되었습니다.",
+						icon: "success",
+						button: "확인"
+					});
+			},
+			error: function(){
+				swal({
+					title: "실행 불가능",
+					text: "서버 연결 상태를 확인해주세요",
+					icon: "error",
+					button: "확인"
+				});	
+			}
+		});
+	}else{
+		swal({
+				title: "실행 불가능",
+				text: "서버 연결 상태를 확인해주세요",
+				icon: "error",
+				button: "확인"
+		});	
+	}
+
 }

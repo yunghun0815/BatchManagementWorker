@@ -342,22 +342,17 @@ public class BatchController {
 	 */
 	@ResponseBody
 	@PostMapping("/retry/{cmd}")
-	public String retryAll(@RequestBody Map<String, String> param, @PathVariable String cmd) {
-		// 마지막 차수 조회
-		return jobService.retryJob(param.get("batGrpLogId"), cmd, param);
+	public void retryAll(@RequestBody Map<String, String> param, @PathVariable String cmd) {
+		
+		jobService.manuallyRun(param.get("batGrpLogId"), cmd, param);
 	}
 
 	/**
-	 * 그룹내 실패한 프로그램 재실행
 	 * 
-	 * @param batGrpLogId 그룹 로그 아이디
-	 * @return
-	 *//*	
-		@ResponseBody
-		@PostMapping("/retry/fail")
-		public String retryFail(String batGrpLogId,  Map<String, String> param) {
-		String cmd = "fail";
-		return jobService.retryJob(batGrpLogId, cmd, param);
-		}*/
-
+	 */
+	@ResponseBody
+	@PostMapping("/group/run")
+	public void manuallyRun(String batGrpId) {
+		jobService.manuallyRun(batGrpId);
+	}
 }
