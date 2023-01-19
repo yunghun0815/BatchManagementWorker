@@ -78,10 +78,10 @@ $(function(){
 			type: "post",
 			data: {
 				batPrmNm: e.target.batPrmNm.value,
-				batGrpId: e.target.batGrpDsc.value,
-				path: e.target.hostId.value,
-				param: e.target.autoExcnYn.value,
-				paramDsc: e.target.cron.value,
+				batGrpId: e.target.batGrpId.value,
+				path: e.target.path.value,
+				param: e.target.param.value,
+				paramDsc: e.target.paramDsc.value,
 			},
 			success: function(result){
 				

@@ -30,7 +30,6 @@ public class BatPrm {
 	@NotBlank(message = "경로를 입력해주세요.")
 	private String path;		// 배치 파일 경로
 	
-	@NotBlank
 	private int excnOrd;		// 실행 순서
 	
 	@Size(min = 0, max = 100, message = "파라미터값은 100자를 넘을 수 없습니다.")
