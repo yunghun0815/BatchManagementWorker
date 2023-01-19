@@ -50,6 +50,8 @@ public interface ILogDao {
 
 	List<BatPrmLog> getBatPrmLogListByGrpLog(@Param(value = "batGrpLogId") String batGrpLogId, @Param(value = "batGrpRtyCnt") int batGrpRtyCnt);
 
+	String getBatGrpLogSeq();
+
 
 
 }

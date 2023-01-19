@@ -238,40 +238,14 @@ public class JobService implements IJobService {
 		}
 	}
 
-	/**
-	 * 그룹단위로 Job 재실행(수동)
-	 */
-	@Override
-	public List<BatGrpLog> retryJob(String batGrpLogId, BatGrp vo) {
-		//현재 재실행 회차 세팅
-		int rtyCnt = logDao.getRtyCnt(batGrpLogId);
-		AgentJob agentJob = new AgentJob();
-		
-		try {
-			agentJob.rtyExecute(batGrpLogId, vo, rtyCnt);
-		}catch(Exception e){
-			log.error(e.getMessage());
-			throw new RuntimeException();
-		}
-		//재실행회차가 1 이상인 그룹로그List -> For문으로 그룹+재실행 회차에 해당하는 프로그램 로그 select setting
-		List<BatGrpLog> rtyBatGrpLogList = logDao.getRtyBatGrpLogListByLogId(batGrpLogId);
-		for(BatGrpLog rtyVo: rtyBatGrpLogList) {
-			String logId = rtyVo.getBatGrpLogId();
-			int rty = rtyVo.getBatGrpRtyCnt();
-			List<BatPrmLog> batPrmLogList = logDao.getRtyPrmListByLogIdNCnt(logId, rty);
-			rtyVo.setPrmLogList(batPrmLogList);
-		}
-		return rtyBatGrpLogList;
-	}
 	
 	/**
-	 * 프로그램 단위로 Job 재실행(수동)
+	 * 프로그램 수동 실행(재실행)
 	 */
 	@Override
-	public String retryJob(String batGrpLogId, String cmd, Map<String, String> param) {
+	public void manuallyRun(String batGrpLogId, String cmd, Map<String, String> param) {
 		BatGrp vo = batchDao.getBatGrpByGrpLogId(batGrpLogId);
 		List<BatPrm> list = new ArrayList<>();
-		String result = "성공";
 		//현재 재실행 회차 세팅
 		int rtyCnt = logDao.getRtyCnt(batGrpLogId);
 		
@@ -288,8 +262,24 @@ public class JobService implements IJobService {
 		}
 		
 		vo.setPrmList(list);
-		agentJob.rtyExecute(batGrpLogId, vo, rtyCnt);
-		return result;
+		agentJob.manuallyRun(batGrpLogId, vo, rtyCnt);
+	}
+	
+	/**
+	 * 프로그램 수동 실행
+	 */	
+	@Override
+	public void manuallyRun(String batGrpId) {
+		BatGrp vo = batchDao.getBatGrpDetail(batGrpId);
+		List<BatPrm> list = new ArrayList<>();
+		
+		list = batchDao.getBatPrmList(batGrpId);
+		vo.setPrmList(list);
+		
+		String batGrpLogId = logDao.getBatGrpLogSeq();
+		
+		log.info("'{}' 그룹을 수동 실행하였습니다.", batGrpId);
+		agentJob.manuallyRun(batGrpLogId, vo, 0);
 	}
 	
 	/**

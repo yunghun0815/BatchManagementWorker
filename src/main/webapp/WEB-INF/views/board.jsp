@@ -137,6 +137,9 @@
 								</c:if>
 							</div>
 							<div class="group-active">
+								<div onclick="startGrp(this,'${group.batGrpId}')">
+									<img src="/image/common/action/play.png" class="menu-box" id="play">
+								</div> 
 								<div onclick="getUpdateGrpInfo(this)"
 									data-bs-toggle="modal" data-bs-target="#detail-batch-group">
 									<img src="/image/common/action/detail.png" class="menu-box" id="detail">

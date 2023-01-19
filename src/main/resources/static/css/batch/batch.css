@@ -27,7 +27,7 @@
  */
 .group {
 	justify-content: space-around;
-	padding: 0 30px;
+	padding: 0 25px;
 	background-color: white;
 	line-height: 50px;
 	border-radius: 20px; 
@@ -86,7 +86,7 @@
 }
 
 .group-active {
-	width:10%;
+	width:13%;
 }
 
 .group-active div {

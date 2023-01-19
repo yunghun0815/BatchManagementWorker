@@ -24,9 +24,9 @@ public interface IJobService {
 	
 	void updateJob(BatGrp vo);
 	
-	String retryJob(String batGrpLogId, String cmd, Map<String, String> param);
+	void manuallyRun(String batGrpLogId, String cmd, Map<String, String> param);
 	
-	List<BatGrpLog> retryJob(String batGrpLogId, BatGrp vo);
+	void manuallyRun(String batGrpId);
 
 	boolean checkExistsJobByGrpId(String batGrpId);
 
