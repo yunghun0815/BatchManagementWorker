@@ -14,7 +14,9 @@
 		background-color: #e8eef2 !important;
 		height: 100%;
 	}
-	
+	th{
+		text-align: center;
+	}
 	/* 공통 바디 */
 	#app{
 		width: 1600px;

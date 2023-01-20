@@ -1,10 +1,10 @@
-
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ include file="/WEB-INF/views/common/header.jsp"%>
 
 <link rel="stylesheet" type="text/css" href="/css/batch/batch.css">
+
 <script type="text/javascript" src="/js/batch/batch.js"></script>
 <script type="module" src="/js/batch/batchValid.js"></script>
 <head>
