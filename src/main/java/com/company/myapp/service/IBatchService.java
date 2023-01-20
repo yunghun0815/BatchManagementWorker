@@ -43,4 +43,6 @@ public interface IBatchService {
 	public List<String> getBatGrpIdListByHostId(String hostId);
 
 	public void updateExcnOrd(List<BatPrm> prmList);
+
+	public void rollback(String batGrpId);
 }

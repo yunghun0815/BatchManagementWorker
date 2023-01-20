@@ -50,9 +50,10 @@
     	   h.host_pt as "hostPt", 
     	   b.auto_excn_yn as "autoExcnYn", 
     	   b.cron as "cron",
-    	   b.cron_dsc as "cronDsc"
+    	   b.cron_dsc as "cronDsc",
+    	   b.use_yn as "useYn"
     FROM bat_grp b LEFT OUTER JOIN host h ON b.host_id=h.host_id 
-    WHERE b.use_yn='Y' and b.bat_grp_id=#{grpId}
+    WHERE b.bat_grp_id=#{grpId}
   </select>
   
   
@@ -192,12 +193,14 @@
   			bat_grp_nm as "batGrpNm",
   			bat_grp_dsc as "batGrpDsc",
   			auto_excn_yn as "autoExcnYn",
+  			use_yn as "useYn",
   			cron
   	 FROM bat_grp
   	 WHERE use_yn='Y'
   </select>
   
   <select id="getBatPrmList" parameterType="String" resultType="BatPrm">
+  <![CDATA[
   	SELECT bat_prm_id as "batPrmId",
   			bat_prm_nm as "batPrmNm",
   			path,
@@ -205,8 +208,9 @@
   			param,
   			param_dsc as "paramDsc"
 	FROM bat_prm
-	WHERE use_yn='Y' and bat_grp_id = #{grpId}
+	WHERE excn_ord<>0 and bat_grp_id = #{grpId}
 	ORDER BY excn_ord
+  ]]>
   </select>
   
   <select id="getBatPrmDetail" parameterType="String" resultType="BatPrm">
@@ -216,9 +220,10 @@
   			path,
   			excn_ord as "excnOrd",
   			param,
-  			param_dsc as "paramDsc"
+  			param_dsc as "paramDsc",
+  			use_yn as "useYn"
 	FROM bat_prm
-	WHERE use_yn='Y' and bat_prm_id = #{prmId}
+	WHERE bat_prm_id = #{prmId}
   </select>
   <insert id="insertBatPrm" parameterType="BatPrm">
   	INSERT INTO bat_prm(bat_prm_id, bat_grp_id, bat_prm_nm, path, excn_ord, param, param_dsc,  frst_reg_nm, frst_reg_dttm, last_mdfr_nm, last_mdfcn_dttm)
@@ -246,6 +251,14 @@
   		excn_ord = 0,
   		last_mdfcn_dttm = sysdate
   	WHERE bat_prm_id = #{batPrmId}
+  </update>
+  <update id="deleteBatPrmByGrp" parameterType="String">
+  	UPDATE
+  		bat_prm
+  	SET
+  		use_yn = 'N',
+  		last_mdfcn_dttm = sysdate
+  	WHERE bat_grp_id = #{grpId}
   </update>
   <update id="sortByRownum" parameterType="String">
   	UPDATE 
@@ -364,4 +377,31 @@
   	ORDER BY
   		excn_ord					 	
   </select>
+
+  <update id="rollbackGroup" parameterType="String">
+  	UPDATE
+  		bat_grp
+  	SET
+  		use_yn = 'Y',
+  		last_mdfcn_dttm = sysdate
+  		
+  	WHERE
+  		bat_grp_id = #{batGrpId}
+  </update>
+  
+  <update id="rollbackProgram" parameterType="String">
+  <![CDATA[
+  	UPDATE
+  		bat_prm
+  	SET
+  		use_yn = 'Y',
+  		last_mdfcn_dttm = sysdate
+  	WHERE
+  			bat_grp_id = #{batGrpId}
+  		AND
+  			excn_ord <> 0
+  ]]>
+  </update>
+
 </mapper>
+

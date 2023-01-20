@@ -27,7 +27,7 @@
 					<tr>
 						<th>경로</th>
 						<td style="position: relative">
-							<input id="path" class="form-control" type="text" name="path" readonly>
+							<input id="path" class="onlyread form-control inactive" type="text" name="path" readonly disabled>
 							<button class="path-btn" type="button" onclick="getPath()">파일 찾기</button>
 						</td>
 					</tr>

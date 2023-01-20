@@ -63,12 +63,15 @@
 	width:22%;
 }
 
-.group-conn{
+.group-conn, .group-info{
 	width:10%;
 }
-
 .group-conn img{
 	width:36px;
+	transition: all ease 1s;
+}
+.group-conn img:hover{
+	transform: rotate( 360deg );	
 }
 .group-conn .conn_enabled{
 	color: green;
@@ -88,7 +91,17 @@
 .group-active {
 	width:13%;
 }
-
+.group-rollback{
+	width:20%;
+	justify-content: center;
+    display: flex;
+    align-items: center;
+}
+.group-rollback button{
+	vertical-align: middle;
+    width: 50%;
+    height: 34px;
+}
 .group-active div {
 	border:1.5px solid #acb9c7;
 	height: 28px;
@@ -102,7 +115,7 @@
 
 
 
-.group-active img {
+.group-active img{
 	width: 20px;
 	vertical-align:super;
 	padding-top:2.5px;

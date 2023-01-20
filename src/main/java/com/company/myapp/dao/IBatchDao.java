@@ -37,6 +37,7 @@ public interface IBatchDao {
 	public void insertBatPrm(BatPrm vo);
 
 	public void deleteBatPrm(String prmId);
+	public void deleteBatPrmByGrp(String grpId);
 
 	public void updateBatPrm(BatPrm vo);
 
@@ -53,5 +54,9 @@ public interface IBatchDao {
 	public List<BatPrm> getBatPrmListByLogId(String batGrpLogId);
 
 	public List<BatPrm> getBatPrmListByFailLogId(String batGrpLogId);
+
+	public void rollbackGroup(String batGrpId);
+
+	public void rollbackProgram(String batGrpId);
 	
 }

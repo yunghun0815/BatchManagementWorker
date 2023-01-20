@@ -1,7 +1,9 @@
 package com.company.myapp.controller;
 
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashSet;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -166,7 +168,7 @@ public class BatchController {
 			HttpServletRequest request) {
 		// 데이터의 전체 행수 가져온 후 페이징 처리
 		int totalRows = batchService.getTotalSearchNum(vo);
-		Pager pager = new Pager(5, 5, totalRows, pageNo);
+		Pager pager = new Pager(8, 5, totalRows, pageNo);
 
 		// 검색된 배치그룹리스트
 		List<BatGrp> searchResult = batchService.searchBatGrp(pager, vo);
@@ -187,7 +189,11 @@ public class BatchController {
 			else
 				grpVo.setRunCheck(false);
 		}
-
+		// 그룹 등록할 때 필요한 등록된 호스트 리스트
+		List<Host> hostList = hostService.getHostList();
+		
+		model.addAttribute("group", new BatGrp());
+		model.addAttribute("hostList", hostList);
 		model.addAttribute("pager", pager);
 		model.addAttribute("batGrpList", searchResult);
 
@@ -195,7 +201,7 @@ public class BatchController {
 
 		// view 페이지 페이징 버튼 url 생성
 		StringBuilder sb = new StringBuilder();
-
+		String use = "";
 		Enumeration<String> paramKeys = request.getParameterNames();
 		while (paramKeys.hasMoreElements()) {
 			String key = paramKeys.nextElement();
@@ -203,9 +209,13 @@ public class BatchController {
 			// 요청 파라미터 중 pageNo 제외 저장
 			if (!key.equals("pageNo"))
 				sb.append("&" + key + "=" + value);
+			if(key.equals("useYn"))
+				use = value;
 		}
-		model.addAttribute("search", sb.toString());
-		return "batch";
+		System.out.println(use);
+		model.addAttribute("search", sb.toString( ));
+		model.addAttribute("useYn", use);
+		return "batch/batch";
 	}
 
 	/*** 배치 프로그램 ***/
@@ -357,5 +367,33 @@ public class BatchController {
 	@PostMapping("/group/run")
 	public void manuallyRun(String batGrpId) {
 		jobService.manuallyRun(batGrpId);
+	}
+	
+	/**
+	 * 연결 상태 체크
+	 */
+	@ResponseBody
+	@GetMapping("/health")
+	public String checkHealth(@RequestParam(value="batGrpId")String batGrpId) {
+		
+		Host host = hostService.getHostByBatGrpId(batGrpId);
+		List<Host> hostList = new ArrayList<>(); 
+		hostList.add(host);
+
+		Map<String ,String> connect = batchServer.healthCheck(hostList, new Hashtable<String,String>(), 0);
+
+		String conn = connect.get(host.getHostId()) != null ? connect.get(host.getHostId()) : "off";
+		
+		return conn;
+	}
+	
+	/**
+	 * 삭제한 그룹 복구
+	 */
+	@ResponseBody
+	@GetMapping("/rollback")
+	public void rollbackGroup(@RequestParam(value="batGrpId")String batGrpId) {
+		
+		batchService.rollback(batGrpId);
 	}
 }

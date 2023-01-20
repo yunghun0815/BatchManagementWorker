@@ -91,65 +91,107 @@
 			</h3>
 			<div class="main-list">
 				<ul>
-					<li class="d-flex list-header">
-						<div class="group-id"><span>그룹ID</span></div>
-						<div class="group-nm"><span>그룹명</span></div>
-						<div class="group-host"><span>호스트명(IP)</span></div>
-						<div class="group-cron"><span>주기</span></div>
-						<div class="group-conn"><span>연결상태</span></div>
-						<div class="group-running"><span>실행</span></div>
-						<div class="group-active"><span>Actions</span></div>
-					</li>
-					<c:forEach var="group" items="${batGrpList}">
-						<li class="d-flex group">
-							<div class="group-id">
-								<span>${group.batGrpId}</span>
-							</div>
-							<div class="group-nm">
-								<span>${group.batGrpNm}</span>
-							</div>
-							<div class="group-host">
-								<span>${group.hostNm}(${group.hostIp})</span>
-							</div>
-							<div class="group-cron">
-								<span> <c:if test="${empty group.cronDsc}">
-									${group.cron}
-							</c:if> <c:if test="${not empty group.cronDsc}">
-									${group.cronDsc}
-								</c:if></span>
-							</div>
-							<div class="group-conn">
-								<c:if test="${group.conn == 'on'}">
-									<img src="/image/common/action/conn.png" class="conn_enabled">
-								</c:if>
-								<c:if test="${group.conn == 'off'}">
-									<img src="/image/common/action/disConn.png" class="conn_disabled">
-								</c:if>
-							</div> 
-							<div class="group-running">
-								<c:if test="${group.runCheck eq true}">
-									<label for="toggle" class="toggleSwitch active"> <span
-										class="toggleButton"></span></label>
-								</c:if>
-								<c:if test="${group.runCheck eq false}">
-									<label for="toggle" class="toggleSwitch"> <span
-										class="toggleButton"></span></label>
-								</c:if>
-							</div>
-							<div class="group-active">
-								<div onclick="startGrp(this,'${group.batGrpId}')">
-									<img src="/image/common/action/play.png" class="menu-box" id="play">
-								</div> 
-								<div onclick="getUpdateGrpInfo(this)"
-									data-bs-toggle="modal" data-bs-target="#detail-batch-group">
-									<img src="/image/common/action/detail.png" class="menu-box" id="detail">
-								</div> 
-								<div onclick="grpDelete('${group.batGrpId}')">
-									<img src="/image/common/action/delete.png" class="menu-box" id="delete">
-								</div>
-							</div>
+					<c:if test="${useYn == 'Y' or empty useYn}">
+						<li class="d-flex list-header">
+							<div class="group-id"><span>그룹ID</span></div>
+							<div class="group-nm"><span>그룹명</span></div>
+							<div class="group-host"><span>호스트명(IP)</span></div>
+							<div class="group-cron"><span>주기</span></div>
+							<div class="group-conn"><span>연결상태</span></div>
+							<div class="group-running"><span>실행</span></div>
+							<div class="group-active"><span>Actions</span></div>
 						</li>
-					</c:forEach>
+						<c:forEach var="group" items="${batGrpList}">
+							<li class="d-flex group">
+								<div class="group-id">
+									<span>${group.batGrpId}</span>
+								</div>
+								<div class="group-nm">
+									<span>${group.batGrpNm}</span>
+								</div>
+								<div class="group-host">
+									<span>${group.hostNm}(${group.hostIp})</span>
+								</div>
+								<div class="group-cron">
+									<span> <c:if test="${empty group.cronDsc}">
+										${group.cron}
+								</c:if> <c:if test="${not empty group.cronDsc}">
+										${group.cronDsc}
+									</c:if></span>
+								</div>
+								<div class="group-conn">
+									<c:if test="${group.conn == 'on'}">
+										<img src="/image/common/action/conn.png" onclick="checkHealth(this)" class="conn_enabled">
+									</c:if>
+									<c:if test="${group.conn == 'off'}">
+										<img src="/image/common/action/disConn.png" onclick="checkHealth(this)" class="conn_disabled">
+									</c:if>
+								</div> 
+								<div class="group-running">
+									<c:if test="${group.runCheck eq true}">
+										<label for="toggle" class="toggleSwitch active"> <span
+											class="toggleButton"></span></label>
+									</c:if>
+									<c:if test="${group.runCheck eq false}">
+										<label for="toggle" class="toggleSwitch"> <span
+											class="toggleButton"></span></label>
+									</c:if>
+								</div>
+								<div class="group-active">
+									<div onclick="startGrp(this,'${group.batGrpId}')">
+										<img src="/image/common/action/play.png" class="menu-box" id="play">
+									</div> 
+									<div onclick="getUpdateGrpInfo(this)"
+										data-bs-toggle="modal" data-bs-target="#detail-batch-group">
+										<img src="/image/common/action/detail.png" class="menu-box" id="detail">
+									</div> 
+									<div onclick="grpDelete('${group.batGrpId}')">
+										<img src="/image/common/action/delete.png" class="menu-box" id="delete">
+									</div>
+								</div>
+							</li>
+						</c:forEach>
+					</c:if>
+					<c:if test="${useYn == 'N'}">
+						<li class="d-flex list-header">
+							<div class="group-id"><span>그룹ID</span></div>
+							<div class="group-nm"><span>그룹명</span></div>
+							<div class="group-host"><span>호스트명(IP)</span></div>
+							<div class="group-cron"><span>주기</span></div>
+							<div class="group-info"><span>정보</span></div>
+							<div class="group-rollback"><span>Action</span></div>
+						</li>
+						<c:forEach var="group" items="${batGrpList}">
+							<li class="d-flex group">
+								<div class="group-id">
+									<span>${group.batGrpId}</span>
+								</div>
+								<div class="group-nm">
+									<span>${group.batGrpNm}</span>
+								</div>
+								<div class="group-host">
+									<span>${group.hostNm}(${group.hostIp})</span>
+								</div>
+								<div class="group-cron">
+									<span> <c:if test="${empty group.cronDsc}">
+										${group.cron}
+								</c:if> <c:if test="${not empty group.cronDsc}">
+										${group.cronDsc}
+									</c:if></span>
+								</div>
+								<div class="group-active">
+									<div onclick="getUpdateGrpInfo(this)"
+										data-bs-toggle="modal" data-bs-target="#detail-batch-group">
+										<img src="/image/common/action/detail.png" class="menu-box" id="detail">
+									</div> 
+								</div> 
+								<div class="group-rollback">
+										<button class="rollback-btn" onclick="rollback(this)">복구</button>
+							
+								</div>
+							</li>
+						</c:forEach>
+					</c:if>
 					<li>
 						<c:if test="${pager.totalRows > 0}">
 							<div id="page-box">
@@ -167,7 +209,7 @@
 									</c:if>
 									<c:if test="${pager.pageNo == i}">
 										<a class="page-button this-page" href="${url}?pageNo=${i}${search}">${i}</a>
-									</c:if>
+									</c:if>                                                                                                    
 								</c:forEach>
 						
 								<c:if test="${pager.groupNo<pager.totalGroupNo}">
