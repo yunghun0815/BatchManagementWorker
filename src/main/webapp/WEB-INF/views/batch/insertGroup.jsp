@@ -28,7 +28,7 @@
                   <th>호스트명(IP)</th>
                   <td><select class="form-control" name="hostId">
                      <c:forEach var="host" items="${hostList}">
-                        <option value="${host.hostId}">${host.hostNm}(${host.hostIp})</option>
+                        <option value="${host.hostId}">${host.hostNm} - ${host.hostIp}:${host.hostPt}</option>
                      </c:forEach>
                      </select></td>
                </tr>

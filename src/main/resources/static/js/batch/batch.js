@@ -16,8 +16,13 @@ $(function(){
 			let target = $(".sub-content .grp");
 			target.empty();
 			target.append(grpNm);
-			getPrmList(grpId, "view");
-			$(".sub-content .grp").prop("id", grpId);
+			 
+			let use = true;
+			if($(".group-rollback").length!=0) use = false;
+			getPrmList(grpId, "view", use);
+			target.prop("id", grpId);
+			let conn = $(this).find("group-conn").hasClass("conn_enabled");
+			hidePath(conn);
 			$(".modal-body input[name=batGrpId]").val(grpId);
 		});
 	});
@@ -128,6 +133,8 @@ function readGroupInfo(grpId){
 		url: "/batch/group/detail?grpId=" + grpId,
 		method: "GET",
 		success: function(result){
+			const obj = $("#detail-batch-group").find(".modal-footer");
+			obj.empty();
 			$("#detail-batch-group input[name=batGrpId]").val(result.batGrpId);
 			$("#detail-batch-group input[name=batGrpNm]").val(result.batGrpNm);
 			$("#detail-batch-group input[name=batGrpDsc]").val(result.batGrpDsc);
@@ -140,11 +147,15 @@ function readGroupInfo(grpId){
 			}
 			$("#detail-batch-group select[name=hostId]").val(result.hostId).prop("selected", true);
 			$("#detail-batch-group select[name=autoExcnYn]").val(result.autoExcnYn).prop("selected", true);
+			
+			if(result.useYn == 'Y'){
+				var view =`<button type="button" onclick="groupModify(this)" class="btn btn-primary">수정</button>
+							<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">목록</button>`;
+				obj.append(view);
+			}
 		}
 	});
 	//css
-	const obj = $("#detail-batch-group").find(".modal-footer");
-	obj.empty();
 	var frm = $('.active');
 	//class 변경
 	frm.removeClass('active');
@@ -152,9 +163,7 @@ function readGroupInfo(grpId){
 	//select disabled 제거
 	$(".inactive").attr("disabled", true);
 	//버튼 변경(수정삭제목록 -> 저장이전목록)
-	var view =`<button type="button" onclick="groupModify(this)" class="btn btn-primary">수정</button>
-	<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">목록</button>`;
-	obj.append(view);
+	
 }
 function readProgramInfo(prmId){
 	//내용 채우기
@@ -162,6 +171,8 @@ function readProgramInfo(prmId){
 		url: "/batch/program/detail?prmId=" + prmId,
 		method: "GET",
 		success: function(result){
+			const obj = $("#detail-batch-program").find(".modal-footer");
+			obj.empty();
 			$("#detail-batch-program input[name=batPrmId]").val(result.batPrmId);
 			$("#detail-batch-program input[name=batPrmNm]").val(result.batPrmNm);
 			$("#detail-batch-program input[name=batGrpId]").val(result.batGrpId);
@@ -170,28 +181,21 @@ function readProgramInfo(prmId){
 			$("#detail-batch-program input[name=excnOrd]").val(result.excnOrd);
 			$("#detail-batch-program input[name=path]").val(result.path);
 			$("#detail-batch-program .path-btn").hide(); // 파일 찾기 버튼 숨김 
-			
-			let name = $('#prmPath').prop('tagName');
-			if(name == "INPUT"){
-				$("#detail-batch-program #prmPath").val(result.path);
-			}else if(name == "SELECT"){
-				$("#detail-batch-program #prmPath").val(result.path).prop("selected", true);
+			if(result.useYn=="Y"){
+				var view =`<button type="button" onclick="programModify(this)" class="btn btn-primary">수정</button>
+							<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">목록</button>`;
+				obj.append(view);
 			}
 		}
 	});
 	//css
-	const obj = $("#detail-batch-program").find(".modal-footer");
-	obj.empty();
+	
 	var frm = $('.active');
 	//class 변경
 	frm.removeClass('active');
 	frm.addClass('inactive');
 	//select disabled 제거
 	$(".inactive").attr("disabled", true);
-	//버튼 변경(수정삭제목록 -> 저장이전목록)
-	var view =`<button type="button" onclick="programModify(this)" class="btn btn-primary">수정</button>
-	<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">목록</button>`;
-	obj.append(view);
 }
 
 // 프로그램 등록 클릭 시 모달 초기화
@@ -207,7 +211,7 @@ function initModal(){
 // grpId: 프로그램 리스트 가져올 그룹Id
 // method: 결과값이 html인지(view), 프로그램 리스트의 길이인지(length)
 */
-function getPrmList(grpId, method){
+function getPrmList(grpId, method, use){
 	let len;
 	$.ajax({
 		url: "/batch/program?grpId=" + grpId,
@@ -237,11 +241,14 @@ function getPrmList(grpId, method){
 										<div onmouseenter="iconMouseOver(this)" onmouseleave="iconMouseLeave(this)" onclick="getUpdatePrmInfo(this)"
 											data-bs-toggle="modal" data-bs-target="#detail-batch-program">
 										<img src="/image/common/action/detail.png" class="menu-box" id="detail">
-									</div> 
-									<div onmouseenter="iconMouseOver(this)" onmouseleave="iconMouseLeave(this)"
+									</div>`
+						if(use==true){ 
+							view +=	`<div onmouseenter="iconMouseOver(this)" onmouseleave="iconMouseLeave(this)"
 										onclick="prmDelete(this)">
 										<img src="/image/common/action/delete.png" class="menu-box" id="delete">
-									</div></div>
+									</div>`;
+						}
+						view+= `</div>
 									<div class="program-ord"><span>` + obj['excnOrd'] + `</span></div>
 								</li>`;
 					}
@@ -249,6 +256,7 @@ function getPrmList(grpId, method){
 					btn += `<div class="ord-btn" onclick="possibleChangeOrd(this)"><span>순서 변경</span></div>`
 				}
 				target.append(view);
+				if(use==false) btn = ``;
 				btnWrap.append(btn);
 			}
 		},
@@ -270,51 +278,6 @@ function getPath(){
 	let top = (window.screen.height / 2) - (700/2);
 	window.open("/batch/popup/path", "배치 파일 등록", "width=900px, height=700px, left="+ left +", top="+ top +"");
 }
-
-//그룹별 등록 가능한 프로그램 경로 가져오기
-/*function getPath(grpId, type){
-	$.ajax({
-		url: "/batch/path?grpId=" + grpId, 
-		method: "GET",
-		success: function(result){
-			$("#" + type + "-batch-program input[name=batGrpId]").val(grpId);
-			var view = ``;
-			var target = $("#" + type + "-batch-program select[name=path]");	
-			if(result.length == 1 && result[0] == "연결 실패"){
-				target.replaceWith($('<input />').attr({
-					type: 'text',
-					id: target.attr('id'),
-					name: target.attr('name'),
-					class: 'form-control',
-					placeholder: "경로 직접 입력"
-				}));
-				if(type=="insert"){
-					$("#" + type + "-batch-program #prmPath").attr("placeholder", "연결 실패로 직접 경로를 입력해주세요.");
-				}else if(type=="detail"){
-					$("#" + type + "-batch-program #prmPath").attr("disabled", true);
-					$("#" + type + "-batch-program #prmPath").addClass("inactive");
-				}
-			}else{		
-				target.empty();
-				for(var i=0;i<result.length;i++){
-					let obj = result[i];
-					view = `<option value="`+ obj + `">` + obj + `</option>`;
-					target.append(view);
-				}
-			}
-		},
-		error: function(request,status,error){
-			alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
-		}
-	})
-} */
-
-// 프로그램 insert 
-/*function getInsertInfo(btn){
-	//grpId, 프로그램 경로 목록 받아와서 화면에 삽입
-	const grpId = $(".sub-content .grpId").text();
-	getPath(grpId, "insert");
-}*/
 
 /* 프로그램 actions 아이콘 색 변경하는 마우스 Event */
 function iconMouseOver(obj){
@@ -345,7 +308,7 @@ function possibleChangeOrd(btn){
 
 // 변경한 프로그램 실행 순서 저장
 function saveChangedOrd(btn){
-	const grpId = $(".grpId").text();
+	const grpId = $().text();
 	var prmList = [];
 	var prmCnt = $(".program").length;
 
@@ -362,7 +325,6 @@ function saveChangedOrd(btn){
 			'batGrpId': grpId,
 			'prmList': prmList
 	};
-	console.log(prmList);
  	 $.ajax({
 		url: "/batch/program/update/ord" ,
 		type: "POST",
@@ -466,7 +428,8 @@ function groupModify(table){
     obj.append(view);
 }
 function programModify(table){
-	$("#detail-batch-program .path-btn").show(); // 파일 찾기 버튼 생김
+	let conn = $("#detail-batch-program input[name=path]").hasClass("onlyread");
+	if(conn==true) $("#detail-batch-program .path-btn").show(); // 파일 찾기 버튼 생김
 	const obj = $(table).closest(".modal-footer");
 	obj.empty();
 	var frm = $('.inactive');
@@ -587,4 +550,50 @@ function startGrp(e,batGrpId){
 		});	
 	}
 
+}
+
+function checkHealth(btn){
+	var grpId = $(btn).closest(".group").find(".group-id").text();
+	const target = $(btn).closest(".group").find(".group-conn");
+	let view = ``;
+	$.ajax({
+		url: "/batch/health?batGrpId=" + grpId,
+		type:"GET",
+		success: function(result){
+			if(result=="on"){
+				view = `<img src="/image/common/action/conn.png" onclick="checkHealth(this)" class="conn_enabled">`;
+				hidePath(true);
+			}else{
+				view = `<img src="/image/common/action/disConn.png" onclick="checkHealth(this)" class="conn_disabled">`;
+				hidePath(false);
+			}
+			target.empty();
+			target.append(view);
+			
+		}
+	});
+}
+
+function hidePath(conn){
+	if(conn==true){
+		$(".path-btn").show();
+		$("input[name=path]").attr("readonly", true);
+		$("#detail-batch-program input[name=path]").addClass("onlyread");
+	}else{
+		$(".path-btn").hide();
+		$("input[name=path]").attr("readonly", false);
+		$("#detail-batch-program input[name=path]").removeClass("onlyread");
+		$("input[name=path]").attr("placeholder", "직접 경로 입력");
+	}
+}
+
+function rollback(btn){
+	var grpId = $(btn).closest(".group").find(".group-id").text();
+	$.ajax({
+		url: "/batch/rollback?batGrpId=" + grpId,
+		type: "GET",
+		success:function(result){
+			location.reload();
+		}
+	});
 }

@@ -67,7 +67,8 @@ $(function(){
 		if(util.browserValid('insert-' + name, key, target[name]['value']) == false) count += 1;					
 		
 		const path = "path";
-		if(util.browserValid('insert-' + name, key, target[name]['value']) == false) count += 1;					
+		key =  'file';
+		if(util.browserValid('insert-' + path, key, target[path]['value']) == false) count += 1;					
 		
 		
 		// 유효성 검사 결과 하나라도 실패할시 false

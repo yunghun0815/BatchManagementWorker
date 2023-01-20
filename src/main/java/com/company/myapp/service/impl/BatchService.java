@@ -75,10 +75,7 @@ public class BatchService implements IBatchService {
 	 */
 	@Override
 	public void deleteBatGrp(String batGrpId) {
-		List<BatPrm> batPrmList = batchDao.getBatPrmList(batGrpId);
-		for(BatPrm pvo: batPrmList) {
-			batchDao.deleteBatPrm(pvo.getBatPrmId());
-		}
+		batchDao.deleteBatPrmByGrp(batGrpId);
 		batchDao.deleteBatGrp(batGrpId);
 	}
 
@@ -87,7 +84,6 @@ public class BatchService implements IBatchService {
 	 */
 	@Override
 	public int getTotalSearchNum(BatGrp vo) {
-		System.out.println(batchDao.getTotalSearchNum(vo));
 		return batchDao.getTotalSearchNum(vo);
 	}
 	
@@ -96,7 +92,6 @@ public class BatchService implements IBatchService {
 	 */
 	@Override
 	public List<BatGrp> searchBatGrp(Pager pager, BatGrp vo) {
-		//System.out.println(vo);
 		List<BatGrp> resultList = batchDao.searchBatGrp(pager, vo);
 		return resultList;
 	}
@@ -177,5 +172,12 @@ public class BatchService implements IBatchService {
 		for(BatPrm vo: prmList) {
 			batchDao.sortByUsers(vo);
 		}
+	}
+
+	@Override
+	public void rollback(String batGrpId) {
+		batchDao.rollbackGroup(batGrpId);
+		batchDao.rollbackProgram(batGrpId);
+		
 	}
 }
