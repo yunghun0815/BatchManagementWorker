@@ -2,6 +2,7 @@ package com.company.myapp.controller;
 
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
@@ -178,7 +179,9 @@ public class BatchController {
 		for (BatGrp test : searchResult) {
 			set.add(test.getHostId());
 		}
-		Map<String, String> connect = hostService.connectHost(set);
+		Map<String, String> connect = new HashMap<>();
+		
+		if(!vo.getUseYn().equals("N"))connect = hostService.connectHost(set);
 
 		// 위에서 받아온 배치 그룹 리스트에 연결/실행상태 체크 후 세팅
 		for (BatGrp grpVo : searchResult) {
@@ -212,7 +215,6 @@ public class BatchController {
 			if(key.equals("useYn"))
 				use = value;
 		}
-		System.out.println(use);
 		model.addAttribute("search", sb.toString( ));
 		model.addAttribute("useYn", use);
 		return "batch/batch";

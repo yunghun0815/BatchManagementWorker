@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.company.myapp.batch.BatchServer;
-import com.company.myapp.batch.activeMQ.EmailProducer;
 import com.company.myapp.service.IJobService;
 
 import lombok.extern.slf4j.Slf4j;

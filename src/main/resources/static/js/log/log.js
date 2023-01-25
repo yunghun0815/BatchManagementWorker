@@ -264,7 +264,7 @@ function restartFailLog(batGrpLogId, failPrmLogList, cmd){
 	
 	swal({
 	  title: "파라미터를 입력해주세요.",
-	  text: "현재 입력된 값은 프로그램에 등록된 파라미터입니다.",
+	  text: "현재 입력된 값은 최초 등록된 파라미터입니다.",
 	  icon: "info",
 	  content: failDiv,
 	  buttons: {

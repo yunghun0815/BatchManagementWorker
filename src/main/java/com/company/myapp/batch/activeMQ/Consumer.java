@@ -7,10 +7,10 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Component
-public class Receiver {
+public class Consumer {
 	
 	@JmsListener(destination = "hoon")
-	public void receiveMessage(String email) {
-		log.info("[Agent 로그] {}", email);
+	public void receiveMessage(String message) {
+		log.info("[Agent 로그] {}", message);
 	}
 }
