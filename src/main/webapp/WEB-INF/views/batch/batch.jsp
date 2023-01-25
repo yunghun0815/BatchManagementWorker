@@ -5,6 +5,8 @@
 
 <link rel="stylesheet" type="text/css" href="/css/batch/batch.css">
 
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
 <script type="text/javascript" src="/js/batch/batch.js"></script>
 <script type="module" src="/js/batch/batchValid.js"></script>
 <head>
