@@ -21,7 +21,8 @@ $(function(){
 			if($(".group-rollback").length!=0) use = false;
 			getPrmList(grpId, "view", use);
 			target.prop("id", grpId);
-			let conn = $(this).find("group-conn").hasClass("conn_enabled");
+			let conn = false;
+			if ($(this).find(".group-conn").find(".conn_enabled").length != 0) conn=true;
 			hidePath(conn);
 			$(".modal-body input[name=batGrpId]").val(grpId);
 		});
