@@ -296,7 +296,7 @@ function possibleChangeOrd(btn){
 	$(".program").toggleClass('change-ord');
 	$(".ord-btn").attr("onclick", "saveChangedOrd(this)");
 	$(".ord-btn").text("저장하기");
-	$( "#sortable" ).sortable( {
+	$( "#sortable" ).sortable({
     	stop: function(e){
     		const li = $(".program");
     		li.each(function(index){
@@ -309,7 +309,8 @@ function possibleChangeOrd(btn){
 
 // 변경한 프로그램 실행 순서 저장
 function saveChangedOrd(btn){
-	const grpId = $().text();
+	const grpId = $(btn).closest(".sub-content").find(".grp").attr("id");
+	console.log(grpId);
 	var prmList = [];
 	var prmCnt = $(".program").length;
 
