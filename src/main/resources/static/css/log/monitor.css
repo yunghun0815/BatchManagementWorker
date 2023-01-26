@@ -1,0 +1,44 @@
+@charset "UTF-8";
+.content{
+	height: 680px;
+}
+#console-box h5{
+	text-align: center;
+    background-color: #fcfbfb;
+    color: black;
+    height: 35px;
+    font-size: 15px;
+    line-height: 35px;
+    font-weight: bold;
+    border: 2px solid black;
+    border-radius: 10px 10px 0 0;
+    margin: 0;
+}
+#console-box>div{
+	width: 45%;
+	height: 650px;
+	background-color: black;
+	color: white;
+	padding-bottom: 10px;
+	border-radius: 10px;
+}
+#console-box>div ul{
+    padding: 0px 15px;
+   	font-size: 12px;
+  	    height: 615px;
+   	overflow-y: auto;
+   	display: flex;
+   	flex-direction: column-reverse;
+}
+
+/* 콘솔 스크롤바 디자인 */
+#console-box>div ul::-webkit-scrollbar {
+  	width: 10px;
+}
+#console-box>div ul::-webkit-scrollbar-thumb {
+  	background-color: #9c9c9c;
+  	border-radius: 10px;
+}
+#console-box>div ul::-webkit-scrollbar-track {
+  	background-color: #383838;
+}

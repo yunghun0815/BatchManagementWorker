@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.company.myapp.batch.code.BatchStatusCode;
+import com.company.myapp.batch.websocket.WebSocketManagement;
 import com.company.myapp.dto.BatGrp;
 import com.company.myapp.dto.BatGrpLog;
 import com.company.myapp.dto.BatPrm;
@@ -47,6 +48,8 @@ public class AgentJob implements Job{
 	@Autowired
 	IHostService hostService;
 	
+	@Autowired
+	WebSocketManagement webSocketManagement;
 	@Override
 	   public void execute(JobExecutionContext context) throws JobExecutionException {
 	      // 잡 키로 그룹아이디 가져옴
@@ -97,7 +100,9 @@ public class AgentJob implements Job{
 	      Host host = hostService.getHostByBatGrpId(batGrpId); 
 	      // Agent 서버와 통신 및 JSON 객체 전송
 	      batchServer.sendMessage(host, jsonArray);
-	      log.info("'{}' 그룹의 작업을 요청하였습니다.", batGrpId);
+	      String msg = "'" + batGrpId +"' 그룹의 작업을 요청하였습니다.";
+	      log.info(msg);
+	      webSocketManagement.sendLog("INFO", msg);
 	   }
 
 	

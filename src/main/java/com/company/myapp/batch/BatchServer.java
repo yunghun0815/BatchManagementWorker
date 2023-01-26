@@ -21,6 +21,7 @@ import org.springframework.stereotype.Component;
 
 import com.company.myapp.batch.code.BatchStatusCode;
 import com.company.myapp.batch.code.CommandCode;
+import com.company.myapp.batch.websocket.WebSocketManagement;
 import com.company.myapp.dto.BatGrpLog;
 import com.company.myapp.dto.BatPrmLog;
 import com.company.myapp.dto.Host;
@@ -43,6 +44,9 @@ public class BatchServer {
 	@Autowired
 	ILogService logService;
 
+	@Autowired
+	WebSocketManagement webSocketManagement;
+	
 	Socket socket;
 	ServerSocket serverSocket;
 	ExecutorService threadPool;
@@ -63,7 +67,7 @@ public class BatchServer {
 		// 작업 스레드 생성
 		threadPool.execute(new Runnable() {
 
-			@Override
+			@Override 
 			public void run() {
 				// 서버소켓이 열려있으면 실행
 				if (!serverSocket.isClosed()) {
@@ -121,7 +125,9 @@ public class BatchServer {
 			socket.close();
 		} catch (Exception e) {
 			// Agent 서버로 연결 실패시 로그 실행중 -> 실패로 업데이트
-			log.info("[전송 실패] Agent서버로 메시지 전송에 실패하였습니다.");
+			String msg = "[전송 실패] Agent서버로 메시지 전송에 실패하였습니다.";
+			log.error(msg + " - " + e.getMessage());
+			webSocketManagement.sendLog("ERROR", msg);
 			for (JsonDto json : jsonArray) {
 				BatPrmLog batPrmLog = new BatPrmLog();
 				batPrmLog.setBatPrmStCd(BatchStatusCode.FAIL.getCode());
@@ -162,9 +168,10 @@ public class BatchServer {
 						BatPrmLog batPrmLog = mapper.readValue(message.toString(), BatPrmLog.class);
 						
 						if(batPrmLog.getBatPrmId() == null) throw new Exception();
-						
-						log.info("로그ID: '{}' / 프로그램ID: '{}' {}회차 로그가 저장되었습니다.", 
-								batPrmLog.getBatGrpLogId(), batPrmLog.getBatPrmId(), batPrmLog.getBatGrpRtyCnt()+1);
+						int cnt = batPrmLog.getBatGrpRtyCnt()+1;
+						String msg = "로그ID: '"+ batPrmLog.getBatGrpLogId() +"' / 프로그램ID: '" + batPrmLog.getBatPrmId() + "' "+ cnt +"회차 로그가 저장되었습니다.";
+						log.info(msg);
+						webSocketManagement.sendLog("INFO", msg);
 						
 						// 프로그램 로그 DB에 저장
 						logService.updateBatPrmLog(batPrmLog);
@@ -192,6 +199,7 @@ public class BatchServer {
 					socket.close();
 				} catch (Exception e) {
 					log.error("[로그 저장 에러] {}", e.getMessage());
+					webSocketManagement.sendLog("ERROR", "로그를 저장하는데 에러가 발생하였습니다.");
 				}
 			}
 		});

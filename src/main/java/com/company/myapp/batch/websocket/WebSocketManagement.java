@@ -39,7 +39,7 @@ public class WebSocketManagement {
 	 */
 	@OnMessage
 	public void onMessage(String message){
-		managementLog.append(message);
+		managementLog.append(message+"\r\n");
 		try {
 			for(Session s : clients) {
 				s.getBasicRemote().sendText(message);
@@ -67,6 +67,11 @@ public class WebSocketManagement {
 		clients.remove(session);
 	}
 	
+	/**
+	 * 받은 문자 로그 형식으로 웹소켓 전송 
+	 * @param level 레벨
+	 * @param message 메시지
+	 */
 	public void sendLog(String level, String message) {
 		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 		String msg = timestamp + " " + level + " : " + message;

@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.company.myapp.batch.code.BatchStatusCode;
+import com.company.myapp.batch.websocket.WebSocketAgent;
+import com.company.myapp.batch.websocket.WebSocketManagement;
 import com.company.myapp.dto.BatGrpLog;
 import com.company.myapp.dto.BatPrmLog;
 import com.company.myapp.dto.Pager;
@@ -169,7 +171,8 @@ public class LogController {
 	public String monitoring(Model model) {
 		
 		model.addAttribute("menu","monitor");
-		
+		model.addAttribute("agent", WebSocketAgent.agentLog.toString());
+		model.addAttribute("management", WebSocketManagement.managementLog.toString());
 		return "/log/monitor";
 	}
 }

@@ -15,11 +15,6 @@
 				<TimeBasedTriggeringPolicy /><!-- default interval은 1이므로 설정된 패턴에 따라 1일마다 롤링(갱신) -->
 			</Policies>
 		</RollingFile>
-
-		<MyCustomAppender name="customAppender">
-			<PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level: [%t] %logger{36}.%M() - %msg%n" />
-			
-		</MyCustomAppender>
 	</Appenders>
 
 	<Loggers>
@@ -28,13 +23,6 @@
 		 	<AppenderRef ref="Out" />
 			<AppenderRef ref="file" />
 		</Logger>
-		
-		<Logger name="com.company.myapp.service.impl.JobService" level="info"
-			additivity="false"> <!-- additivity=false: 중복 출력 방지 -->
-			<AppenderRef ref="customAppender" />
-			<AppenderRef ref="file" />
-		</Logger>
-		
 		<Root level="info" additivity="false">
 			<AppenderRef ref="Out" />
 			<AppenderRef ref="file" />
