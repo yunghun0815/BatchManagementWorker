@@ -105,7 +105,8 @@
       	h.host_id as hostId, 
       	h.host_nm as hostNm, 
       	h.host_ip as hostIp,
-      	h.host_pt as hostPt 		
+      	h.host_pt as hostPt,
+      	h.use_yn as useYn 		
       FROM 
       	host h
       JOIN

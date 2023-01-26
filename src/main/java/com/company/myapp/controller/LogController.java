@@ -175,4 +175,22 @@ public class LogController {
 		model.addAttribute("management", WebSocketManagement.managementLog.toString());
 		return "/log/monitor";
 	}
+	@GetMapping("/managment")
+	public String dailyBatchManagment() {
+		
+		return "/graph/dailyManagment";
+	}
+	
+	@RequestMapping("/pieChart")
+	@ResponseBody
+	public Map<String, Integer> dailyChart() {
+		Map<String, Integer> chart = new HashMap<>();
+		
+		chart.put("total", logService.getAllCountJob());
+		chart.put("success", logService.getCountjob(BatchStatusCode.SUCCESS.getCode()));
+		chart.put("fail", logService.getCountjob(BatchStatusCode.FAIL.getCode()));
+		chart.put("running", logService.getCountjob(BatchStatusCode.RUNNING.getCode()));
+		
+		return chart;
+	}
 }

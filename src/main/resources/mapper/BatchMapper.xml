@@ -403,5 +403,12 @@
   ]]>
   </update>
 
+  <select id="checkGrpNm" parameterType="String" resultType="int">
+  	SELECT COUNT(*)
+  		FROM 
+  			bat_grp
+  		WHERE
+  			bat_grp_nm = #{batGrpNm}
+  </select>
 </mapper>
 

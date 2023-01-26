@@ -6,6 +6,12 @@ import * as util from '../util.js';
 
 $(function(){
 	//그룹 등록 함수
+	var checking = $("#insert-batch-group input[name=batGrpNm]");
+	checking.change(function(){
+		checking.removeClass("correct");
+		checking.removeClass("incorrect");
+		$("#insert-batch-group input[name=checkGrpNm]").val("uncheck");
+	})
 	$("#insert-group").submit(function(e){
 		// 에러 메세지 초기화
 		$(".error-message").html('');
@@ -20,7 +26,14 @@ $(function(){
 		const name = "batGrpNm"; 
 		let key = 'blank';
 		// 서버로 보내기 전 유효성 검사, 실패시 카운트 1증가
-		if(util.browserValid('insert-' + name, key, target[name]['value']) == false) count += 1;					
+		if(util.browserValid('insert-' + name, key, target[name]['value']) == false){
+			count += 1;
+		}else{
+			if($("#insert-batch-group input[name=checkGrpNm]").val()=="uncheck"){
+				$("#error-insert-batGrpNm").html('중복확인 해주세요');
+				count+=1;
+			}
+		}					
 		
 		const method = $("#insert-batch-group input[name=cycle]:checked").val();
 		if(cycleCheck(method)){

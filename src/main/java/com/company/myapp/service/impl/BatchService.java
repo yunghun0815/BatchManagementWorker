@@ -180,4 +180,10 @@ public class BatchService implements IBatchService {
 		batchDao.rollbackProgram(batGrpId);
 		
 	}
+
+	@Override
+	public boolean checkGrpNm(String batGrpNm) {
+		if(batchDao.checkGrpNm(batGrpNm) < 1) return true;
+		return false;
+	}
 }

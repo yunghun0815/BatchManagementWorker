@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
 
+import com.company.myapp.batch.code.BatchStatusCode;
 import com.company.myapp.dto.BatGrpLog;
 import com.company.myapp.dto.BatPrmLog;
 import com.company.myapp.dto.Pager;
@@ -41,5 +42,10 @@ public interface ILogService {
 	List<BatGrpLog> searchBatGrpLog(Pager pager, BatGrpLog log); // 검색 결과 페이징 처리해 조회
 
 	List<BatPrmLog> getBatPrmLogListByGrpLog(String batGrpLogId, int batGrpRtyCnt); // 그룹로그 회차별 프로그램 로그 리스트
+
+	int getCountjob(String code);
+
+	int getAllCountJob();
+
 
 }

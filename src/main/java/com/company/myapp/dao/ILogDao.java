@@ -52,6 +52,11 @@ public interface ILogDao {
 
 	String getBatGrpLogSeq();
 
+	int getCountJob(String code);
+
+	int getAllCountJob();
+
+
 
 
 }

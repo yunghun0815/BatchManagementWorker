@@ -16,10 +16,12 @@
                   <th>그룹명</th>
                   <td style="width: 80%;">
                      <input class="form-control" type="text" name="batGrpNm">
+                     <button type="button" class="duplication-btn" onclick="checkName()">중복 확인</button>
                      <span id="error-insert-batGrpNm" class="error-message"></span>
+                     <input type="hidden" name="checkGrpNm" value="uncheck">
                   </td>
                </tr>
-               <tr>
+               <tr> 	 	
                   <th>그룹설명</th>
                   <td><input class="form-control"  type="text" name="batGrpDsc">
                      <span id="error-insert-batGrpDsc" class="error-message"></span></td>

@@ -556,22 +556,30 @@ function startGrp(e,batGrpId){
 
 function checkHealth(btn){
 	var grpId = $(btn).closest(".group").find(".group-id").text();
-	const target = $(btn).closest(".group").find(".group-conn");
 	let view = ``;
 	$.ajax({
 		url: "/batch/health?batGrpId=" + grpId,
 		type:"GET",
 		success: function(result){
-			if(result=="on"){
+			if(result["conn"] == "on"){
 				view = `<img src="/image/common/action/conn.png" onclick="checkHealth(this)" class="conn_enabled">`;
+				for(var i=0; i<$(".group").length;i++){
+					let hostId = $($(".group")[i]).find(".group-host span").attr("id");
+					if(hostId == result["hostId"]){
+						$($(".group")[i]).find(".group-conn").empty().append(view);
+					}
+				}
 				hidePath(true);
 			}else{
 				view = `<img src="/image/common/action/disConn.png" onclick="checkHealth(this)" class="conn_disabled">`;
+				for(var i=0; i<$(".group").length;i++){
+					let hostId = $($(".group")[i]).find(".group-host span").attr("id");
+					if(result["hostId"] == hostId){
+						$($(".group")[i]).find(".group-conn").empty().append(view);
+					}
+				}
 				hidePath(false);
-			}
-			target.empty();
-			target.append(view);
-			
+			}           
 		}
 	});
 }
@@ -595,7 +603,48 @@ function rollback(btn){
 		url: "/batch/rollback?batGrpId=" + grpId,
 		type: "GET",
 		success:function(result){
-			location.reload();
+			if(result==false){
+				swal({
+					title: "복구 불가능",
+					text: "호스트가 존재하지 않습니다.",
+					icon: "error",
+					button: "확인"
+				});		
+			}else{
+				swal({
+					title: "복구 완료",
+					text: "그룹이 복구되었습니다.",
+					icon: "success",
+					button: "확인"
+				})
+				.then((value) => {
+					location.reload();
+				})
+			}
+		}
+	});
+}
+
+function checkName(e){
+	
+	var name = $("#insert-batch-group input[name=batGrpNm]");
+	var warning = $("#error-insert-batGrpNm");
+	var check = $("#insert-batch-group input[name=checkGrpNm]");
+	warning.empty()
+	$.ajax({
+		url: "/batch/checkName?grpNm=" + name.val(),
+		type: "GET",
+		success: function(result){
+			if(result==true){
+				name.removeClass("incorrect");
+				name.addClass("correct");
+				check.val("check");
+			}
+			else{
+				name.removeClass("correct");
+				name.addClass("incorrect");
+				warning.html('이미 존재하는 그룹명입니다.')
+			} 
 		}
 	});
 }

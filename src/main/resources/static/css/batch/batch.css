@@ -136,7 +136,21 @@
 #title-action-box .insert-grp-btn:hover {
 		background-color: #79c2cc;
 	}
+	
+#insert-batch-group .duplication-btn{
+	position: absolute;
+    top: 32px;
+    right: 33px;
+    border: none;
+    cursor: pointer;
+}
 
+.correct{
+	border: 2px solid green;
+}
+.incorrect{
+	border: 2px solid red;
+}
 /* 그룹 부분 - 서브 */
 .sub-content{
 	float: right;
