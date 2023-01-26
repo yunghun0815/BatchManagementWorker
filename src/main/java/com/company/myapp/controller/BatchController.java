@@ -376,7 +376,7 @@ public class BatchController {
 	 */
 	@ResponseBody
 	@GetMapping("/health")
-	public String checkHealth(@RequestParam(value="batGrpId")String batGrpId) {
+	public Map<String, String> checkHealth(@RequestParam(value="batGrpId")String batGrpId) {
 		
 		Host host = hostService.getHostByBatGrpId(batGrpId);
 		List<Host> hostList = new ArrayList<>(); 
@@ -386,7 +386,10 @@ public class BatchController {
 
 		String conn = connect.get(host.getHostId()) != null ? connect.get(host.getHostId()) : "off";
 		
-		return conn;
+		Map<String, String> result = new HashMap<>();
+		result.put("hostId", host.getHostId());
+		result.put("conn", conn);
+		return result;
 	}
 	
 	/**
@@ -394,8 +397,18 @@ public class BatchController {
 	 */
 	@ResponseBody
 	@GetMapping("/rollback")
-	public void rollbackGroup(@RequestParam(value="batGrpId")String batGrpId) {
-		
-		batchService.rollback(batGrpId);
+	public boolean rollbackGroup(@RequestParam(value="batGrpId")String batGrpId) {
+		boolean checkHost = false;
+		if(hostService.getHostByBatGrpId(batGrpId).getUseYn() == 'Y') {
+			batchService.rollback(batGrpId);
+			checkHost = true;
+		}
+		return checkHost;
+	}
+	
+	@ResponseBody
+	@GetMapping("/checkName")
+	public boolean checkGrpNm(@RequestParam(value="grpNm")String batGrpNm) {
+		return batchService.checkGrpNm(batGrpNm);
 	}
 }

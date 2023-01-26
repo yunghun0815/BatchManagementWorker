@@ -41,5 +41,10 @@
 						<img id="log" class="menu-icon" src="/image/common/nav/log-gray.png">
 					</a>
 				</li>		
+				<li>
+					<a class="icon-box" href="/log/managment">
+						<img id="log" class="menu-icon" src="/image/common/nav/graph.png">
+					</a>
+				</li>	
 			</ul>
 		</nav>

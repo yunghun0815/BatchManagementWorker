@@ -113,7 +113,7 @@
 									<span>${group.batGrpNm}</span>
 								</div>
 								<div class="group-host">
-									<span>${group.hostNm}(${group.hostIp})</span>
+									<span id="${group.hostId}">${group.hostNm}(${group.hostIp})</span>
 								</div>
 								<div class="group-cron">
 									<span> <c:if test="${empty group.cronDsc}">

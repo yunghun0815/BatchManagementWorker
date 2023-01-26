@@ -45,4 +45,6 @@ public interface IBatchService {
 	public void updateExcnOrd(List<BatPrm> prmList);
 
 	public void rollback(String batGrpId);
+
+	public boolean checkGrpNm(String batGrpNm);
 }

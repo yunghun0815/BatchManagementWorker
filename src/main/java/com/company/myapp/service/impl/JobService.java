@@ -1,6 +1,7 @@
 package com.company.myapp.service.impl;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
@@ -14,6 +15,7 @@ import org.quartz.SchedulerException;
 import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
 import org.quartz.TriggerKey;
+import org.quartz.impl.matchers.GroupMatcher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -54,13 +56,26 @@ public class JobService implements IJobService {
 	 */
 	@Override
 	public void startSchedule() {
-		
 		List<BatGrp> batGrpList = batchService.getBatGrpList();
 		for(BatGrp vo: batGrpList) {
 			if(vo.getAutoExcnYn().equals("Y") && batchService.getBatPrmList(vo.getBatGrpId()).size()!=0) {
 				addJob(vo.getBatGrpId());
 			}
 		}
+		/*
+		 * try { for(JobKey jobKey :
+		 * scheduler.getJobKeys(GroupMatcher.jobGroupEquals("DEFAULT"))) { String name =
+		 * jobKey.getName(); System.out.println(name); } System.out.println("현재 실행 잡: "
+		 * + scheduler.getCurrentlyExecutingJobs().toString());
+		 * System.out.println("캘린더 이름? " + scheduler.getCalendarNames().toString());
+		 * System.out.println("getContext"+scheduler.getContext());
+		 * System.out.println("metaData::" + scheduler.getMetaData());
+		 * 
+		 * System.out.println("끝");
+		 * 
+		 * } catch (SchedulerException e) { // TODO Auto-generated catch block
+		 * e.printStackTrace(); }
+		 */
 	}
 
 	/**

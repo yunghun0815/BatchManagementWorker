@@ -98,5 +98,16 @@ public class LogService implements ILogService {
 			return logDao.getBatPrmLogListByGrpLog(batGrpLogId, batGrpRtyCnt);
 		}
 
+		@Override
+		public int getCountjob(String code) {
+			return logDao.getCountJob(code);
+		}
+
+		@Override
+		public int getAllCountJob() {
+			return logDao.getAllCountJob();
+		}
+
+
 
 }
