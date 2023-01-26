@@ -162,4 +162,14 @@ public class LogController {
 		return batPrmLog;
 	}
 	
+	/**
+	 * 모니터링 페이지
+	 */
+	@GetMapping("/monitor")
+	public String monitoring(Model model) {
+		
+		model.addAttribute("menu","monitor");
+		
+		return "/log/monitor";
+	}
 }

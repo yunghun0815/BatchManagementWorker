@@ -47,8 +47,6 @@ public class BatchServer {
 	ServerSocket serverSocket;
 	ExecutorService threadPool;
 
-	//JSONObject connect = new JSONObject();
-	
 	/**
 	 * 스레드풀, 서버소켓 생성 및 연결 수락
 	 * 

@@ -1,4 +1,4 @@
-package com.company.myapp.batch.activeMQ;
+package com.company.myapp.batch.activemq.config;
 
 import javax.jms.JMSException;
 import javax.jms.Message;
@@ -12,6 +12,11 @@ import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+/**
+ * from, to 메세시 변환 설정
+ * @author 정영훈
+ *
+ */
 @Component
 public class JsonMessageConverter implements MessageConverter{
 	
@@ -25,7 +30,7 @@ public class JsonMessageConverter implements MessageConverter{
         try {
             json = mapper.writeValueAsString(object);
         } catch (Exception e) {
-            throw new MessageConversionException("Message cannot be parsed. ", e);
+            throw new MessageConversionException("메세지 변환 실패", e);
         }
 
         TextMessage message = session.createTextMessage();

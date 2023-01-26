@@ -44,7 +44,6 @@ public class JobService implements IJobService {
 	ILogDao logDao;
 	@Autowired
 	AgentJob agentJob;
-	
 	/**
 	 * Job 실행 관련 Service
 	 */
@@ -124,14 +123,11 @@ public class JobService implements IJobService {
 	@Override
 	public void pauseJob(String grpId) {
 		JobKey key = JobKey.jobKey(grpId);
-		log.info("1. 그룹Id: " + key.getGroup());
-		log.info("2. 이름: " + key.getName());
 		try{
 			scheduler.pauseJob(key);
 			removeJob(grpId);
-			log.info(key + "를 정지");
 		}catch(SchedulerException e) {
-			log.error(e.getMessage());
+			log.error("[Job 중지 실패]" + e.getMessage());
 			throw new RuntimeException();
 		}
 	}
@@ -152,8 +148,9 @@ public class JobService implements IJobService {
 							.build();
 		try {
 			scheduler.scheduleJob(job,trigger);
-			log.info("Job 추가 완료" );
-			log.info(scheduler.getJobDetail(new JobKey(grpId)).toString());
+			
+			String msg = grpId + " 그룹을 자동실행 상태로 변경하였습니다.";
+			log.info(msg);
 		}catch(SchedulerException e) {
 			// 그룹 로그 저장
 			BatGrpLog batGrpLog = new BatGrpLog();
@@ -177,7 +174,8 @@ public class JobService implements IJobService {
 					batPrmLog.setRsltMsg("Job 등록 실패" + e.getMessage());
 				logDao.insertBatPrmLog(batPrmLog);
 			}
-			log.error(e.getMessage());
+			String msg = grpId + " 그룹 자동실행 설정에 실패하였습니다.";
+			log.error(msg + " - " + e.getMessage());
 			throw new RuntimeException();
 		}
 	}
@@ -191,10 +189,10 @@ public class JobService implements IJobService {
 			scheduler.pauseTrigger(new TriggerKey(grpId));
 			scheduler.unscheduleJob(new TriggerKey(grpId));
 			scheduler.deleteJob(new JobKey(grpId));
-			log.info("job 제거 완료");
+			String msg = grpId + " 그룹의 자동실행을 취소하였습니다.";
+			log.info(msg);
 		}catch(SchedulerException e) {
-			log.error(e.getMessage());
-			throw new RuntimeException();
+			log.error("[Job 제거 실패] " + e.getMessage());
 		}
 	}
 	
