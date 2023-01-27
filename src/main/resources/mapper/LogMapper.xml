@@ -447,10 +447,60 @@
 			AND
 				bat_grp_st_cd = #{code}
 	</select>
+	
 	<select id="getAllCountJob" resultType="int">
 		SELECT COUNT(*) 
 		FROM bat_grp_log 
 		WHERE 
 				TO_CHAR(bat_bgng_dt,'YY/MM/DD') = TO_CHAR(SYSDATE-1,'YY/MM/DD')
+	</select>
+	
+	<select id="getBatGrpLogListByDate" parameterType="String" resultType="BatGrpLog">
+		SELECT 
+			l.bat_grp_log_id as batGrpLogId,
+			l.bat_grp_id as batGrpId,
+			b.bat_grp_nm as batGrpNm,
+			l.bat_grp_rty_cnt as batGrpRtyCnt,
+			l.bat_grp_st_cd as batGrpStCd,
+			l.bat_bgng_dt as batBgngDt,
+			l.bat_end_dt as batEndDt
+		FROM
+			bat_grp_log l
+		JOIN
+			bat_grp b
+		ON
+			l.bat_grp_id = b.bat_grp_id
+		WHERE
+			to_char(l.bat_bgng_dt, 'yyyy-mm-dd') = #{date}							
+	</select>
+	
+	<select id="getBatPrmLogListByGrpIdAndDate" parameterType="map" resultType="BatPrmLog">
+		SELECT
+			pl.bat_grp_log_id as batGrpLogId,
+			pl.bat_grp_rty_cnt as batGrpRtyCnt,
+			pl.bat_prm_id as batPrmId,
+			p.bat_prm_nm as batPrmNm,
+			pl.param as param,
+			pl.bat_prm_st_cd as batPrmStCd,
+			pl.bat_bgng_dt as batBgngDt,
+			pl.bat_end_dt as batEndDt 
+		FROM
+			bat_prm_log pl
+		JOIN
+			bat_grp_log gl
+		ON
+			pl.bat_grp_log_id = gl.bat_grp_log_id 
+		JOIN
+			bat_grp bg 
+		ON
+			gl.bat_grp_id = bg.bat_grp_id 
+		JOIN
+			bat_prm p
+		ON
+			pl.bat_prm_id = p.bat_prm_id		
+		WHERE
+			bg.bat_grp_id = #{batGrpId}
+		AND
+			to_char(pl.bat_bgng_dt, 'yyyy-mm-dd') = #{date}			
 	</select>
 </mapper>

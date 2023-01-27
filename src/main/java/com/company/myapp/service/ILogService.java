@@ -47,5 +47,9 @@ public interface ILogService {
 
 	int getAllCountJob();
 
+	List<BatGrpLog> getBatGrpLogListByDate(String date); // 일자별 그룹 로그 리스트 조회
+
+	List<BatPrmLog> getBatPrmLogListByGrpIdAndDate(String batGrpId, String date); // 일자별 해당 그룹 아이디 프로그램 로그 리스트 조회
+
 
 }

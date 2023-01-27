@@ -8,9 +8,8 @@
 <head>
 <meta charset="UTF-8">
 <title>배치 관리 시스템</title>
-
 <script	src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+<!-- <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script> -->
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.2.js"></script>
 <script type="text/javascript" src="/js/common/common.js"></script>
@@ -42,6 +41,11 @@
 					</a>
 				</li>		
 				<li>
+					<a class="icon-box" href="/log/monitor">
+						<img id="monitor" class="menu-icon" src="/image/common/nav/monitor-gray.png">
+					</a>
+				</li>
+				<li>		
 					<a class="icon-box" href="/log/managment">
 						<img id="log" class="menu-icon" src="/image/common/nav/graph.png">
 					</a>

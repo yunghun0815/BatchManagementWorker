@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 
 import com.company.myapp.batch.AgentJob;
 import com.company.myapp.batch.code.BatchStatusCode;
+import com.company.myapp.batch.websocket.WebSocketManagement;
 import com.company.myapp.dao.IBatchDao;
 import com.company.myapp.dao.ILogDao;
 import com.company.myapp.dto.BatGrp;
@@ -46,7 +47,8 @@ public class JobService implements IJobService {
 	ILogDao logDao;
 	@Autowired
 	AgentJob agentJob;
-	
+	@Autowired
+	WebSocketManagement webSocketManagement;
 	/**
 	 * Job 실행 관련 Service
 	 */
@@ -139,14 +141,11 @@ public class JobService implements IJobService {
 	@Override
 	public void pauseJob(String grpId) {
 		JobKey key = JobKey.jobKey(grpId);
-		log.info("1. 그룹Id: " + key.getGroup());
-		log.info("2. 이름: " + key.getName());
 		try{
 			scheduler.pauseJob(key);
 			removeJob(grpId);
-			log.info(key + "를 정지");
 		}catch(SchedulerException e) {
-			log.error(e.getMessage());
+			log.error("[Job 중지 실패]" + e.getMessage());
 			throw new RuntimeException();
 		}
 	}
@@ -167,8 +166,10 @@ public class JobService implements IJobService {
 							.build();
 		try {
 			scheduler.scheduleJob(job,trigger);
-			log.info("Job 추가 완료" );
-			log.info(scheduler.getJobDetail(new JobKey(grpId)).toString());
+			
+			String msg = grpId + " 그룹을 자동실행 상태로 변경하였습니다.";
+			log.info(msg);
+			webSocketManagement.sendLog("INFO", msg);
 		}catch(SchedulerException e) {
 			// 그룹 로그 저장
 			BatGrpLog batGrpLog = new BatGrpLog();
@@ -192,7 +193,9 @@ public class JobService implements IJobService {
 					batPrmLog.setRsltMsg("Job 등록 실패" + e.getMessage());
 				logDao.insertBatPrmLog(batPrmLog);
 			}
-			log.error(e.getMessage());
+			String msg = grpId + " 그룹 자동실행 설정에 실패하였습니다.";
+			log.error(msg + " - " + e.getMessage());
+			webSocketManagement.sendLog("ERROR", msg);
 			throw new RuntimeException();
 		}
 	}
@@ -206,10 +209,13 @@ public class JobService implements IJobService {
 			scheduler.pauseTrigger(new TriggerKey(grpId));
 			scheduler.unscheduleJob(new TriggerKey(grpId));
 			scheduler.deleteJob(new JobKey(grpId));
-			log.info("job 제거 완료");
+			String msg = grpId + " 그룹의 자동실행을 취소하였습니다.";
+			log.info(msg);
+			webSocketManagement.sendLog("INFO", msg);
 		}catch(SchedulerException e) {
-			log.error(e.getMessage());
-			throw new RuntimeException();
+			String msg = grpId + " 그룹의 자동실행 취소에 실패하였습니다.";
+			log.error(msg + " - " + e.getMessage());
+			webSocketManagement.sendLog("ERROR", msg);
 		}
 	}
 	
@@ -263,13 +269,17 @@ public class JobService implements IJobService {
 		List<BatPrm> list = new ArrayList<>();
 		//현재 재실행 회차 세팅
 		int rtyCnt = logDao.getRtyCnt(batGrpLogId);
-		
+		int cnt = rtyCnt + 1;
 		if(cmd.equals("all")) {		// 전체 재실행 -> 그룹 + 프로그램 전체
 			list = batchDao.getBatPrmListByLogId(batGrpLogId);
-			log.info("'{}' 로그 {}회차 작업(전부 재실행)을 요청하였습니다.", batGrpLogId, rtyCnt+1);
+			String msg = "'" + batGrpLogId  +"' 로그 " + cnt + "회차 작업(전부 재실행)을 요청하였습니다.";
+			log.info(msg);
+			webSocketManagement.sendLog("INFO", msg);
 		}else if(cmd.equals("fail")) {		// 실패한것만 재실행 -> 그룹 + 실패한 프로그램
 			list = batchDao.getBatPrmListByFailLogId(batGrpLogId);
-			log.info("'{}' 로그 {}회차 작업(실패 재실행)을 요청하였습니다.", batGrpLogId, rtyCnt+1);
+			String msg = "'" + batGrpLogId  +"' 로그 " + cnt + "회차 작업(실패 재실행)을 요청하였습니다.";
+			log.info(msg);
+			webSocketManagement.sendLog("INFO", msg);
 		}
 		
 		for(BatPrm prm : list) {
@@ -293,7 +303,9 @@ public class JobService implements IJobService {
 		
 		String batGrpLogId = logDao.getBatGrpLogSeq();
 		
-		log.info("'{}' 그룹을 수동 실행하였습니다.", batGrpId);
+		String msg = "'"+ batGrpId + "' 그룹을 수동 실행하였습니다."; 
+		log.info(msg);
+		webSocketManagement.sendLog("INFO", msg);
 		agentJob.manuallyRun(batGrpLogId, vo, 0);
 	}
 	

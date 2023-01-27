@@ -108,6 +108,16 @@ public class LogService implements ILogService {
 			return logDao.getAllCountJob();
 		}
 
+		@Override
+		public List<BatGrpLog> getBatGrpLogListByDate(String date) {
+			return logDao.getBatGrpLogListByDate(date);
+		}
+
+		@Override
+		public List<BatPrmLog> getBatPrmLogListByGrpIdAndDate(String batGrpId, String date) {
+			return logDao.getBatPrmLogListByGrpIdAndDate(batGrpId, date);
+		}
+
 
 
 }

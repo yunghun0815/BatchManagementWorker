@@ -341,10 +341,8 @@ public class BatchController {
 	@PostMapping("/Job/{batGrpId}")
 	public void schedule(boolean execute, @PathVariable String batGrpId) {
 		if (execute) {
-			log.info("Job 중지");
 			jobService.pauseJob(batGrpId);
 		} else {
-			log.info("Job 실행");
 			jobService.startJob(batGrpId);
 		}
 	}

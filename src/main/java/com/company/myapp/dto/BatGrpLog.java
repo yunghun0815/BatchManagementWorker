@@ -2,7 +2,6 @@ package com.company.myapp.dto;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import lombok.Getter;
 import lombok.Setter;

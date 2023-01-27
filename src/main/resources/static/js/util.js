@@ -8,7 +8,7 @@
 // 유효성 검사용 정규표현식
 export const regexp = {
 	'blank': {
-		'regexp': /[^?a-zA-Z0-9/]/,
+		'regexp': /^[ㄱ-ㅎ|가-힣|a-z|A-Z|0-9| ]{1,50}$/,
 		'message': '50자 이하의 한글, 영어, 숫자만 사용 가능합니다.'
 	},
 	'ip': {

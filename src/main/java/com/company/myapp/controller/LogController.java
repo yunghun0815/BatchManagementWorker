@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.company.myapp.batch.code.BatchStatusCode;
+import com.company.myapp.batch.websocket.WebSocketAgent;
+import com.company.myapp.batch.websocket.WebSocketManagement;
 import com.company.myapp.dto.BatGrpLog;
 import com.company.myapp.dto.BatPrmLog;
 import com.company.myapp.dto.Pager;
@@ -162,6 +164,17 @@ public class LogController {
 		return batPrmLog;
 	}
 	
+	/**
+	 * 모니터링 페이지
+	 */
+	@GetMapping("/monitor")
+	public String monitoring(Model model) {
+		
+		model.addAttribute("menu","monitor");
+		model.addAttribute("agent", WebSocketAgent.agentLog);
+		model.addAttribute("management", WebSocketManagement.managementLog);
+		return "/log/monitor";
+	}
 	@GetMapping("/managment")
 	public String dailyBatchManagment() {
 		
@@ -179,5 +192,4 @@ public class LogController {
 		chart.put("total", logService.getAllCountJob());
 		return chart;
 	}
-		
 }
