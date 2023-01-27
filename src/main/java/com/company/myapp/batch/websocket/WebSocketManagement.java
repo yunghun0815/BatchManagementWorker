@@ -1,10 +1,10 @@
 package com.company.myapp.batch.websocket;
 
 import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.websocket.OnClose;
@@ -14,8 +14,6 @@ import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
 
 import org.springframework.stereotype.Service;
-
-import com.company.myapp.service.impl.JobService;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -29,7 +27,7 @@ import lombok.extern.slf4j.Slf4j;
 @ServerEndpoint(value = "/ws/management")
 public class WebSocketManagement {
 	
-	public static StringBuilder managementLog = new StringBuilder();
+	public static List<String> managementLog = new ArrayList<>();
 	private static Set<Session> clients = Collections.synchronizedSet(new HashSet<>());
 
 	/**
@@ -39,7 +37,6 @@ public class WebSocketManagement {
 	 */
 	@OnMessage
 	public void onMessage(String message){
-		managementLog.append(message+"\r\n");
 		try {
 			for(Session s : clients) {
 				s.getBasicRemote().sendText(message);
@@ -75,7 +72,7 @@ public class WebSocketManagement {
 	public void sendLog(String level, String message) {
 		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 		String msg = timestamp + " " + level + " : " + message;
-		
+		managementLog.add(msg+"\r\n");
 		onMessage(msg);
 	}
 }

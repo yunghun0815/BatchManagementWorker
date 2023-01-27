@@ -25,10 +25,8 @@
 #console-box>div ul{
     padding: 0px 15px;
    	font-size: 12px;
-  	    height: 615px;
-   	overflow-y: auto;
-   	display: flex;
-   	flex-direction: column-reverse;
+  	height: 615px;
+   	overflow-y: scroll;
 }
 
 /* 콘솔 스크롤바 디자인 */

@@ -171,8 +171,8 @@ public class LogController {
 	public String monitoring(Model model) {
 		
 		model.addAttribute("menu","monitor");
-		model.addAttribute("agent", WebSocketAgent.agentLog.toString());
-		model.addAttribute("management", WebSocketManagement.managementLog.toString());
+		model.addAttribute("agent", WebSocketAgent.agentLog);
+		model.addAttribute("management", WebSocketManagement.managementLog);
 		return "/log/monitor";
 	}
 	@GetMapping("/managment")

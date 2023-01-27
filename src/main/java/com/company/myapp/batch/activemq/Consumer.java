@@ -23,6 +23,7 @@ public class Consumer {
 	@JmsListener(destination = "agent")
 	public void receiveMessage(String message) {
 		
+		WebSocketAgent.agentLog.add(message);
 		agent.onMessage(message);
 	}
 	

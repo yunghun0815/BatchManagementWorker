@@ -7,3 +7,21 @@ wsAgent.onmessage = (message) => {
 wsManagement.onmessage = (message) => {
 	$("#management-console ul").append("<li>"+ message['data'] +"</li>");
 }
+
+
+$(function(){
+	fixedScrollBottom();
+});
+
+function fixedScrollBottom(){
+	$(".console").each((index, element) => {
+		let height = 0;			
+		
+		$(element).find("ul li").each((index, li) => {
+			height += $(li).height();
+		});
+		
+		$(element).find("ul").scrollTop(height);
+		console.log(height);
+	});
+}

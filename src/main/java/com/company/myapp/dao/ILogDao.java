@@ -56,6 +56,10 @@ public interface ILogDao {
 
 	int getAllCountJob();
 
+	List<BatGrpLog> getBatGrpLogListByDate(String date);
+
+	List<BatPrmLog> getBatPrmLogListByGrpIdAndDate(@Param(value = "batGrpId") String batGrpId, @Param(value = "date") String date);
+
 
 
 

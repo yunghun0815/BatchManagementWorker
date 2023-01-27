@@ -1,7 +1,9 @@
 package com.company.myapp.batch.websocket;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.websocket.OnClose;
@@ -24,7 +26,7 @@ import lombok.extern.slf4j.Slf4j;
 @ServerEndpoint(value = "/ws/agent")
 public class WebSocketAgent {
 	
-	public static StringBuilder agentLog = new StringBuilder();
+	public static List<String> agentLog = new ArrayList<>();
 	private static Set<Session> clients = Collections.synchronizedSet(new HashSet<>());
 	
 	/**
@@ -35,7 +37,6 @@ public class WebSocketAgent {
 	@OnMessage
 	public void onMessage(String message){
 		
-		agentLog.append(message);
 		try {
 			for(Session s : clients) {
 				s.getBasicRemote().sendText(message);
