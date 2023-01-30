@@ -43,7 +43,11 @@ public class MainController {
 		model.addAttribute("menu", "home");
 		return "main";
 	}
-	
+	/**
+	 * 일일 보고서(엑셀) 다운로드 
+	 * @param date
+	 * @param response
+	 */
 	@GetMapping("/download/excel")
 	public void downloadExcel(@RequestParam(value = "date") String date, HttpServletResponse response) throws Exception{
 		
