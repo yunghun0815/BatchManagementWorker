@@ -443,16 +443,16 @@
 		SELECT COUNT(*) 
 		FROM bat_grp_log 
 		WHERE 
-				TO_CHAR(bat_bgng_dt,'YY/MM/DD') = TO_CHAR(SYSDATE-1,'YY/MM/DD')
+				TO_CHAR(bat_bgng_dt,'YY/MM/DD') = #{date}
 			AND
 				bat_grp_st_cd = #{code}
 	</select>
 	
-	<select id="getAllCountJob" resultType="int">
+	<select id="getAllCountJob" parameterType="String" resultType="int">
 		SELECT COUNT(*) 
 		FROM bat_grp_log 
 		WHERE 
-				TO_CHAR(bat_bgng_dt,'YY/MM/DD') = TO_CHAR(SYSDATE-1,'YY/MM/DD')
+				TO_CHAR(bat_bgng_dt,'YY/MM/DD') = #{date}
 	</select>
 	
 	<select id="getBatGrpLogListByDate" parameterType="String" resultType="BatGrpLog">

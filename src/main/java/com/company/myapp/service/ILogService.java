@@ -43,9 +43,9 @@ public interface ILogService {
 
 	List<BatPrmLog> getBatPrmLogListByGrpLog(String batGrpLogId, int batGrpRtyCnt); // 그룹로그 회차별 프로그램 로그 리스트
 
-	int getCountjob(String code);
+	int getCountjob(String code, String date);
 
-	int getAllCountJob();
+	int getAllCountJob(String date);
 
 	List<BatGrpLog> getBatGrpLogListByDate(String date); // 일자별 그룹 로그 리스트 조회
 
