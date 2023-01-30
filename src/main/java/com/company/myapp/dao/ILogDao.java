@@ -52,9 +52,9 @@ public interface ILogDao {
 
 	String getBatGrpLogSeq();
 
-	int getCountJob(String code);
+	int getCountJob(String code, String date);
 
-	int getAllCountJob();
+	int getAllCountJob(String date);
 
 	List<BatGrpLog> getBatGrpLogListByDate(String date);
 

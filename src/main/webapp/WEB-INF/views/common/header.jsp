@@ -44,11 +44,6 @@
 					<a class="icon-box" href="/log/monitor">
 						<img id="monitor" class="menu-icon" src="/image/common/nav/monitor-gray.png">
 					</a>
-				</li>
-				<li>		
-					<a class="icon-box" href="/log/managment">
-						<img id="log" class="menu-icon" src="/image/common/nav/graph.png">
-					</a>
 				</li>	
 			</ul>
 		</nav>

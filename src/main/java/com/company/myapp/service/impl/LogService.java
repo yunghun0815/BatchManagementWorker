@@ -99,13 +99,16 @@ public class LogService implements ILogService {
 		}
 
 		@Override
-		public int getCountjob(String code) {
-			return logDao.getCountJob(code);
+		public int getCountjob(String code, String date) {
+			String paramDate = date.substring(0,2) + "/" + date.substring(2,4) + "/" + date.substring(4,6);
+			return logDao.getCountJob(code, paramDate);
 		}
 
 		@Override
-		public int getAllCountJob() {
-			return logDao.getAllCountJob();
+		public int getAllCountJob(String date) {
+			String paramDate = date.substring(0,2) + "/" + date.substring(2,4) + "/" + date.substring(4,6);
+			
+			return logDao.getAllCountJob(paramDate);
 		}
 
 		@Override

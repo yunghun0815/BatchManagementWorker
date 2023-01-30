@@ -175,21 +175,16 @@ public class LogController {
 		model.addAttribute("management", WebSocketManagement.managementLog);
 		return "/log/monitor";
 	}
-	@GetMapping("/managment")
-	public String dailyBatchManagment() {
-		
-		return "/graph/dailyManagment";
-	}
 	
 	@RequestMapping("/pieChart")
 	@ResponseBody
-	public Map<String, Integer> dailyChart() {
+	public Map<String, Integer> dailyChart(@RequestParam String date) {
 		Map<String, Integer> chart = new HashMap<>();
 		
-		chart.put("running", logService.getCountjob(BatchStatusCode.RUNNING.getCode()));
-		chart.put("fail", logService.getCountjob(BatchStatusCode.FAIL.getCode()));
-		chart.put("success", logService.getCountjob(BatchStatusCode.SUCCESS.getCode()));		
-		chart.put("total", logService.getAllCountJob());
+		chart.put("running", logService.getCountjob(BatchStatusCode.RUNNING.getCode(),date));
+		chart.put("fail", logService.getCountjob(BatchStatusCode.FAIL.getCode(),date));
+		chart.put("success", logService.getCountjob(BatchStatusCode.SUCCESS.getCode(),date));		
+		chart.put("total", logService.getAllCountJob(date));
 		return chart;
 	}
 }
