@@ -489,7 +489,7 @@
 		JOIN
 			bat_grp_log gl
 		ON
-			pl.bat_grp_log_id = gl.bat_grp_log_id 
+			(pl.bat_grp_log_id = gl.bat_grp_log_id and pl.bat_grp_rty_cnt = gl.bat_grp_rty_cnt) 
 		JOIN
 			bat_grp bg 
 		ON
@@ -501,6 +501,6 @@
 		WHERE
 			bg.bat_grp_id = #{batGrpId}
 		AND
-			to_char(pl.bat_bgng_dt, 'yyyy-mm-dd') = #{date}			
+			to_char(gl.bat_bgng_dt, 'yyyy-mm-dd') = #{date}			
 	</select>
 </mapper>

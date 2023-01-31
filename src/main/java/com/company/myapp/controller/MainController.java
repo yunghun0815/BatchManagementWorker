@@ -104,6 +104,8 @@ public class MainController {
 		
 		for(BatGrpLog batGrpLog : batGrpLogList) {
 			batGrpIdSet.add(batGrpLog.getBatGrpId()); // 그룹 아이디 중복 제거
+			String batBgngDt = batGrpLog.getBatBgngDt() != null ? sdf.format(batGrpLog.getBatBgngDt()) : "-"; 
+			String batEndDt = batGrpLog.getBatEndDt() != null ? sdf.format(batGrpLog.getBatEndDt()) : "-";
 			
 			Row mainRow = mainSheet.createRow(rowNo);
 			mainRow.createCell(0).setCellValue(batGrpLog.getBatGrpLogId());
@@ -111,8 +113,8 @@ public class MainController {
 			mainRow.createCell(2).setCellValue(batGrpLog.getBatGrpNm());
 			mainRow.createCell(3).setCellValue(batGrpLog.getBatGrpRtyCnt()+1);
 			mainRow.createCell(4).setCellValue(BatchStatusCode.codeToTitle(batGrpLog.getBatGrpStCd()));
-			mainRow.createCell(5).setCellValue(sdf.format(batGrpLog.getBatBgngDt()));
-			mainRow.createCell(6).setCellValue(sdf.format(batGrpLog.getBatEndDt()));
+			mainRow.createCell(5).setCellValue(batBgngDt);
+			mainRow.createCell(6).setCellValue(batEndDt);
 			
 			for(int i=0; i<7; i++) {
 				mainRow.getCell(i).setCellStyle(style);
@@ -148,14 +150,17 @@ public class MainController {
 			
 			for(BatPrmLog batPrmLog : batPrmLogList) {
 				Row row = sheet.createRow(rowNo);
+				String batBgngDt = batPrmLog.getBatBgngDt() != null ? sdf.format(batPrmLog.getBatBgngDt()) : "-";
+				String batEndDt = batPrmLog.getBatEndDt() != null ? sdf.format(batPrmLog.getBatEndDt()) : "-";
+				
 				row.createCell(0).setCellValue(batPrmLog.getBatGrpLogId());
 				row.createCell(1).setCellValue(batPrmLog.getBatGrpRtyCnt()+1);
 				row.createCell(2).setCellValue(batPrmLog.getBatPrmId());
 				row.createCell(3).setCellValue(batPrmLog.getBatPrmNm());
 				row.createCell(4).setCellValue(batPrmLog.getParam());
 				row.createCell(5).setCellValue(BatchStatusCode.codeToTitle(batPrmLog.getBatPrmStCd()));
-				row.createCell(6).setCellValue(sdf.format(batPrmLog.getBatBgngDt()));
-				row.createCell(7).setCellValue(sdf.format(batPrmLog.getBatEndDt()));
+				row.createCell(6).setCellValue(batBgngDt);
+				row.createCell(7).setCellValue(batEndDt);
 				
 				for(int i=0; i<8; i++) {
 					row.getCell(i).setCellStyle(style);
@@ -165,7 +170,7 @@ public class MainController {
 			rowNo = 0;
 		}
 		response.setContentType("ms-vnd/excel");
-		response.setHeader("Content-Disposition", "attachment;filename=log-" + date + ".xls");
+		response.setHeader("Content-Disposition", "attachment;filename=log-" + date + ".xlsx");
 		workbook.write(response.getOutputStream());
 		workbook.close();
 		

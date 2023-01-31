@@ -264,7 +264,7 @@ public class BatchServer {
 							json.put("cmd", CommandCode.CHECK.getCode());
 
 							Socket socket = new Socket();
-							socket.connect(new InetSocketAddress(host.getHostIp(), host.getHostPt()), 2000); // 2초후 소멸
+							socket.connect(new InetSocketAddress(host.getHostIp(), host.getHostPt()), 300); // 2초후 소멸
 
 							// healthCheck 요청
 							DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
@@ -292,7 +292,7 @@ public class BatchServer {
 			return result;
 		} else {
 			try {
-				Thread.sleep(1000L);
+				Thread.sleep(300L);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}

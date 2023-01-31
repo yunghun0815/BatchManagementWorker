@@ -8,8 +8,8 @@
 				pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level: [%t] %logger{36}.%M() - %msg%n" />
 		</Console>
 		<RollingFile name="file"
-			fileName="C:./log/${date:yyyy}/${date:MM}/management-log.log"
-			filePattern="C:./log/${date:yyyy}/${date:MM}/management-log-%d{yyyyMMdd}.log"> <!-- fileName: 저장 파일명 / filePattern: 롤링시 저장 파일명 -->
+			fileName="./log/${date:yyyy}/${date:MM}/management-log.log"
+			filePattern="./log/${date:yyyy}/${date:MM}/management-log-%d{yyyyMMdd}.log"> <!-- fileName: 저장 파일명 / filePattern: 롤링시 저장 파일명 -->
 			<PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level: [%t] %logger{36}.%M() - %msg%n" />
 			<Policies> <!-- 정책 설정 -->
 				<TimeBasedTriggeringPolicy /><!-- default interval은 1이므로 설정된 패턴에 따라 1일마다 롤링(갱신) -->
