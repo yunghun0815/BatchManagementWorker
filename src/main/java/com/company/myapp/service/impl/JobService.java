@@ -64,20 +64,6 @@ public class JobService implements IJobService {
 				addJob(vo.getBatGrpId());
 			}
 		}
-		/*
-		 * try { for(JobKey jobKey :
-		 * scheduler.getJobKeys(GroupMatcher.jobGroupEquals("DEFAULT"))) { String name =
-		 * jobKey.getName(); System.out.println(name); } System.out.println("현재 실행 잡: "
-		 * + scheduler.getCurrentlyExecutingJobs().toString());
-		 * System.out.println("캘린더 이름? " + scheduler.getCalendarNames().toString());
-		 * System.out.println("getContext"+scheduler.getContext());
-		 * System.out.println("metaData::" + scheduler.getMetaData());
-		 * 
-		 * System.out.println("끝");
-		 * 
-		 * } catch (SchedulerException e) { // TODO Auto-generated catch block
-		 * e.printStackTrace(); }
-		 */
 	}
 
 	/**
