@@ -224,7 +224,7 @@
 				</ul>
 			</div>
 		</div>
-		<div class="sub-content" value="">
+		<div class="sub-content">
 			<div class="grp" style="height: 28.8px"></div>
 			<div class="prmList"><span class="warning">그룹을 선택해주세요.</span></div>
 			<div class="btn-wrap"></div>

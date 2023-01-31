@@ -40,10 +40,6 @@
 	font-size: 0.9em;
 }
 
-.group>div {
-	text-align: center;
-	overflow:hidden;
-}
 .group:hover {
 	cursor: pointer;
 	border: 2px solid #79c2cc;
@@ -51,16 +47,16 @@
 }
 
 .group-id{
-	width:13%;
+	width:15%;
 }
 .group-nm{
-	width:13%;
+	width:15%;
 }
 .group-host{
-	width:22%;
+	width:20%;
 }
 .group-cron{
-	width:22%;
+	width:19%;
 }
 
 .group-conn, .group-info{
@@ -89,7 +85,7 @@
 }
 
 .group-active {
-	width:13%;
+	width:14%;
 }
 .group-rollback{
 	width:20%;
@@ -151,18 +147,28 @@
 .incorrect{
 	border: 2px solid red;
 }
+.group>div{
+	overflow:hidden;
+	text-overflow: ellipsis;
+    white-space: nowrap;
+    word-break: break-all;
+    margin:4px;
+    text-align: center;
+}
 /* 그룹 부분 - 서브 */
 .sub-content{
 	float: right;
-	width:29%;
-	background-color: #374c70;
-	border-radius: 30px;
-	height: 670px;
-	margin-left: 8px;
+    width: 29%;
+    background-color: #79c2cc8f;
+    border-radius: 30px;
+    height: 670px;
+    margin-left: 8px;
+    border: 1px solid;
+    border-color: #79c2cc00;
 }
 
 .sub-content ul{
-	height: 524px;
+	height: 535px;
 	overflow: auto;
 	padding: 1px;
     margin : 0px;
@@ -171,6 +177,9 @@
 
 .sub-content ul::-webkit-scrollbar{
   display:none;
+}
+.sub-content>.prmList{
+	height: 524px;	
 }
 .program{
 	position: relative;
@@ -185,6 +194,7 @@
     padding-top: 10px;
     padding-left: 14px;
     margin-top: 14px;
+    overflow:hidden;
 }
 .program .program-id{
 	font-size: 0.3em;
@@ -202,13 +212,14 @@
     width: 59px;
     height: 36px;
     text-align: center;
-    background-color: #374c709e;
+    background-color: #376c967a;
     color: white;
     border-radius: 5px !important;
     line-height: 36px;
     margin-top: 11px;
 	
 }
+
 .program .program-path{
 	font-size: 0.8em;
 	height: 30px;
@@ -259,11 +270,22 @@
 	display: flex;
 	margin:auto;
 }
-.ord-btn{
-    width: 46%;
+.sub-content .program-btn{
+	padding: 0px;
+    line-height: 65px;
+    margin: 11px auto;
+    text-align: center;
+    font-size: 1.2em;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 15px;
+    height: 65px;
+}
+/* .mint-btn{
+    width: 50%;
     padding: 0px;
-    line-height: 48px;
-	margin: 10px auto;
+    line-height: 65px;
+    margin: 11px auto;
     text-align: center;
     background-color: #79c2cc;
     color: white;
@@ -271,24 +293,51 @@
     font-weight: bold;
     cursor: pointer;
     margin-top: 15px;
-    border-radius: 10px;
     float: right;
+    border-bottom-right-radius: 30px;
+    height: 65px;
 }
-.insert-btn{
-    width: 46%;
+.white-btn{
+    width: 50%;
     padding: 0px;
-    line-height: 48px;
-    margin: 10px auto;
+    line-height: 65px;
+    margin: 11px auto;
     text-align: center;
-    background-color: #79c2cc;
-    color: white;
+    background-color: #f9f9f9;
+    color: #79c2cc;
     font-size: 1.2em;
     font-weight: bold;
     cursor: pointer;
     margin-top: 15px;
-    border-radius: 10px;
     float: left;
+    border-bottom-left-radius: 28px;
+    margin-left: 1px;
+    height: 65px;
+} */
+.sub-content .left-insert-btn{
+	width: 50%;
+	background-color: #f9f9f9;
+    color: #79c2cc;
+    float: left;
+    border-bottom-left-radius: 28px; 
+    margin-left: 1.5px;
 }
+.sub-content .insert-btn{
+	width: 99%;
+	background-color: #f9f9f9;
+    color: #79c2cc;
+    border-bottom-left-radius: 28px; 
+    border-bottom-right-radius: 28px; 
+    margin-left: 1.5px;
+}
+.sub-content .ord-btn{
+	width: 50%;
+	background-color: #79c2cc;
+    color: #f9f9f9;
+    float: right;
+    border-bottom-right-radius: 28px;
+}
+
 .change-ord{
 	cursor:move;
 }

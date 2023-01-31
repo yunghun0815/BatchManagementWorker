@@ -52,7 +52,7 @@
 		else if (status == "success")
 			color = "#686868";
 		else if (status == "fail")
-			color = "red";
+			color = "#e60012";
 
 		let statusRate = Math.round(data[0] / (data[0] + data[1]) * 100)
 		console.log(statusRate)
@@ -99,7 +99,7 @@
 				datasets : [ {
 					label : labels,
 					data : data,
-					backgroundColor : [ "#076df8", "red", "#686868" ]
+					backgroundColor : [ "#076df8", "#e60012", "#686868" ]
 				} ]
 			},
 			options : {
@@ -188,9 +188,9 @@
 
 					}
 					$(".total span").empty().append("Total JOBs: " + result["total"]);
-					$(".success span").empty().append("실행중: " + result["success"]);
+					$(".success span").empty().append("작업 완료: " + result["success"]);
 					$(".fail span").empty().append("작업 오류: " + result["fail"]);
-					$(".running span").empty().append("작업 완료: " + result["running"]);
+					$(".running span").empty().append("실행중: " + result["running"]);
 				}
 		});
 	}

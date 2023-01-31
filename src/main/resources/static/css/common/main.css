@@ -1,0 +1,171 @@
+@charset "EUC-KR";
+
+.non-data{
+	margin: 0px auto;
+	font-size: 25px;
+	font-weight: bold;
+}
+.non-data div{
+	margin: 0px auto;
+    width: 32%;
+}
+.div1{
+    padding-top: 40px;
+}
+.div2{
+    padding-top: 130px;
+}
+.chart ul{
+	display: flex;
+	position: relative;
+}
+.status-btn-wrap{
+    width: 100%;
+    height: 35px;
+    padding-right: 50px;
+}
+
+.status-btn-wrap ul{
+	float:right;
+	margin-right: 20px;
+}
+.status-btn{
+	width: 121px;
+    height: 28px;
+    border: 1px solid black;
+    color: white;
+    font-size: 0.8em;
+    text-align: center;
+    border-radius: 4px;
+    margin: 2px;
+    
+}
+.status-btn span{    
+	vertical-align: sub;
+}
+.total{
+	background-color: purple;
+}
+.running{
+	background-color: #076df8;
+}
+.success{
+	background-color: #686868;
+}
+.fail{
+	background-color: #e60012;;
+}
+.status-chart-board{
+	width: 94%;
+    height: 130px;
+    margin-top: 12px;
+    margin-bottom: 25px;
+    margin-left: 27px;
+    background-color: white;
+}
+.status-chart-board ul{
+	width: 99%;
+    height: 130px;
+    margin: 0px auto;
+    padding: 0px;
+}
+.status-chart-board li{
+	width: 32%;
+    align-self:center;
+}
+.report-download-btn{
+	width: 170px;
+    height: 30px;
+    background-color: #15834a;
+    border-radius: 4px;
+    color: white;
+    font-size: 0.69em;
+    line-height: 25px;
+    float: right;
+    border: none;
+    margin-right: 55px;
+    line-height: 30px;
+}
+.total-chart-board{
+	width: 94%;
+    height: 380px;
+    margin-top: 24px;
+    margin-bottom: 25px;
+    margin-left: 27px;
+    background-color: white;
+	padding-top: 16px;
+}
+canvas{
+    margin: 0px auto;
+}
+#total-chart{
+	margin: 0px auto;
+}
+
+.date-search{
+	width:50px;
+	cursor:pointer;
+}
+
+.title h1{
+	position: relative
+}
+#title-date-select-box{
+	font-size: 16px;
+	height: 100%;
+	position: relative;
+	line-height: 48px;
+}
+#search-box{
+	font-size: 16px;
+	display: none;
+	position: absolute;
+	width: 285px !important;
+	left: 589px;
+    bottom: -2px !important;
+    border: 1px solid black;
+    background-color: white;
+    padding: 10px 15px;
+}
+#search-box{
+	border-radius: 15px;
+	/*#0CA3B9  */
+}
+#search-box input[name=calendar]{
+	width: 131px;
+	height: 30px;
+	line-height: normal;
+	margin-right: 15px;
+}
+#search-action input[type=reset], #search-action input[type=submit]{
+	width: 44px;
+    line-height: normal;
+    border: 1px solid #d8d3d3;
+    border-radius: 5px;
+    font-weight: bold;
+    margin-right: 3px;
+}
+#search-action input[type="submit"]{
+	margin-leftt: 7px;
+}
+
+.report-download-btn{
+	text-decoration: none;
+	text-align:center;
+}
+.report-download-btn:link{
+	color:white;
+	text-decoration: none;
+}
+.report-download-btn:visited{
+	color:white;
+	text-decoration: none;
+}
+.report-download-btn:hover{
+	color:white;
+	text-decoration: none;
+}
+.report-download-btn:active{
+	color:white;
+	text-decoration: none;
+}
