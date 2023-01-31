@@ -78,7 +78,7 @@
 .sub-content{
 	float: right;
 	width:29%;
-	background-color: #374c70;
+	background-color: #79c2cc8f;
 	border-radius: 30px;
 	height: 670px;
 	margin-left: 8px;
@@ -128,6 +128,7 @@
     flex-direction: column;
     padding: 10px 5px 10px 15px;
     margin-top: 14px;
+	overflow:hidden;
 }
 .program .program-id{
 	font-size: 0.3em;

@@ -227,7 +227,7 @@ function getPrmList(grpId, method, use){
 				let btnWrap = $(".btn-wrap");
 				btnWrap.empty();
 				var view = ``;
-				let btn = `<div class="insert-btn" data-bs-toggle="modal" data-bs-target="#insert-batch-program" onclick="initModal()"><span>프로그램 등록</span></div>`;
+				let btn = `<div class="program-btn insert-btn" data-bs-toggle="modal" data-bs-target="#insert-batch-program" onclick="initModal()"><span>프로그램 등록</span></div>`;
 				if(result.length==0){
 					view += `<span class='warning'">프로그램이 없습니다.</span>`;
 				}else{
@@ -254,7 +254,8 @@ function getPrmList(grpId, method, use){
 								</li>`;
 					}
 					view += `</ul>`;
-					btn += `<div class="ord-btn" onclick="possibleChangeOrd(this)"><span>순서 변경</span></div>`
+					btn = `<div class="program-btn left-insert-btn" data-bs-toggle="modal" data-bs-target="#insert-batch-program" onclick="initModal()"><span>프로그램 등록</span></div>
+						<div class="program-btn ord-btn" onclick="possibleChangeOrd(this)"><span>순서 변경</span></div>`
 				}
 				target.append(view);
 				if(use==false) btn = ``;
@@ -293,9 +294,15 @@ function iconMouseLeave(obj){
 /* 프로그램 순서 변경 */
 // 프로그램 순서 변경 가능하도록
 function possibleChangeOrd(btn){
+	const grpId = $(".sub-content").find(".grp").attr("id");
 	$(".program").toggleClass('change-ord');
 	$(".ord-btn").attr("onclick", "saveChangedOrd(this)");
-	$(".ord-btn").text("저장하기");
+	$(".ord-btn").text("저장");
+	$(".left-insert-btn").attr("onclick","getPrmList('" + grpId+ "','view', true)");
+	$(".left-insert-btn").attr("data-bs-toggle","");
+	$(".left-insert-btn").attr("data-bs-target","");
+	$(".left-insert-btn").text("취소");
+	
 	$( "#sortable" ).sortable({
     	stop: function(e){
     		const li = $(".program");
@@ -333,7 +340,7 @@ function saveChangedOrd(btn){
 		contentType: "application/json; charset=utf-8",
 		data: JSON.stringify(vo),
 		success: function(result){
-			getPrmList(grpId, "view");
+			getPrmList(grpId, "view", true);
 		},
 		error: function(e){
 			console.log(e);
