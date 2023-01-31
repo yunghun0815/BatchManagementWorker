@@ -4,9 +4,8 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ include file="/WEB-INF/views/common/header.jsp"%>
 
-<link rel="stylesheet" type="text/css" href="/css/batch/batch.css">
-
 <link rel="stylesheet" type="text/css" href="/css/common/main.css">
+
 <head>
 <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
 <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
