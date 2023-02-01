@@ -236,7 +236,6 @@
 		bat_grp_id = #{batGrpId},
 		bat_prm_nm = #{batPrmNm},
 		path = #{path},
-		excn_ord = #{excnOrd},
 		param = #{param},
 		param_dsc = #{paramDsc},
   		last_mdfcn_dttm = sysdate
