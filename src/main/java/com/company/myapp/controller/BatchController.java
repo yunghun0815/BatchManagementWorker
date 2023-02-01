@@ -141,7 +141,6 @@ public class BatchController {
 		batchService.updateBatGrp(vo);
 		// 만약 Job에 해당 그룹이 등록되어 있다면 Job에도 업데이트 실행
 		if (jobService.checkExistsJobByGrpId(vo.getBatGrpId())) {
-			System.out.println(vo.getBatGrpId());
 			jobService.updateJob(vo);
 		}
 		return null;
