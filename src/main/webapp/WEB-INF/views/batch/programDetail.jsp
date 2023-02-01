@@ -4,7 +4,7 @@
 
 <div id="detail-batch-program" class="modal" tabindex="-1">
 	<div class="modal-dialog modal-lg">
-		<form action="/batch/program/update" method="POST"><div class="modal-content">
+		<form id="update-program"  method="POST"><div class="modal-content">
 			<div class="modal-header">
 				<h5 id="log-add-id" class="modal-title">프로그램 정보</h5>
 				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>

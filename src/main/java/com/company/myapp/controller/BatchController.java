@@ -131,16 +131,20 @@ public class BatchController {
 	/**
 	 * 배치그룹에 대한 정보 업데이트 및 Job에 대한 업데이트 실행
 	 */
+	@ResponseBody
 	@PostMapping("/group/update")
-	public String updateBatGrp(BatGrp vo) {
+	public List<ObjectError> updateBatGrp(@Valid BatGrp vo, BindingResult result) {
+		System.out.println("!!!!!!!!!!!!!!!!!!!! 업데이트 시작" + vo);
+		if(result.hasErrors()) {
+			return result.getAllErrors();
+		}
 		batchService.updateBatGrp(vo);
-		System.out.println(vo.getBatGrpId());
 		// 만약 Job에 해당 그룹이 등록되어 있다면 Job에도 업데이트 실행
 		if (jobService.checkExistsJobByGrpId(vo.getBatGrpId())) {
 			System.out.println(vo.getBatGrpId());
 			jobService.updateJob(vo);
 		}
-		return "redirect:/batch";
+		return null;
 	}
 
 	/**
@@ -283,10 +287,14 @@ public class BatchController {
 	 * batchService.updateBatPrm(vo); return
 	 * batchService.getBatPrmList(vo.getBatGrpId()); }
 	 */
+	@ResponseBody
 	@PostMapping("/program/update")
-	public String updateBatPrm(BatPrm vo) {
+	public List<ObjectError> updateBatPrm(@Valid BatPrm vo, BindingResult result) {
+		if(result.hasErrors()) {
+			return result.getAllErrors();
+		}
 		batchService.updateBatPrm(vo);
-		return "redirect:/batch";
+		return null;
 	}
 
 	/**

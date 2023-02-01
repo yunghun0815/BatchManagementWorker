@@ -165,7 +165,7 @@ public class MainController {
 			rowNo = 0;
 		}
 		response.setContentType("ms-vnd/excel");
-		response.setHeader("Content-Disposition", "attachment;filename=log-" + date + ".xls");
+		response.setHeader("Content-Disposition", "attachment;filename=log-" + date + ".xlsx");
 		workbook.write(response.getOutputStream());
 		workbook.close();
 		

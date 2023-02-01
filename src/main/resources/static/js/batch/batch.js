@@ -104,6 +104,9 @@ $(function(){
 		$(this).parent().find("input, select").attr("disabled", true);
 		$("input[name='cycle']").removeAttr("disabled");
 		$(this).next().next().find("input, select").removeAttr("disabled");
+		$(this).siblings().find("select[name=cycleMF]").attr("disabled", true);
+		$(this).siblings().find("input[name=cycleDay]").attr("disabled", true);
+		
 	});
 	
 	
@@ -116,9 +119,9 @@ $(function(){
 			}else if(option == 'month'){
 				$(this).next("#option-week").attr("disabled", true);
 				$(this).next().next("#option-month").attr("disabled", false);
-			}else{
-				$(this).next("#option-week").attr("disabled", false);
-				$(this).next().next("#option-month").attr("disabled", false);		
+			}else if(option == 'day'){
+				$(this).next("#option-week").attr("disabled", true);
+				$(this).next().next("#option-month").attr("disabled", true);		
 			}
 		});
 	});
@@ -129,6 +132,11 @@ $(function(){
 
 /* 그룹, 프로그램 상세페이지 세팅 */
 function readGroupInfo(grpId){
+	$(".error-message").html('');
+	$("#detail-batch-group .duplication-btn").hide();
+	$("#detail-batch-group .show-cron").hide();
+	$("#detail-batch-group .insert-cron").hide();
+	$("#detail-batch-group input[name=cronView]").show();
 	//내용 채우기
 	$.ajax({
 		url: "/batch/group/detail?grpId=" + grpId,
@@ -138,6 +146,7 @@ function readGroupInfo(grpId){
 			obj.empty();
 			$("#detail-batch-group input[name=batGrpId]").val(result.batGrpId);
 			$("#detail-batch-group input[name=batGrpNm]").val(result.batGrpNm);
+			$("#detail-batch-group input[name=hiddenBatGrpNm]").val(result.batGrpNm);
 			$("#detail-batch-group input[name=batGrpDsc]").val(result.batGrpDsc);
 			$("#detail-batch-group input[name=cron]").val(result.cron);
 			$("#detail-batch-group input[name=cronDsc]").val(result.cronDsc);
@@ -298,7 +307,7 @@ function possibleChangeOrd(btn){
 	$(".program").toggleClass('change-ord');
 	$(".ord-btn").attr("onclick", "saveChangedOrd(this)");
 	$(".ord-btn").text("저장");
-	$(".left-insert-btn").attr("onclick","getPrmList('" + grpId+ "','view', true)");
+	$(".left-insert-btn").attr("onclick","getPrmList('" + grpId+ "'     ,'view', true)");
 	$(".left-insert-btn").attr("data-bs-toggle","");
 	$(".left-insert-btn").attr("data-bs-target","");
 	$(".left-insert-btn").text("취소");
@@ -420,6 +429,8 @@ function getUpdatePrmInfo(btn){
 
 //상세 화면에서 [수정] 버튼 누르면 수정 화면으로 변경
 function groupModify(table){
+	$("#detail-batch-group .duplication-btn").show();
+	$("#detail-batch-group .show-cron").show();
 	const obj = $(table).closest(".modal-footer");
 	obj.empty();
 	var frm = $('.inactive');
@@ -430,11 +441,12 @@ function groupModify(table){
 	frm.removeClass('inactive');
 	frm.addClass('active');
 	//버튼 변경(수정삭제목록 -> 저장이전목록)
-	var view =`<button type="submit" class="btn btn-primary">저장</button>
+	var view =`<button type="submit" id="grp-update-submit" class="btn btn-primary">저장</button>
         <button type="reset" onclick="groupDetail(this)" class="btn btn-secondary">Back</button>
         <button type="reset" class="btn btn-primary" data-bs-dismiss="modal">목록</button>`;
 	
     obj.append(view);
+    
 }
 function programModify(table){
 	let conn = $("#detail-batch-program input[name=path]").hasClass("onlyread");
@@ -466,55 +478,56 @@ function programDetail(table){
 }
 
 /* 입력한 주기를 크론으로 변경하는 함수 */
-function changeCron(btn){
+function changeCron(type){
 	var sec = '0';
 	var min = '*';
 	var hour = '*';
 	var day = '*';
 	var mon = '*';	//선택x
 	var week = '?'; 
-	const method = $("#insert-batch-group input[name=cycle]:checked").val();
+	const target = $("#" + type + "-batch-group");
+	const method = $("input[name=cycle]:checked").val();
 	var cron = '';
 	var cronDsc = '';
 	if(method == "1") {	//일자반복
-		var cycle = $("#insert-batch-group select[name=cycle1]").val();
+		var cycle = target.find("select[name=cycle1]").val();
 		if(cycle=="day"){
 			cronDsc += '매일 ';
 		}else if(cycle=="week"){
 			day = '?';
-			week = $("#insert-batch-group select[name=cycleMF]").val();
-			cronDsc += ('매주 ' + $("#insert-batch-group #option-week option:selected").text() + ' ');
+			week = target.find("select[name=cycleMF]").val();
+			cronDsc += ('매주 ' + target.find("#option-week option:selected").text() + ' ');
 		}else if(cycle=="month"){
 			week = '?';
-			day = $("#insert-batch-group input[name=cycleDay]").val();
-			cronDsc +=('매월 ' + $("#insert-batch-group #option-month").val() + '일 ');
+			day = target.find("input[name=cycleDay]").val();
+			cronDsc +=('매월 ' + target.find("#option-month").val() + '일 ');
 		}
-		var time_h = $("#insert-batch-group input[name=cycleTime]").val().split(":")[0];
-		var time_m = $("#insert-batch-group input[name=cycleTime]").val().split(":")[1];
+		var time_h = target.find("input[name=cycleTime]").val().split(":")[0];
+		var time_m = target.find("input[name=cycleTime]").val().split(":")[1];
 		cronDsc += time_h + '시 ' + time_m + '분';
 		min = time_m;
 		hour = time_h;
 		cron = sec + ' ' + min + ' ' + hour + ' ' + day + ' ' + mon + ' ' + week;
 	}else if(method=="2"){
-		var number = $("#insert-batch-group input[name=timeNumber]").val();
-		if($("#insert-batch-group input[name=time]:checked").val()=="hour"){
+		var number = target.find("input[name=timeNumber]").val();
+		if(target.find("input[name=time]:checked").val()=="hour"){
 			hour = '/' + number;
 			min = '0';
 			cronDsc += number + '시간마다';
-		}else if($("#insert-batch-group input[name=time]:checked").val()=="min"){
+		}else if(target.find("input[name=time]:checked").val()=="min"){
 			min = '0/' + number;
 			cronDsc += number + '분마다';
-		}else if($("#insert-batch-group input[name=time]:checked").val()=="sec"){
+		}else if(target.find("input[name=time]:checked").val()=="sec"){
 			sec = '/' + number;
 			cronDsc += number + '초마다';
 		}
 		cron = sec + ' ' + min + ' ' + hour + ' ' + day + ' ' + mon + ' ' + week;	
 	}else if(method=="3"){
-		cron = $("#insert-batch-group input[name=selectCron]").val();
+		cron = target.find("input[name=selectCron]").val();
 		cronDsc = '';
 	}
-	$("#insert-batch-group input[name=cron]").val(cron);
-	$("#insert-batch-group input[name=cronDsc]").val(cronDsc);   
+	target.find("input[name=cron]").val(cron);
+	target.find("input[name=cronDsc]").val(cronDsc);   
 	
 }
 
@@ -632,17 +645,19 @@ function rollback(btn){
 	});
 }
 
-function checkName(e){
-	
-	var name = $("#insert-batch-group input[name=batGrpNm]");
-	var warning = $("#error-insert-batGrpNm");
-	var check = $("#insert-batch-group input[name=checkGrpNm]");
+function checkName(type){
+	const target = $("#" + type + "-batch-group");
+	var name = target.find("input[name=batGrpNm]");
+	var warning = $("#error-" + type + "-batGrpNm");
+	var check = target.find("input[name=checkGrpNm]");
+	var beforeName = '';
+	if(type="detail") beforeName = target.find("input[name=hiddenBatGrpNm]");
 	warning.empty()
 	$.ajax({
 		url: "/batch/checkName?grpNm=" + name.val(),
 		type: "GET",
 		success: function(result){
-			if(result==true){
+			if(result==true || beforeName == name){
 				name.removeClass("incorrect");
 				name.addClass("correct");
 				check.val("check");
@@ -654,4 +669,24 @@ function checkName(e){
 			} 
 		}
 	});
+}
+
+function showCronInput(){
+	swal({
+		title: "주기를 새로 입력하시겠습니까?",
+		text: "현재 입력된 정보는 삭제됩니다.",
+		icon: "info",
+		buttons: true,
+		dangerMode: true,
+	})
+	.then((value) => {
+		if(value){
+			$("#detail-batch-group input[name=cronView]").val('');
+			$("#detail-batch-group input[name=cronView]").hide();
+			$("#detail-batch-group .show-cron").hide();
+			$("#detail-batch-group .insert-cron").show();
+			
+			$("#grp-update-submit").attr("onclick", "changeCron('detail')");
+		}
+	})
 }

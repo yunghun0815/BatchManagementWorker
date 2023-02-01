@@ -4,7 +4,7 @@
 
 <div id="insert-batch-group" class="modal" tabindex="-1">
    <div class="modal-dialog modal-lg">
-      <form id="insert-group" action="/batch/group/insert" method="post" ><div class="modal-content">
+      <form id="insert-group" method="post" ><div class="modal-content">
          <input type="hidden" name="cron"><input type="hidden" name="cronDsc">
          <div class="modal-header">
             <h5 id="log-app-id" class="modal=title">그룹 등록</h5>
@@ -16,7 +16,7 @@
                   <th>그룹명</th>
                   <td style="width: 80%;">
                      <input class="form-control" type="text" name="batGrpNm">
-                     <button type="button" class="duplication-btn" onclick="checkName()">중복 확인</button>
+                     <button type="button" class="duplication-btn" onclick="checkName('insert')">중복 확인</button>
                      <span id="error-insert-batGrpNm" class="error-message"></span>
                      <input type="hidden" name="checkGrpNm" value="uncheck">
                   </td>
@@ -89,7 +89,7 @@
             </table>
          </div>
          <div class="modal-footer">
-            <button type="submit" onclick="changeCron(this)" class="btn btn-primary">저장</button>
+            <button type="submit" onclick="changeCron('insert')" class="btn btn-primary">저장</button>
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
          </div>
       </div></form>

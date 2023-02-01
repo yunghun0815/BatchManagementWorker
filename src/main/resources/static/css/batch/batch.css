@@ -140,7 +140,13 @@
     border: none;
     cursor: pointer;
 }
-
+#detail-batch-group .duplication-btn{
+	position: absolute;
+    top: 112px;
+    right: 33px;
+    border: none;
+    cursor: pointer;
+}
 .correct{
 	border: 2px solid green;
 }
@@ -426,4 +432,10 @@
 }
 #search-box select{
 	width:55px !important;
+}
+.show-cron{
+	position: absolute;
+    bottom: 47px;
+    right: 38px;
+    border: none;
 }
