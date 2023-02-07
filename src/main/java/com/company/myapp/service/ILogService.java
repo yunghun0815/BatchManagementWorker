@@ -51,5 +51,7 @@ public interface ILogService {
 
 	List<BatPrmLog> getBatPrmLogListByGrpIdAndDate(String batGrpId, String date); // 일자별 해당 그룹 아이디 프로그램 로그 리스트 조회
 
+	String getStcdByGrpLogId(String batGrpLogId); // 해당 배치그룹로그 최신 상태코드
+
 
 }

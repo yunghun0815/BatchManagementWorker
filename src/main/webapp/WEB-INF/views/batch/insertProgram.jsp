@@ -7,7 +7,7 @@
 	<div class="modal-dialog modal-lg">
 		<form id="insert-program" action="/batch/program/insert" method="post"> <div class="modal-content">
 			<div class="modal-header">
-				<h5 id="log-add-id" class="modal-title">프로그램 정보</h5>
+				<h5 id="log-add-id" class="modal-title">프로그램 등록</h5>
 				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 			</div>
 			<div class="modal-body">
@@ -24,10 +24,10 @@
 					</tr>
 					<tr>
 						<th>경로</th>
-						<td style="position: relative">
-							<input id="path" class="form-control" type="text" name="path" readonly>
-							<button class="path-btn" type="button" onclick="getPath()">파일 찾기</button>
+						<td style="position: relative;">
+							<input id="path" class="form-control" type="text" name="path">
 							<span id="error-insert-path" class="error-message"></span>
+							<button class="path-btn" type="button" onclick="getPath()">파일 찾기</button>
 						</td>
 					</tr>
 					<tr>

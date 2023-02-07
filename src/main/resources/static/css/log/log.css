@@ -36,6 +36,12 @@
 .group div {
 	text-align: center;
 }
+.group>div{
+	overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    word-break: break-all;
+}
 .group .grpNm{ 
 	overflow: hidden;
 }
@@ -129,6 +135,15 @@
     padding: 10px 5px 10px 15px;
     margin-top: 14px;
 	overflow:hidden;
+}
+
+.program>table td{
+    overflow: hidden;
+    display: block;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    word-break: break-all;
+    max-width: 170px;
 }
 .program .program-id{
 	font-size: 0.3em;
@@ -291,11 +306,18 @@
 .swal-footer .swal-button-container:nth-child(3) .swal-button{ /* 취소버튼  */
 	background-color: #efefef;
 } 
+#param-box{
+	overflow-y: scroll;
+    max-height: 180px;
+}
 #param-box span{
 	text-align: left;
     display: inline-block;
     width: 110px;
     overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    word-break: break-all;
     margin-right: 10px;
     height: 25px;
     vertical-align: middle;

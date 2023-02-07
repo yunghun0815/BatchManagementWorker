@@ -1,3 +1,8 @@
+$(function(){
+	$(".grpNm").tooltip();
+	
+});
+
 // 날짜 yyyy-mm-dd hh:mm:ss 형식으로 변경
 function dateFormat(date){
 	function pad(n) { return n<10 ? "0" + n : n}
@@ -50,7 +55,7 @@ function toggleProgram(e){
 							</tr>
 							<tr>
 								<th>프로그램명</th>
-								<td class="batPrmNm">` + batPrmLog['batPrmNm'] + `</td>
+								<td class="batPrmNm" title="` + batPrmLog['batPrmNm'] + `">` + batPrmLog['batPrmNm'] + `</td>
 							</tr>
 							<tr>
 								<th>실행결과</th>
@@ -80,6 +85,7 @@ function toggleProgram(e){
 			
 			target.find("ol").html(view); // view에 만들고
 			target.find("ol").slideToggle(); // 슬라이드 토글 이벤트
+			$(".batPrmNm").tooltip();
 		}
 	});
 }
@@ -121,7 +127,7 @@ function groupDetail(e){
 						</tr>
 						<tr>
 							<th>프로그램명</th>
-							<td class="batPrmNm">`+ batPrmLogList[i]['batPrmNm'] +`</td>
+							<td class="batPrmNm" title="` + batPrmLogList[i]['batPrmNm'] + `">`+ batPrmLogList[i]['batPrmNm'] +`</td>
 						</tr>
 						<tr>
 							<th>실행결과</th>
@@ -129,7 +135,7 @@ function groupDetail(e){
 						</tr>
 						<tr>
 							<th>파라미터</th>
-							<td>`+ batPrmLogList[i]['param'] +`</td>
+							<td> ${batPrmLogList[i]['param'] == null ? '' : batPrmLogList[i]['param']}  </td>
 						</tr>
 						<tr>
 							<th>배치시작시간</th>
@@ -159,6 +165,7 @@ function groupDetail(e){
 					$(".sub-content ul").html(view);
 				}
 			}
+			$(".batPrmNm").tooltip();
 		}
 	});
 }
@@ -287,25 +294,45 @@ function restartFailLog(batGrpLogId, failPrmLogList, cmd){
 				param[id] = val;	
 			});
 			console.log(param);
-			$.ajax({
-			 	url: "/batch/retry/"+cmd,
-			 	type: "POST",
-			 	contentType: "application/json; charset=utf-8",
-			 	data: JSON.stringify(param),	 
-			 	success: function(result){
-					console.log(result);
-		 			} 
-	  		});
-			swal("", "그룹이 재실행되었습니다.", "success")
-  			.then(() => {
-				location.reload();  
-  			});
-			
-			swal("", "재실행이 완료되었습니다.", "success").then(() => {
-				location.reload();
-			});
+			runningCheck(batGrpLogId, cmd, param);
 		}
 	});
+}
+// 재실행
+function batchRestart(cmd, param){
+	$.ajax({
+		 	url: "/batch/retry/"+cmd,
+		 	type: "POST",
+		 	contentType: "application/json; charset=utf-8",
+		 	data: JSON.stringify(param),	 
+		 	success: function(result){
+				 // console.log(result);
+	 			} 
+  		});
+}
+
+// 재실행인지 체크 후 재실행
+function runningCheck(batGrpLogId, cmd, param){
+	$.ajax({
+		url: "/log/running/check?batGrpLogId="+batGrpLogId,
+		type: "GET",
+		success: function(result){
+			if(result == 'BSRN'){
+				swal("", "그룹이 이미 재실행중입니다.", "error")
+			}else{
+				batchRestart(cmd, param);
+				
+				swal("", "그룹이 재실행되었습니다.", "success")
+	  			.then(() => {
+					location.reload();  
+	  			});
+				
+				swal("", "재실행이 완료되었습니다.", "success").then(() => {
+					location.reload();
+				});
+			}			
+		}
+	})
 }
 
 // 그룹 로그 회차별 배치 프로그램 리스트

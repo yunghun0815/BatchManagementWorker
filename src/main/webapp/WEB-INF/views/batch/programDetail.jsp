@@ -18,7 +18,10 @@
 					</tr>
 					<tr>
 						<th>프로그램명</th>
-						<td><input class="readwrite form-control inactive" type="text" name="batPrmNm" disabled ></td>
+						<td>
+							<input class="readwrite form-control inactive" type="text" name="batPrmNm" disabled >
+							<span id="error-insert-batPrmNm" class="error-message"></span>
+						</td>
 					</tr>
 					<tr>
 						<th>그룹ID</th>
@@ -27,7 +30,8 @@
 					<tr>
 						<th>경로</th>
 						<td style="position: relative">
-							<input id="path" class="onlyread form-control inactive" type="text" name="path" readonly disabled>
+							<input id="path" class="onlyread form-control inactive" type="text" name="path" disabled>
+							<span id="error-insert-path" class="error-message"></span>
 							<button class="path-btn" type="button" onclick="getPath()">파일 찾기</button>
 						</td>
 					</tr>

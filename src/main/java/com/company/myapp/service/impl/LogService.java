@@ -121,6 +121,11 @@ public class LogService implements ILogService {
 			return logDao.getBatPrmLogListByGrpIdAndDate(batGrpId, date);
 		}
 
+		@Override
+		public String getStcdByGrpLogId(String batGrpLogId) {
+			return logDao.getStcdByGrpLogId(batGrpLogId);
+		}
+
 
 
 }

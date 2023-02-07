@@ -210,6 +210,12 @@
 	font-size: 1.6em;
 	font-weight: bold;
 	height: 40px;
+	overflow: hidden;
+    display: block;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    word-break: break-all;
+    max-width: 280px;
 }
 .program .program-ord{
 	font-size: 1.5em;
@@ -233,6 +239,13 @@
 	padding-top: 1px;
     padding-left: 3px;
     color: #908c8c;
+    
+    overflow: hidden;
+    display: block;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    word-break: break-all;
+    max-width: 330px;
 }
 .program .program-active{
 	display: flex;
@@ -400,8 +413,8 @@
 
 .path-btn{
 	position: absolute;
-    bottom: 13px;
-    left: 391px;
+    top: 14px;
+    right: 15px;
     border: none;
 }
 
@@ -438,4 +451,34 @@
     bottom: 47px;
     right: 38px;
     border: none;
+}
+
+#cron-guide{
+	display: inline-block;
+    margin-left: 6px;
+    color: gray;
+    font-weight: bold;
+    border: 1px solid gray;
+    width: 18px;
+    text-align: center;
+    font-size: 12px;
+    border-radius: 11px;
+    background-color: #80808014;
+    cursor: pointer;
+}
+#cron-guide-img{
+	display: none;
+    position: absolute;
+    width: 500px;
+    bottom: 87px;
+    right: -9px;
+    border: 4px solid black;
+}
+
+#insert-batch-program td{
+	width: 480px;
+}
+
+#detail-batch-program td{
+	width: 520px;
 }

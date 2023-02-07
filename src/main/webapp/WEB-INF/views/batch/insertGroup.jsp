@@ -79,7 +79,7 @@
                      </div> 
                
                      <input class="form-check-input" type="radio" name="cycle" id="cycle-cron" value="3"> 
-                     <label style="font-size: 14px; vertical-align: text-bottom; color: darkblue;" for="cycle-cron">크론 표현식</label>
+                     <label style="font-size: 14px; vertical-align: text-bottom; color: darkblue;" for="cycle-cron">크론 표현식<span id="cron-guide">?</span></label><img id="cron-guide-img" src="/image/quartz_guide.png">
                      <div id="add-time-box">
                         <input class="form-control ib width-50per" name="selectCron" type="text" placeholder="ex) 0/5 * * * * ?" >
                      </div>

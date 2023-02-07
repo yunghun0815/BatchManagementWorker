@@ -503,4 +503,15 @@
 		AND
 			to_char(gl.bat_bgng_dt, 'yyyy-mm-dd') = #{date}			
 	</select>
+	
+	<select id="getStcdByGrpLogId" parameterType="String" resultType="String">
+		SELECT 
+			bat_grp_st_cd as batGrpStCd
+		FROM
+			bat_grp_log
+		WHERE
+			bat_grp_log_id = #{batGrpLogId}
+		AND
+			bat_grp_rty_cnt = (select max(bat_grp_rty_cnt) from bat_grp_log where bat_grp_log_id = #{batGrpLogId})			
+	</select>
 </mapper>

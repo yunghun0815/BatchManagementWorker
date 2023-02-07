@@ -12,7 +12,6 @@
 <link rel="stylesheet" type="text/css" href="/css/batch/fileExplorer.css">
 <body>
 	<div id="file-explorer">
-		<h3>C:\</h3>
 	</div>
 </body>
 </html>

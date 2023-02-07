@@ -60,6 +60,8 @@ public interface ILogDao {
 
 	List<BatPrmLog> getBatPrmLogListByGrpIdAndDate(@Param(value = "batGrpId") String batGrpId, @Param(value = "date") String date);
 
+	String getStcdByGrpLogId(String batGrpLogId);
+
 
 
 

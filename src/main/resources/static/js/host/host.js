@@ -5,6 +5,7 @@
 
 import * as util from '../util.js';
 $(function(){
+	$("input[name='hostNm']").tooltip();
 	
 	//호스트 등록 함수
 	$("#host-insert-form").submit(function(e){
@@ -127,10 +128,14 @@ $(function(){
 		let cnt = getBatGrpCnt(hostId);
 		
 		let message = '"'+ hostId + '"에 '+ cnt +'개의 배치 그룹이 등록되어 있습니다.';
+		if(cnt != 0){
+			message+= '\r\n호스트 삭제시 등록된 배치 그룹도 같이 삭제됩니다.'; 
+		}
 		
 		swal({
 		  title: "정말로 삭제하시겠습니까?",
 		  text: message,
+		  className:"test",
 		  icon: "warning",
 		  content : {
 			  element: "input",
@@ -172,7 +177,9 @@ $(function(){
 				
 			 }
 		  }
-		}); 
+		});
+		
+		if(cnt>0)$(".swal-text").css({"color": "#dc6e6e", "text-align": "center"}); 
 	});
 	
 	

@@ -243,3 +243,10 @@
 	.swal-title{
 		font-size: 25px;
 	}
+	
+	.overflow-dot{
+		overflow: hidden;
+	    text-overflow: ellipsis;
+	    white-space: nowrap;
+	    word-break: break-all;
+	}
