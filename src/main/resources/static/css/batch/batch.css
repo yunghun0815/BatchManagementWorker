@@ -158,7 +158,8 @@
 	text-overflow: ellipsis;
     white-space: nowrap;
     word-break: break-all;
-    margin:4px;
+    padding: 0 5px;
+    margin-top: 4px;
     text-align: center;
 }
 /* 그룹 부분 - 서브 */

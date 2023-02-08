@@ -404,7 +404,7 @@ public class BatchController {
 	@GetMapping("/rollback")
 	public boolean rollbackGroup(@RequestParam(value="batGrpId")String batGrpId) {
 		boolean checkHost = false;
-		if(hostService.getHostByBatGrpId(batGrpId).getUseYn() == 'Y') {
+		if(hostService.getHostByBatGrpId(batGrpId).getUseYn() == "Y") {
 			batchService.rollback(batGrpId);
 			checkHost = true;
 		}

@@ -2,85 +2,6 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.company.myapp.dao.ILogDao">
 
-	<select id="getBatGrpLogCount" resultType="int">
-		SELECT count(*)	FROM bat_grp_log WHERE bat_grp_rty_cnt = 0	
-	</select>
-	
-	<select id="getBatPrmLogCount" resultType="int">
-		SELECT count(*)	FROM bat_prm_log
-	</select>
-	
-	<select id="getBatGrpLogList" parameterType="Pager" resultType="BatGrpLog">
-		SELECT 
-		    rnum,
-		    bat_grp_log_id as batGrpLogId,
-		    bat_grp_rty_cnt as batGrpRtyCnt,
-		    bat_grp_nm as batGrpNm,
-		    bat_grp_st_cd as batGrpStCd,
-		    bat_bgng_dt as batBgngDt,
-		    bat_end_dt as batEndDt,
-		    bat_grp_nm as batGrpNm
-		FROM (
-		    SELECT 
-		        ROWNUM as rnum, bat_grp_log_id, bat_grp_rty_cnt, bat_grp_id, 
-		        bat_grp_st_cd, bat_bgng_dt, bat_end_dt
-		    FROM (
-		        SELECT 
-		            l.bat_grp_log_id, l.bat_grp_rty_cnt, l.bat_grp_id, 
-		            l.bat_grp_st_cd, l.bat_bgng_dt, l.bat_end_dt, g.bat_grp_nm
-		        FROM 
-		            bat_grp_log l
-		        JOIN
-		        	bat_grp g
-		        ON
-		        	l.bat_grp_id = g.bat_grp_id	    
-		        WHERE 
-		            (bat_grp_log_id, bat_grp_rty_cnt)
-		        IN 
-		            (SELECT bat_grp_log_id, MAX(bat_grp_rty_cnt) FROM bat_grp_log GROUP BY (bat_grp_log_id))
-		        ORDER BY 
-		        	bat_grp_log_id DESC
-		    )
-		    WHERE rownum &lt;= #{endRowNo}  
-		) l
-		JOIN
-        	bat_grp g
-        ON
-        	l.bat_grp_id = g.bat_grp_id
-		WHERE rnum &gt;= #{startRowNo} 
-		ORDER BY bat_grp_log_id DESC
-	</select>  
-	  
-	<select id="getBatPrmLogList" parameterType="Pager" resultType="BatPrmLog">
-		SELECT 
-			rnum,
-			bat_grp_log_id as batGrpLogId,
-			bat_grp_rty_cnt as batGrpRtyCnt,
-			bat_prm_id as batPrmId,
-			param,
-			bat_prm_st_cd as batPrmStCd,
-			rslt_msg as rsltMsg,
-			bat_bgng_dt as batBgngDt,
-			bat_end_dt as batEndDt,
-			excn_ord as excnOrd
-		FROM (
-			SELECT 
-				ROWNUM as rnum, bat_grp_log_id, bat_grp_rty_cnt, bat_prm_id, param, bat_prm_st_cd
-				rslt_msg, bat_bgng_dt, bat_end_dt, excn_ord
-			FROM (
-				SELECT 
-					bat_grp_log_id, bat_grp_rty_cnt, bat_prm_id, param, bat_prm_st_cd
-					rslt_msg, bat_bgng_dt, bat_end_dt, excn_ord
-				FROM
-					bat_prm_log
-				ORDER BY 
-					last_mdfcn_dttm DESC					
-			)
-			WHERE rownum &lt;= #{endRowNo}				
-		)
-		WHERE rnum &gt;= #{startRowNo}		
-	</select>
-	 
 	<select id="getBatGrpLogDetail" parameterType="map" resultType="BatGrpLog">
 		SELECT
 		    bat_grp_log_id as batGrpLogId,
@@ -265,20 +186,16 @@
 			bat_grp_rty_cnt = #{rty}		
 	</select>
 	
-	<select id="getBatGrpLogCountBySearch" parameterType="BatGrpLog" resultType="int">
+	<select id="getBatGrpLogCount" parameterType="BatGrpLog" resultType="int">
 		SELECT 
 			count(*)
 	    FROM 
 	    	(
 	        SELECT 
-	            bat_grp_log_id, bat_grp_rty_cnt, bat_grp_id, 
-	            bat_grp_st_cd, bat_bgng_dt, bat_end_dt
+	            bat_grp_log_id, max(bat_grp_rty_cnt)
 	        FROM 
 	            bat_grp_log 
-	        WHERE 
-	            (bat_grp_log_id, bat_grp_rty_cnt)
-	        IN 
-	            (SELECT bat_grp_log_id, MAX(bat_grp_rty_cnt) FROM bat_grp_log GROUP BY (bat_grp_log_id))
+	        <trim prefix="WHERE" prefixOverrides="AND">
 				<if test="batGrpLogId != null">
 					AND
 						bat_grp_log_id like '%'||#{batGrpLogId}||'%'	
@@ -291,36 +208,46 @@
 					AND
 						bat_grp_st_cd like '%'||#{batGrpStCd}||'%'	
 				</if>		
-		 		<if test="batBgngDtStart != '' and batBgngDtEnd == ''">
-					AND
-						to_char(bat_bgng_dt, 'yyyy-mm-dd hh24:mi') &gt;= #{batBgngDtStart}	
-				</if>		        	
-				<if test="batBgngDtStart == '' and batBgngDtEnd != ''">
-					AND
-						to_char(bat_bgng_dt, 'yyyy-mm-dd hh24:mi') &lt;= #{batBgngDtEnd}	
-				</if>		        	
-				<if test="batBgngDtStart != '' and batBgngDtEnd != ''">
-					AND
-						to_char(bat_bgng_dt, 'yyyy-mm-dd hh24:mi') between #{batBgngDtStart} and #{batBgngDtEnd}	
+				<if test="batBgngDtStart != null and batBgngDtEnd != null and batEndDtStart != null and batEndDtEnd != null">
+			 		<if test="batBgngDtStart != '' and batBgngDtEnd == ''">
+						AND
+							to_char(bat_bgng_dt, 'yyyy-mm-dd hh24:mi') &gt;= #{batBgngDtStart}	
+					</if>		        	
+					<if test="batBgngDtStart == '' and batBgngDtEnd != ''">
+						AND
+							to_char(bat_bgng_dt, 'yyyy-mm-dd hh24:mi') &lt;= #{batBgngDtEnd}	
+					</if>		        	
+					<if test="batBgngDtStart != '' and batBgngDtEnd != ''">
+						AND
+							to_char(bat_bgng_dt, 'yyyy-mm-dd hh24:mi') between #{batBgngDtStart} and #{batBgngDtEnd}	
+					</if>
+					<if test="batEndDtStart != '' and batEndDtEnd != ''">
+						AND
+							to_char(bat_end_dt, 'yyyy-mm-dd hh24:mi') between #{batEndDtStart} and #{batEndDtEnd}	
+					</if>		        	
+					<if test="batEndDtStart != '' and batEndDtEnd == ''">
+						AND
+							to_char(bat_end_dt, 'yyyy-mm-dd hh24:mi') &gt;= #{batEndDtStart}	
+					</if>		        	
+					<if test="batEndDtStart == '' and batEndDtEnd != ''">
+						AND
+							to_char(bat_end_dt, 'yyyy-mm-dd hh24:mi') &lt;= #{batEndDtEnd}	
+					</if>
 				</if>
-				<if test="batEndDtStart != '' and batEndDtEnd != ''">
+				<if test="(batBgngDtStart == null and batBgngDtEnd == null and batEndDtStart == null and batEndDtEnd == null) 
+						or (batBgngDtStart == '' and batBgngDtEnd == '' and batEndDtStart == '' and batEndDtEnd == '')">
 					AND
-						to_char(bat_end_dt, 'yyyy-mm-dd hh24:mi') between #{batEndDtStart} and #{batEndDtEnd}	
-				</if>		        	
-				<if test="batEndDtStart != '' and batEndDtEnd == ''">
-					AND
-						to_char(bat_end_dt, 'yyyy-mm-dd hh24:mi') &gt;= #{batEndDtStart}	
-				</if>		        	
-				<if test="batEndDtStart == '' and batEndDtEnd != ''">
-					AND
-						to_char(bat_end_dt, 'yyyy-mm-dd hh24:mi') &lt;= #{batEndDtEnd}	
+						to_char(last_mdfcn_dttm, 'yyyymmdd') >= to_char(sysdate-7, 'yyyymmdd')
 				</if>
+				</trim>
+			GROUP BY
+        		bat_grp_log_id 
 			ORDER BY 
         		bat_grp_log_id DESC
         	)
 	</select>
 	
-	<select id="searchBatGrpLog" parameterType="map" resultType="BatGrpLog">
+	<select id="getBatGrpLogList" parameterType="map" resultType="BatGrpLog">
 		SELECT 
 		    rnum,
 		    bat_grp_log_id as batGrpLogId,
@@ -359,30 +286,37 @@
 				<if test="log.batGrpStCd != null">
 					AND
 						bat_grp_st_cd like '%'||#{log.batGrpStCd}||'%'	
-				</if>		
-				<if test="log.batBgngDtStart != '' and log.batBgngDtEnd != ''">
-					AND
-						to_char(bat_bgng_dt, 'yyyy-mm-dd hh24:mi') between #{log.batBgngDtStart} and #{log.batBgngDtEnd}	
-				</if>		        	
-				<if test="log.batBgngDtStart != '' and log.batBgngDtEnd == ''">
-					AND
-						to_char(bat_bgng_dt, 'yyyy-mm-dd hh24:mi') &gt;= #{log.batBgngDtStart}	
-				</if>		        	
-				<if test="log.batBgngDtStart == '' and log.batBgngDtEnd != ''">
-					AND
-						to_char(bat_end_dt, 'yyyy-mm-dd hh24:mi') &lt;= #{log.batBgngDtEnd}	
+				</if>	
+				<if test = "log.batBgngDtStart != null and log.batBgngDtEnd != null and log.batEndDtStart != null and log.batEndDtEnd != null">	
+					<if test="log.batBgngDtStart != '' and log.batBgngDtEnd != ''">
+						AND
+							to_char(bat_bgng_dt, 'yyyy-mm-dd hh24:mi') between #{log.batBgngDtStart} and #{log.batBgngDtEnd}	
+					</if>		        	
+					<if test="log.batBgngDtStart != '' and log.batBgngDtEnd == ''">
+						AND
+							to_char(bat_bgng_dt, 'yyyy-mm-dd hh24:mi') &gt;= #{log.batBgngDtStart}	
+					</if>		        	
+					<if test="log.batBgngDtStart == '' and log.batBgngDtEnd != ''">
+						AND
+							to_char(bat_end_dt, 'yyyy-mm-dd hh24:mi') &lt;= #{log.batBgngDtEnd}	
+					</if>
+					<if test="log.batEndDtStart != '' and log.batEndDtEnd != ''">
+						AND
+							to_char(bat_end_dt, 'yyyy-mm-dd hh24:mi') between #{log.batEndDtStart} and #{log.batEndDtEnd}	
+					</if>		        	
+					<if test="log.batEndDtStart != '' and log.batEndDtEnd == ''">
+						AND
+							to_char(bat_end_dt, 'yyyy-mm-dd hh24:mi') &gt;= #{log.batEndDtStart}	
+					</if>		        	
+					<if test="log.batEndDtStart == '' and log.batEndDtEnd != ''">
+						AND
+							to_char(bat_end_dt, 'yyyy-mm-dd hh24:mi') &lt;= #{log.batEndDtEnd}	
+					</if>
 				</if>
-				<if test="log.batEndDtStart != '' and log.batEndDtEnd != ''">
+				<if test="(log.batBgngDtStart == null and log.batBgngDtEnd == null and log.batEndDtStart == null and log.batEndDtEnd == null) 
+						or (log.batBgngDtStart == '' and log.batBgngDtEnd == '' and log.batEndDtStart == '' and log.batEndDtEnd == '')">
 					AND
-						to_char(bat_end_dt, 'yyyy-mm-dd hh24:mi') between #{log.batEndDtStart} and #{log.batEndDtEnd}	
-				</if>		        	
-				<if test="log.batEndDtStart != '' and log.batEndDtEnd == ''">
-					AND
-						to_char(bat_end_dt, 'yyyy-mm-dd hh24:mi') &gt;= #{log.batEndDtStart}	
-				</if>		        	
-				<if test="log.batEndDtStart == '' and log.batEndDtEnd != ''">
-					AND
-						to_char(bat_end_dt, 'yyyy-mm-dd hh24:mi') &lt;= #{log.batEndDtEnd}	
+						to_char(l.last_mdfcn_dttm, 'yyyymmdd') >= to_char(sysdate-7, 'yyyymmdd')
 				</if>
 				ORDER BY
 				<choose>
@@ -402,6 +336,7 @@
 	        			bat_grp_log_id DESC
 					</otherwise>
 				</choose>
+				, bat_grp_log_id DESC
 		    )
 		    WHERE rownum &lt;= #{pager.endRowNo}  
 		)

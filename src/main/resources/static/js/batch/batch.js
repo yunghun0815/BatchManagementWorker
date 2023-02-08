@@ -440,6 +440,7 @@ function getUpdatePrmInfo(btn){
 	//prmId가져오기
 	const prmId = $(btn).parent().siblings(".program-id").text();
 	readProgramInfo(prmId);
+	$("#update-program .error-message").html("");
 } 
 
 //상세 화면에서 [수정] 버튼 누르면 수정 화면으로 변경
@@ -490,6 +491,7 @@ function groupDetail(table){
 function programDetail(table){
 	const prmId = $("#detail-batch-program input[name=batPrmId").val();
 	readProgramInfo(prmId);
+	$("#update-program .error-message").html("");
 }
 
 /* 입력한 주기를 크론으로 변경하는 함수 */

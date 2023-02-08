@@ -40,12 +40,14 @@ public class HostController {
 	@GetMapping("")
 	public String getHostList(@RequestParam(defaultValue = "1") int pageNo, Model model) {
 		
+		Host host = new Host();
+		host.setUseYn("Y");
 		// 전체 호스트 수
-		int hostSize = hostService.getHostCount();
+		int hostSize = hostService.getHostCount(host);
 		// 페이저 객체 생성
 		Pager pager = new Pager(7, 5, hostSize, pageNo);
 		// 페이징 처리 해 조회 
-		List<Host> hostList = hostService.getHostList(pager);
+		List<Host> hostList = hostService.getHostList(pager, host);
 		
 		model.addAttribute("host", new Host());
 		model.addAttribute("pager", pager);
@@ -67,12 +69,12 @@ public class HostController {
 		}
 		
 		// 검색한 전체 호스트 수
-		int hostSize = hostService.getHostCountBySearch(host);
+		int hostSize = hostService.getHostCount(host);
 		
 		// 페이저 객체 생성
 		Pager pager = new Pager(7, 5, hostSize, pageNo);
 		// 페이징 처리 해 조회 
-		List<Host> hostList = hostService.searchHost(pager, host);
+		List<Host> hostList = hostService.getHostList(pager, host);
 		
 		model.addAttribute("host", new Host());
 		model.addAttribute("pager", pager);
@@ -160,7 +162,7 @@ public class HostController {
 		
 		Host host = new Host();
 		host.setHostId(hostId);
-		host.setUseYn('Y');
+		host.setUseYn("Y");
 		hostService.updateHost(host);
 	}
 }

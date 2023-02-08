@@ -326,3 +326,8 @@
 	padding-left: 10px;
 	
 }
+.note-msg{
+	font-size: 11px;
+    color: gray;
+    font-weight: bold;
+}

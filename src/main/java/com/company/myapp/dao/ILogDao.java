@@ -12,13 +12,9 @@ import com.company.myapp.dto.Pager;
 @Mapper
 public interface ILogDao {
 
-	int getBatGrpLogCount();
+	int getBatGrpLogCount(BatGrpLog log);
 
-	int getBatPrmLogCount();
-
-	List<BatGrpLog> getBatGrpLogList(Pager pager);
-
-	List<BatPrmLog> getBatPrmLogList(Pager pager);
+	List<BatGrpLog> getBatGrpLogList(@Param(value = "pager") Pager pager, @Param(value = "log") BatGrpLog log);
 
 	BatGrpLog getBatGrpLogDetail(@Param(value = "batGrpLogId") String batGrpLogId, @Param(value = "batGrpRtyCnt") int batGrpRtyCnt);
 	
@@ -43,10 +39,6 @@ public interface ILogDao {
 	List<BatPrmLog> getRtyPrmListByLogIdNCnt(@Param(value="logId")String logId, @Param(value="rty")int rty);
 
 	List<BatGrpLog> getRtyBatGrpLogListByLogId(String batGrpLogId);
-
-	int getBatGrpLogCountBySearch(BatGrpLog log);
-
-	List<BatGrpLog> searchBatGrpLog(@Param(value = "pager") Pager pager, @Param(value = "log") BatGrpLog log);
 
 	List<BatPrmLog> getBatPrmLogListByGrpLog(@Param(value = "batGrpLogId") String batGrpLogId, @Param(value = "batGrpRtyCnt") int batGrpRtyCnt);
 

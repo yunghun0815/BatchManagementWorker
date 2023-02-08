@@ -42,11 +42,11 @@ public class LogController {
 	@GetMapping("")
 	public String getBatGrpLogList(@RequestParam(defaultValue = "1") int pageNo, Model model) {
 		
-		int batGrpLogSize = logService.getBatGrpLogCount();
+		int batGrpLogSize = logService.getBatGrpLogCount(new BatGrpLog());
 		
 		Pager pager = new Pager(8, 5, batGrpLogSize, pageNo);
 		
-		List<BatGrpLog> batGrpLogList = logService.getBatGrpLogList(pager);
+		List<BatGrpLog> batGrpLogList = logService.getBatGrpLogList(pager, new BatGrpLog());
 		for(BatGrpLog batGrpLog : batGrpLogList) {
 			batGrpLog.setBatGrpStCd(BatchStatusCode.codeToTitle(batGrpLog.getBatGrpStCd())); // 코드 -> 한글 메세지로 변환
 		}
@@ -73,11 +73,11 @@ public class LogController {
 		log.setBatEndDtStart(log.getBatEndDtStart().replaceFirst("T", " "));
 		log.setBatEndDtEnd(log.getBatEndDtEnd().replaceFirst("T", " "));
 		// 검색한 전체 그룹 로그 조회
-		int batGrpLogSize = logService.getBatGrpLogCountBySearch(log);
+		int batGrpLogSize = logService.getBatGrpLogCount(log);
 		// 페이저 객체 생성
 		Pager pager = new Pager(8, 5, batGrpLogSize, pageNo);
 		// 페이징 처리해 조회
-		List<BatGrpLog> batGrpLogList = logService.searchBatGrpLog(pager, log);
+		List<BatGrpLog> batGrpLogList = logService.getBatGrpLogList(pager, log);
 		
 		for(BatGrpLog batGrpLog : batGrpLogList) {
 			batGrpLog.setBatGrpStCd(BatchStatusCode.codeToTitle(batGrpLog.getBatGrpStCd())); // 코드 -> 한글 메세지로 변환

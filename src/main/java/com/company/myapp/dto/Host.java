@@ -34,7 +34,7 @@ public class Host {
    @NotBlank(message = "호스트명을 입력해주세요.")   
    private String hostNm;	// 호스트명         
    
-   private char useYn; // 사용유무         
+   private String useYn; // 사용유무         
    
    private String lastMdfrNm;	// 최종 수정자명	      
    

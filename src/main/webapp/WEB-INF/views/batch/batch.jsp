@@ -101,7 +101,7 @@
 							<div class="group-host"><span>호스트명(IP)</span></div>
 							<div class="group-cron"><span>주기</span></div>
 							<div class="group-conn"><span>연결상태</span></div>
-							<div class="group-running"><span>실행</span></div>
+							<div class="group-running"><span>스케줄링</span></div>
 							<div class="group-active"><span>Actions</span></div>
 						</li>
 						<c:forEach var="group" items="${batGrpList}">

@@ -18,25 +18,14 @@ public class LogService implements ILogService {
 		ILogDao logDao;
 
 		@Override
-		public int getBatGrpLogCount() {
-			return logDao.getBatGrpLogCount();
+		public int getBatGrpLogCount(BatGrpLog log) {
+			return logDao.getBatGrpLogCount(log);
 		}
 
 		@Override
-		public int getBatPrmLogCount() {
-			return logDao.getBatPrmLogCount();
+		public List<BatGrpLog> getBatGrpLogList(Pager pager, BatGrpLog log) {
+			return logDao.getBatGrpLogList(pager, log);
 		}
-
-		@Override
-		public List<BatGrpLog> getBatGrpLogList(Pager pager) {
-			return logDao.getBatGrpLogList(pager);
-		}
-
-		@Override
-		public List<BatPrmLog> getBatPrmLogList(Pager pager) {
-			return logDao.getBatPrmLogList(pager);
-		}
-
 		@Override
 		public BatGrpLog getBatGrpLogDetail(String batGrpLogId, int batGrpRtyCnt) {
 			return logDao.getBatGrpLogDetail(batGrpLogId, batGrpRtyCnt);
@@ -81,16 +70,6 @@ public class LogService implements ILogService {
 		public void insertRtyBatGrpLog(BatGrpLog batGrpLog) {
 			logDao.insertRtyBatGrpLog(batGrpLog);
 			
-		}
-
-		@Override
-		public int getBatGrpLogCountBySearch(BatGrpLog log) {
-			return logDao.getBatGrpLogCountBySearch(log);
-		}
-
-		@Override
-		public List<BatGrpLog> searchBatGrpLog(Pager pager, BatGrpLog log) {
-			return logDao.searchBatGrpLog(pager, log);
 		}
 
 		@Override

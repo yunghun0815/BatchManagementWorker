@@ -13,7 +13,11 @@
 	</div>
 	<div class="content">
 		<div class="main-content">
-			<h3>그룹 로그 관리
+			<h3>그룹 로그 관리 
+				<c:if test="${(empty param.batBgngDtStart and empty param.batBgngDtEnd and empty param.batEndDtStart and empty param.batEndDtEnd)
+							or (param.batBgngDtStart == '' and param.batBgngDtEnd == '' and param.batEndDtStart == '' and param.batEndDtEnd == '')}">
+					<span class="note-msg">* 검색 조건에 '배치시작시간' 또는 '배치종료시간'을 설정하지 않으시면 최근 일주일 결과가 조회됩니다.</span>
+				</c:if>
 				<div id="title-action-box">
 					<img id="search" class="action-icon" src="/image/common/action/search.png">
 					<div id="search-box" >
@@ -72,10 +76,10 @@
 									<td>
 										<select name="filter">
 											<option value="">기본값(최신등록로그)</option>
-											<option value="batBgngDtASC" <c:if test="${param.filter eq 'batBgngDtDESC'}">selected</c:if>>배치시작시간(최신순)</option>
-											<option value="batBgngDtDESC" <c:if test="${param.filter eq 'batBgngDtASC'}">selected</c:if>>배치시작시간(오래된순)</option>
-											<option value="batEndDtASC" <c:if test="${param.filter eq 'batEndDtDESC'}">selected</c:if>>배치종료시간(최신순)</option>
-											<option value="batEndDtDESC" <c:if test="${param.filter eq 'batEndDtASC'}">selected</c:if>>배치종료시간(오래된순)</option>
+											<option value="batBgngDtDESC" <c:if test="${param.filter eq 'batBgngDtDESC'}">selected</c:if>>배치시작시간(최신순)</option>
+											<option value="batBgngDtASC" <c:if test="${param.filter eq 'batBgngDtASC'}">selected</c:if>>배치시작시간(오래된순)</option>
+											<option value="batEndDtDESC" <c:if test="${param.filter eq 'batEndDtDESC'}">selected</c:if>>배치종료시간(최신순)</option>
+											<option value="batEndDtASC" <c:if test="${param.filter eq 'batEndDtASC'}">selected</c:if>>배치종료시간(오래된순)</option>
 										</select>
 									</td>
 								</tr>
@@ -162,7 +166,7 @@
 					<c:if test="${pager.totalRows == 0}">
 						<c:if test="${empty search}">
 							<li id="empty-rows">
-								<div>등록된 호스트가 없습니다.</div>
+								<div>저장된 로그가 없습니다.</div>
 							</li>
 						</c:if>
 						<c:if test="${not empty search }">

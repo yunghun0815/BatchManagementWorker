@@ -91,7 +91,6 @@ $(function(){
 		key =  'file';
 		if(util.browserValid('insert-' + path, key, target[path]['value']) == false) count += 1;					
 		
-		
 		// 유효성 검사 결과 하나라도 실패할시 false
 		if(count != 0) return false;
 		
@@ -182,11 +181,11 @@ $(function(){
 		const name = "batPrmNm"; 
 		let key = 'blank';
 		// 서버로 보내기 전 유효성 검사, 실패시 카운트 1증가
-		if(util.browserValid('insert-' + name, key, target[name]['value']) == false) count += 1;					
+		if(util.browserValid('update-' + name, key, target[name]['value']) == false) count += 1;					
 		
 		const path = "path";
 		key =  'file';
-		if(util.browserValid('insert-' + path, key, target[path]['value']) == false) count += 1;					
+		if(util.browserValid('update-' + path, key, target[path]['value']) == false) count += 1;					
 		
 		
 		// 유효성 검사 결과 하나라도 실패할시 false

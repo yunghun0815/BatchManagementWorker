@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,8 +25,8 @@ public class HostService implements IHostService{
 	BatchServer batchServer;
 	
 	@Override
-	public int getHostCount() {
-		return hostDao.getHostCount();
+	public int getHostCount(Host host) {
+		return hostDao.getHostCount(host);
 	}
 	
 	@Override
@@ -36,8 +35,8 @@ public class HostService implements IHostService{
 	}
 	
 	@Override
-	public List<Host> getHostList(Pager pager) {
-		return hostDao.getHostListByPage(pager);
+	public List<Host> getHostList(Pager pager, Host host) {
+		return hostDao.getHostListByPage(pager, host);
 	}
 
 	@Override
@@ -73,17 +72,6 @@ public class HostService implements IHostService{
 		
 		
 		return connect;
-	}
-
-	@Override
-	public List<Host> searchHost(Pager pager, Host host) {
-		
-		return hostDao.searchHost(pager, host);
-	}
-
-	@Override
-	public int getHostCountBySearch(Host host) {
-		return hostDao.getHostCountBySearch(host);
 	}
 
 	@Override

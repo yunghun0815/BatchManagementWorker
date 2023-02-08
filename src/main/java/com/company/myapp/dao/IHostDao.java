@@ -13,11 +13,11 @@ public interface IHostDao {
 	
 	List<Host> getHostList();
 	
-	List<Host> getHostListByPage(Pager pager);
+	List<Host> getHostListByPage(@Param(value = "pager") Pager pager, @Param(value = "host") Host host);
 
 	int insertHost(Host host);
 
-	int getHostCount();
+	int getHostCount(Host host);
 
 	Host getHostDetail(String hostId);
 
@@ -26,8 +26,6 @@ public interface IHostDao {
 	int deleteHost(String hostId);
 
 	Host getHostByBatGrpId(String batGrpId);
-
-	List<Host> searchHost(@Param(value = "pager") Pager pager, @Param(value = "host") Host host);
 
 	int getHostCountBySearch(Host host);
 

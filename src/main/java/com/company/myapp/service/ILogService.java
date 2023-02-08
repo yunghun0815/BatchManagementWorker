@@ -11,14 +11,10 @@ import com.company.myapp.dto.Pager;
 
 public interface ILogService {
 	
-	int getBatGrpLogCount(); // 그룹 로그 전체 카운트
+	int getBatGrpLogCount(BatGrpLog log); // 그룹 로그 전체 카운트
 
-	int getBatPrmLogCount(); // 프로그램 로그 전체 카운트
+	List<BatGrpLog> getBatGrpLogList(Pager pager, BatGrpLog log); // 전체 그룹 로그 리스트
 
-	List<BatGrpLog> getBatGrpLogList(Pager pager); // 전체 그룹 로그 리스트
-
-	List<BatPrmLog> getBatPrmLogList(Pager pager); // 전체 프로그램 로그 리스트
-	
 	BatGrpLog getBatGrpLogDetail(String batGrpLogId, int batGrpRtyCnt); // 그룹 로그 리스트 상세
 	
 	List<BatGrpLog> getBatGrpLogDetailList(String batGrpLogId);  // 로그ID에 대한 전체 그룹 리스트
@@ -36,10 +32,6 @@ public interface ILogService {
 	BatPrmLog getBatPrmLogByFirstFail(BatGrpLog batGrpLog); // 차수별 그룹 로그 중 처음 실패한 로그 조회
 
 	void insertRtyBatGrpLog(BatGrpLog batGrpLog); // 재실행 로그 저장
-
-	int getBatGrpLogCountBySearch(BatGrpLog log); // 검색 결과 카운트
-
-	List<BatGrpLog> searchBatGrpLog(Pager pager, BatGrpLog log); // 검색 결과 페이징 처리해 조회
 
 	List<BatPrmLog> getBatPrmLogListByGrpLog(String batGrpLogId, int batGrpRtyCnt); // 그룹로그 회차별 프로그램 로그 리스트
 
