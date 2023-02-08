@@ -64,19 +64,19 @@
 										<span>자동실행</span>
 									</td>
 									<td>
-										<select name="autoExcnYn" value="${param.autoExcnYn}">
-											<option value="">All</option>
-											<option value="Y">Yes</option>
-											<option value="N">No</option>
+										<select name="autoExcnYn">
+											<option value="" <c:if test="${param.autoExcnYn eq ''}">selected</c:if>>All</option>
+											<option value="Y" <c:if test="${param.autoExcnYn eq 'Y'}">selected</c:if>>Yes</option>
+											<option value="N" <c:if test="${param.autoExcnYn eq 'N'}">selected</c:if>>No</option>
 										</select>
 									</td>
 									<td>
 										<span>사용유무</span>
 									</td>
 									<td>
-										<select name="useYn" value="${param.useYn}">
-											<option value="Y">Yes</option>
-											<option value="N">No</option>
+										<select name="useYn">
+											<option value="Y" <c:if test="${param.useYn eq 'Y'}">selected</c:if>>Yes</option>
+											<option value="N" <c:if test="${param.useYn eq 'N'}">selected</c:if>>No</option>
 										</select>
 									</td>
 								</tr>

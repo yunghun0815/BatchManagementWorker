@@ -152,7 +152,7 @@
 	</insert>
 	
 	<select id="getRtyBatGrpLogListByLogId" parameterType="String" resultType="BatGrpLog">
-		SELECT
+		SELECT /* LogMapper.getRtyBatGrpLogListByLogId */
 		    bat_grp_log_id as batGrpLogId,
 		    bat_grp_rty_cnt as batGrpRtyCnt,
 		    bat_grp_id as batGrpId,
@@ -198,7 +198,7 @@
 	        <trim prefix="WHERE" prefixOverrides="AND">
 				<if test="batGrpLogId != null">
 					AND
-						bat_grp_log_id like '%'||#{batGrpLogId}||'%'	
+						bat_grp_log_id like #{batGrpLogId}||'%'	
 				</if>		
 				<if test="batGrpId != null">
 					AND
@@ -273,15 +273,15 @@
 		        	l.bat_grp_id = g.bat_grp_id
 		        WHERE 
 	            	(bat_grp_log_id, bat_grp_rty_cnt)
-	       	 	IN 
-	            	(SELECT bat_grp_log_id, MAX(bat_grp_rty_cnt) FROM bat_grp_log GROUP BY (bat_grp_log_id))
+	       	 		IN 
+	            		(SELECT bat_grp_log_id, MAX(bat_grp_rty_cnt) FROM bat_grp_log GROUP BY (bat_grp_log_id))
 				<if test="log.batGrpLogId != null">
-					AND
-						bat_grp_log_id like '%'||#{log.batGrpLogId}||'%'	
+				AND
+					bat_grp_log_id like '%'||#{log.batGrpLogId}||'%'	
 				</if>		
 				<if test="log.batGrpNm != null">
-					AND
-						bat_grp_nm like '%'||#{log.batGrpNm}||'%'	
+				AND
+					bat_grp_nm like '%'||#{log.batGrpNm}||'%'	
 				</if>		
 				<if test="log.batGrpStCd != null">
 					AND
@@ -321,7 +321,7 @@
 				ORDER BY
 				<choose>
 					<when test="log.filter == 'batBgngDtASC'">
-						bat_bgng_dt  				
+						bat_bgng_dt, bat_grp_log_id   				
 					</when>
 					<when test="log.filter == 'batBgngDtDESC'">
 						bat_bgng_dt DESC  				

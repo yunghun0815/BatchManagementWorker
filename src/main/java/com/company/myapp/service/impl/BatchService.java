@@ -26,12 +26,15 @@ public class BatchService implements IBatchService {
 	@Autowired
 	BatchServer batchServer;
 	
+	BatGrp vo;
 	/**
 	 * 사용중인 배치 그룹 개수 반환
 	 */
 	@Override
 	public int getTotalGroupNum() {
-		return batchDao.getTotalGroupNum();
+		vo = new BatGrp();
+		vo.setUseYn("Y");
+		return batchDao.getTotalGroupNum(vo);
 	}
 
 	/**
@@ -39,7 +42,12 @@ public class BatchService implements IBatchService {
 	 */
 	@Override
 	public List<BatGrp> getBatGrpList(Pager pager) {
-		List<BatGrp> batGrpList = batchDao.getBatGrpListByPage(pager);
+		vo = new BatGrp();
+		vo.setUseYn("Y");
+		System.out.println(vo.toString());
+		System.out.println(pager.getEndRowNo() + "/////" + pager.getStartRowNo());
+		List<BatGrp> batGrpList = batchDao.getBatGrpListByPage(pager, vo);
+		System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&" + batGrpList);
 		return batGrpList;
 	}
 
@@ -84,7 +92,7 @@ public class BatchService implements IBatchService {
 	 */
 	@Override
 	public int getTotalSearchNum(BatGrp vo) {
-		return batchDao.getTotalSearchNum(vo);
+		return batchDao.getTotalGroupNum(vo);
 	}
 	
 	/**
@@ -92,7 +100,7 @@ public class BatchService implements IBatchService {
 	 */
 	@Override
 	public List<BatGrp> searchBatGrp(Pager pager, BatGrp vo) {
-		List<BatGrp> resultList = batchDao.searchBatGrp(pager, vo);
+		List<BatGrp> resultList = batchDao.getBatGrpListByPage(pager, vo);
 		return resultList;
 	}
 
@@ -183,7 +191,9 @@ public class BatchService implements IBatchService {
 
 	@Override
 	public boolean checkGrpNm(String batGrpNm) {
-		if(batchDao.checkGrpNm(batGrpNm) < 1) return true;
+		vo = new BatGrp();
+		vo.setBatGrpNm(batGrpNm);
+		if(batchDao.getTotalGroupNum(vo) < 1) return true;
 		return false;
 	}
 }

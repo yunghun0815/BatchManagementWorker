@@ -47,15 +47,21 @@
 	})
 	function makeStatusChart(ctx, type, status, data) {
 		let color = "";
-		if (status == "running")
+		let back = "";
+		if (status == "running"){
 			color = "#076df8";
-		else if (status == "success")
+			back = "#094aa24a";
+		}
+		else if (status == "success"){
 			color = "#686868";
-		else if (status == "fail")
+			back = "#3130305e";
+		}
+		else if (status == "fail"){
 			color = "#e60012";
+			back = "#c702124a";
+		}
 
 		let statusRate = Math.round(data[0] / (data[0] + data[1]) * 100)
-		console.log(statusRate)
 
 		var myChart = new Chart(ctx, {
 			type : type,
@@ -64,7 +70,7 @@
 				datasets : [ {
 					label : [ status, "" ],
 					data : data,
-					backgroundColor : [ color, "#f4f4f4" ]
+					backgroundColor : [ color, back ]
 				} ]
 			},
 			options : {
@@ -81,11 +87,11 @@
 						this.chart.ctx.font = "bold 1.2em Verdana";
 						this.chart.ctx.textBaseline = "middle";
 						if (statusRate < 10)
-							this.chart.ctx.fillText(statusRate + "%", 85,
-									50);
+							this.chart.ctx.fillText(statusRate + "%", 85, 50);
+						else if (statusRate == 100)
+							this.chart.ctx.fillText(statusRate + "%", 68, 50);
 						else
-							this.chart.ctx.fillText(statusRate + "%", 76,
-									50);
+							this.chart.ctx.fillText(statusRate + "%", 76, 50);
 					}
 				}
 			}
@@ -93,6 +99,7 @@
 	}
 	function makeTotalChart(ctx, type, labels, data, total) {
 		var myChart = new Chart(ctx, {
+			plugins: [ChartDataLabels],
 			type : type,
 			data : {
 				labels : labels,
@@ -104,11 +111,6 @@
 			},
 			options : {
 				responsive : false,
-				legend : {
-					position : 'right',
-					offsetY : 0,
-					height : 230,
-				},
 				cutoutPercentage : 55,
 				animation : {
 					onProgress : function() {
@@ -118,6 +120,22 @@
 						this.chart.ctx.font = "bold 1.2em Verdana";
 						this.chart.ctx.textBaseline = "middle";
 						this.chart.ctx.fillText(total, 278, 205);
+					}
+				},
+				plugins: {
+					legend: { //범례 사용 안함
+						display : false
+					},
+					tooltip: { //기존 툴팁 사용 안함
+						enabled : false
+					},
+					datalabels: { //datalebels 플러그인 세팅
+						formatter: function(value, context){
+							var idx = context.dataIndex;
+							
+							return context.chart.data.labels[idx] + value;
+						},
+						align: 'top',
 					}
 				}
 			}
@@ -185,12 +203,12 @@
 					makeStatusChart(ctx, 'doughnut', "fail", [
 							result["fail"],
 								result["total"] - result["fail"] ]);
-
+					
 					}
 					$(".total span").empty().append("Total JOBs: " + result["total"]);
-					$(".success span").empty().append("작업 완료: " + result["success"]);
-					$(".fail span").empty().append("작업 오류: " + result["fail"]);
-					$(".running span").empty().append("실행중: " + result["running"]);
+					$(".success span").empty().append("Success: " + result["success"]);
+					$(".fail span").empty().append("Fail: " + result["fail"]);
+					$(".running span").empty().append("Running: " + result["running"]);
 				}
 		});
 	}

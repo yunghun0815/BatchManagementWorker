@@ -12,9 +12,9 @@ import com.company.myapp.dto.Pager;
 @Mapper
 public interface IBatchDao {
 
-	public int getTotalGroupNum();
+	public int getTotalGroupNum(BatGrp vo);
 
-	public List<BatGrp> getBatGrpListByPage(Pager pager);
+	public List<BatGrp> getBatGrpListByPage(@Param("pager")Pager pager, @Param("vo")BatGrp vo);
 
 	public BatGrp getBatGrpDetail(String grpId);
 
@@ -24,9 +24,9 @@ public interface IBatchDao {
 
 	public void deleteBatGrp(String grpId);
 
-	public List<BatGrp> searchBatGrp(@Param("pager")Pager pager, @Param("vo")BatGrp vo);
+	//public List<BatGrp> searchBatGrp(@Param("pager")Pager pager, @Param("vo")BatGrp vo);
 	
-	public int getTotalSearchNum(BatGrp vo);
+	//public int getTotalSearchNum(BatGrp vo);
 
 	public List<BatGrp> getBatGrpList();
 	
@@ -42,10 +42,9 @@ public interface IBatchDao {
 	public void updateBatPrm(BatPrm vo);
 
 	public void sortByRownum(String grpId);
+	public void sortByUsers(BatPrm pvo);
 
 	public int getLastExcnOrd(String batGrpId);
-
-	public void sortByUsers(BatPrm pvo);
 
 	public List<String> getBatGrpIdListByHostId(String hostId);
 
@@ -59,6 +58,6 @@ public interface IBatchDao {
 
 	public void rollbackProgram(String batGrpId);
 
-	public int checkGrpNm(String batGrpNm);
+	//public int checkGrpNm(String batGrpNm);
 	
 }
