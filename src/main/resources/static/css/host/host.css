@@ -37,6 +37,12 @@
 		text-align: center;
 		position: relative;
 	}
+	.content-main>div>input{
+		overflow: hidden;
+	    text-overflow: ellipsis;
+	    white-space: nowrap;
+	    word-break: break-all;
+	}
 	.content-main:hover {
 		cursor: pointer;
 		border: 2px solid #79c2cc;

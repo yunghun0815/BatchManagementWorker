@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import com.company.myapp.batch.BatchServer;
 import com.company.myapp.batch.websocket.WebSocketManagement;
+import com.company.myapp.batch.websocket.job.ResetLogJob;
 import com.company.myapp.service.IJobService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +30,8 @@ public class AppListener implements ServletContextListener{
 	IJobService jobService;
 	@Autowired
 	WebSocketManagement webSocketManagement;
+	@Autowired
+	ResetLogJob resetLogJob;
 	
 	@Override
 	public void contextInitialized(ServletContextEvent sce) {
@@ -38,6 +41,7 @@ public class AppListener implements ServletContextListener{
 			webSocketManagement.sendLog("INFO", msg);
 			batchServer.start();		// 소켓, 스레드풀 생성
 			jobService.startSchedule();	// 자동실행 'Y' 인 배치 그룹 Job에 등록
+			resetLogJob.initJob(); // 자정 초기화 Job에 등록
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

@@ -2,12 +2,58 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.company.myapp.dao.IBatchDao">
   
-  <select id="getTotalGroupNum" resultType="int">
-    SELECT count(*) FROM bat_grp WHERE use_yn='Y'
+<!--   <select id="getTotalGroupNum" resultType="int">
+    SELECT 
+    	count(*) 
+    FROM 
+    	bat_grp 
+    WHERE 
+    	use_yn='Y'
   </select>
   
-  <select id="getBatGrpListByPage" parameterType="Pager" resultType="BatGrp">
-  	SELECT b.rnum,
+  <select id="getTotalSearchNum" parameterType="BatGrp" resultType="int"> -->
+  <select id="getTotalGroupNum" parameterType="BatGrp" resultType="int">
+  	SELECT 
+			count(*)
+	FROM 
+		(
+			SELECT 
+	            bat_grp_id, bat_grp_nm, bat_grp_dsc, host_id, auto_excn_yn, cron, cron_dsc, use_yn 
+	        FROM 
+	            bat_grp
+			WHERE use_yn=#{useYn}
+		        	<if test="batGrpNm != null and batGrpNm != ''">
+						AND
+							bat_grp_nm like '%'||#{batGrpNm}||'%'	
+					</if>		
+					<if test="batGrpDsc != null and batGrpDsc != ''">
+						AND
+							bat_grp_dsc like '%'||#{batGrpDsc}||'%'	
+					</if>		
+					<if test="autoExcnYn != null and autoExcnYn != ''">
+						AND
+							auto_excn_yn=#{autoExcnYn}	
+					</if>	
+				 	<if test="cronDsc != null and cronDsc != ''">
+						AND
+							(cron like '%'||#{cron}||'%'		
+							OR
+							cron_dsc like '%'||#{cronDsc}||'%')
+					</if>	
+		) b JOIN host h ON b.host_id=h.host_id 
+	<if test="hostNm != null and hostNm != ''">
+		WHERE 
+			h.host_nm like '%'||#{hostNm}||'%'		
+		OR
+			h.host_ip like '%'||#{hostNm}||'%'	
+		OR
+			h.host_pt like '%'||#{hostNm}||'%'
+	</if>
+  </select>
+  
+<!--   <select id="getBatGrpListByPage" parameterType="Pager" resultType="BatGrp">
+  	SELECT 
+  		   b.rnum,
   		   b.bat_grp_id as "batGrpId", 
     	   b.bat_grp_nm as "batGrpNm", 
     	   b.bat_grp_dsc as "batGrpDsc", 
@@ -40,52 +86,8 @@
 	WHERE b.use_yn='Y' and b.rnum &gt;= #{startRowNo}
   </select>
   
-  <select id="getBatGrpDetail" parameterType="String" resultType="BatGrp">
-  	SELECT b.bat_grp_id as "batGrpId", 
-    	   b.bat_grp_nm as "batGrpNm", 
-    	   b.bat_grp_dsc as "batGrpDsc", 
-    	   b.host_id as "hostId", 
-    	   h.host_nm as "hostNm", 
-    	   h.host_ip as "hostIp", 
-    	   h.host_pt as "hostPt", 
-    	   b.auto_excn_yn as "autoExcnYn", 
-    	   b.cron as "cron",
-    	   b.cron_dsc as "cronDsc",
-    	   b.use_yn as "useYn"
-    FROM bat_grp b LEFT OUTER JOIN host h ON b.host_id=h.host_id 
-    WHERE b.bat_grp_id=#{grpId}
-  </select>
-  
-  
-  <insert id="insertBatGrp" parameterType="BatGrp">
-  	INSERT INTO bat_grp(bat_grp_id, bat_grp_nm, bat_grp_dsc, host_id, auto_excn_yn, cron, cron_dsc, frst_reg_nm, frst_reg_dttm, last_mdfr_nm, last_mdfcn_dttm) 
-  	VALUES('BGR'||LPAD(SEQ_BAT_GROUP.NEXTVAL, 8, '0'), #{batGrpNm}, #{batGrpDsc}, #{hostId}, #{autoExcnYn}, #{cron}, #{cronDsc}, 'admin', sysdate, 'admin', sysdate)
-  </insert>
-  
-  <update id="updateBatGrp" parameterType="BatGrp">
-  	UPDATE 
-  		bat_grp
-  	SET
-  		bat_grp_nm = #{batGrpNm}, 
-    	bat_grp_dsc = #{batGrpDsc}, 
-    	host_id = #{hostId}, 
-    	auto_excn_yn = #{autoExcnYn}, 
-    	cron = #{cron},
-    	cron_dsc = #{cronDsc},
-    	last_mdfr_nm = 'admin',
-    	last_mdfcn_dttm = sysdate
-  	WHERE bat_grp_id = #{batGrpId}
-  </update>
-  <update id="deleteBatGrp" parameterType="String">
-  	UPDATE
-  		bat_grp
-  	SET
-  		use_yn = 'N',
-    	last_mdfcn_dttm = sysdate               
-  	WHERE bat_grp_id = #{grpId}
-  </update>
-
-  <select id="searchBatGrp" parameterType="map" resultType="BatGrp">
+    <select id="searchBatGrp" parameterType="map" resultType="BatGrp"> -->
+    <select id="getBatGrpListByPage" parameterType="map" resultType="BatGrp">
   	SELECT 
 			b.rnum,
 			b.bat_grp_id as "batGrpId", 
@@ -124,7 +126,7 @@
 					AND
 						bat_grp_dsc like '%'||#{vo.batGrpDsc}||'%'	
 				</if>		
-				<if test="vo.autoExcnYn != 0 and vo.autoExcnYn != '0'">
+				<if test="vo.autoExcnYn != null and vo.autoExcnYn != ''">
 					AND
 						auto_excn_yn=#{vo.autoExcnYn}	
 				</if>		
@@ -149,44 +151,54 @@
 				
   </select>
   
-  <select id="getTotalSearchNum" parameterType="BatGrp" resultType="int">
-  	SELECT 
-			count(*)
-	FROM 
-		(
-			SELECT 
-	            bat_grp_id, bat_grp_nm, bat_grp_dsc, host_id, auto_excn_yn, cron, cron_dsc, use_yn 
-	        FROM 
-	            bat_grp
-			WHERE use_yn=#{useYn}
-		        	<if test="batGrpNm != null and batGrpNm != ''">
-						AND
-							bat_grp_nm like '%'||#{batGrpNm}||'%'	
-					</if>		
-					<if test="batGrpDsc != null and batGrpDsc != ''">
-						AND
-							bat_grp_dsc like '%'||#{batGrpDsc}||'%'	
-					</if>		
-					<if test="autoExcnYn != null and autoExcnYn != ''">
-						AND
-							auto_excn_yn=#{autoExcnYn}	
-					</if>	
-				 	<if test="cronDsc != null and cronDsc != ''">
-						AND
-							(cron like '%'||#{cron}||'%'		
-						OR
-							cron_dsc like '%'||#{cronDsc}||'%')
-					</if>	
-		) b JOIN host h ON b.host_id=h.host_id 
-	<if test="hostNm != null and hostNm != ''">
-		WHERE 
-			h.host_nm like '%'||#{hostNm}||'%'		
-		OR
-			h.host_ip like '%'||#{hostNm}||'%'	
-		OR
-			h.host_pt like '%'||#{hostNm}||'%'
-	</if>
+  <select id="getBatGrpDetail" parameterType="String" resultType="BatGrp">
+  	SELECT b.bat_grp_id as "batGrpId", 
+    	   b.bat_grp_nm as "batGrpNm", 
+    	   b.bat_grp_dsc as "batGrpDsc", 
+    	   b.host_id as "hostId", 
+    	   h.host_nm as "hostNm", 
+    	   h.host_ip as "hostIp", 
+    	   h.host_pt as "hostPt", 
+    	   b.auto_excn_yn as "autoExcnYn", 
+    	   b.cron as "cron",
+    	   b.cron_dsc as "cronDsc",
+    	   b.use_yn as "useYn"
+    FROM bat_grp b LEFT OUTER JOIN host h ON b.host_id=h.host_id 
+    WHERE b.bat_grp_id=#{grpId}
   </select>
+  
+  
+  <insert id="insertBatGrp" parameterType="BatGrp">
+  	INSERT INTO bat_grp(bat_grp_id, bat_grp_nm, bat_grp_dsc, host_id, auto_excn_yn, cron, cron_dsc, frst_reg_nm, frst_reg_dttm, last_mdfr_nm, last_mdfcn_dttm) 
+  	VALUES('BGR'||LPAD(SEQ_BAT_GROUP.NEXTVAL, 8, '0'), #{batGrpNm}, #{batGrpDsc}, #{hostId}, #{autoExcnYn}, #{cron}, #{cronDsc}, 'admin', sysdate, 'admin', sysdate)
+  </insert>
+  
+  <update id="updateBatGrp" parameterType="BatGrp">
+  	UPDATE 
+  		bat_grp
+  	SET
+
+  		bat_grp_nm = #{batGrpNm}, 
+    	bat_grp_dsc = #{batGrpDsc}, 
+    	host_id = #{hostId}, 
+    	auto_excn_yn = #{autoExcnYn}, 
+    	cron = #{cron},
+    	cron_dsc = #{cronDsc},
+    	last_mdfr_nm = 'admin',
+    	last_mdfcn_dttm = sysdate
+  	WHERE bat_grp_id = #{batGrpId}
+  </update>
+  <update id="deleteBatGrp" parameterType="String">
+  	UPDATE
+  		bat_grp
+  	SET
+  		use_yn = 'N',
+    	last_mdfcn_dttm = sysdate               
+  	WHERE bat_grp_id = #{grpId}
+  </update>
+
+  
+
   
   <select id="getBatGrpList" resultType="BatGrp">
   	SELECT bat_grp_id as "batGrpId",
@@ -225,6 +237,8 @@
 	FROM bat_prm
 	WHERE bat_prm_id = #{prmId}
   </select>
+  
+  
   <insert id="insertBatPrm" parameterType="BatPrm">
   	INSERT INTO bat_prm(bat_prm_id, bat_grp_id, bat_prm_nm, path, excn_ord, param, param_dsc,  frst_reg_nm, frst_reg_dttm, last_mdfr_nm, last_mdfcn_dttm)
   	VALUES ('PRM'||LPAD(SEQ_BAT_PRM.NEXTVAL, 8, '0'), #{batGrpId}, #{batPrmNm}, #{path}, #{excnOrd}, #{param}, #{paramDsc}, 'admin', sysdate, 'admin', sysdate)
@@ -259,6 +273,8 @@
   		last_mdfcn_dttm = sysdate
   	WHERE bat_grp_id = #{grpId}
   </update>
+  
+  
   <update id="sortByRownum" parameterType="String">
   	UPDATE 
   		bat_prm a
@@ -272,13 +288,6 @@
      		WHERE a.bat_prm_id=c.bat_prm_id)
 	WHERE a.use_yn = 'Y' and a.bat_grp_id = #{grpId}
   </update>
-  
-  <select id="getLastExcnOrd" parameterType="String" resultType="int">
-  	SELECT count(*) 
-  	FROM bat_prm 
-	WHERE use_yn = 'Y' AND bat_grp_id = #{grpId}
-  </select>
-  
   <update id="sortByUsers" parameterType="BatPrm">
   	UPDATE
   		bat_prm
@@ -287,6 +296,13 @@
   	WHERE
   		bat_prm_id = #{batPrmId}
   </update>
+  
+  <select id="getLastExcnOrd" parameterType="String" resultType="int">
+  	SELECT count(*) 
+  	FROM bat_prm 
+	WHERE use_yn = 'Y' AND bat_grp_id = #{grpId}
+  </select>
+  
   
   <select id="getBatGrpIdListByHostId" parameterType="String" resultType="String">
   	SELECT
@@ -298,6 +314,7 @@
   	AND 
   		use_yn = 'Y'			
   </select>
+  
   
   <select id="getBatGrpByGrpLogId" parameterType="String" resultType="BatGrp">
   	SELECT DISTINCT
@@ -336,7 +353,8 @@
  			WHERE 
  				bat_grp_log_id = #{batGrpLogId}
  			) 
- 	AND use_yn = 'Y'
+ 	AND 
+ 		use_yn = 'Y'
  	ORDER BY
  		excn_ord
   </select>

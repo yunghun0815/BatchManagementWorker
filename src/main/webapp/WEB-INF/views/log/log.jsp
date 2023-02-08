@@ -72,10 +72,10 @@
 									<td>
 										<select name="filter">
 											<option value="">기본값(최신등록로그)</option>
-											<option value="batBgngDtASC" <c:if test="${param.filter eq 'batBgngDtASC'}">selected</c:if>>배치시작시간(최신순)</option>
-											<option value="batBgngDtDESC" <c:if test="${param.filter eq 'batBgngDtDESC'}">selected</c:if>>배치시작시간(오래된순)</option>
-											<option value="batEndDtASC" <c:if test="${param.filter eq 'batEndDtASC'}">selected</c:if>>배치종료시간(최신순)</option>
-											<option value="batEndDtDESC" <c:if test="${param.filter eq 'batEndDtDESC'}">selected</c:if>>배치종료시간(오래된순)</option>
+											<option value="batBgngDtASC" <c:if test="${param.filter eq 'batBgngDtDESC'}">selected</c:if>>배치시작시간(최신순)</option>
+											<option value="batBgngDtDESC" <c:if test="${param.filter eq 'batBgngDtASC'}">selected</c:if>>배치시작시간(오래된순)</option>
+											<option value="batEndDtASC" <c:if test="${param.filter eq 'batEndDtDESC'}">selected</c:if>>배치종료시간(최신순)</option>
+											<option value="batEndDtDESC" <c:if test="${param.filter eq 'batEndDtASC'}">selected</c:if>>배치종료시간(오래된순)</option>
 										</select>
 									</td>
 								</tr>
@@ -104,8 +104,8 @@
 							<div>
 								<span>${log.batGrpLogId}</span>
 							</div>
-							<div class="grpNm">
-								<span>${log.batGrpNm}</span>
+							<div class="grpNm" title="${log.batGrpNm}">
+								<span >${log.batGrpNm}</span>
 							</div>
 							<div>
 								<c:choose>

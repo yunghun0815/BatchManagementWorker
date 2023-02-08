@@ -11,10 +11,10 @@
 
 <script type="text/javascript" src="/js/batch/batch.js"></script>
 <script type="module" src="/js/batch/batchValid.js"></script>
-
+<spring:eval expression="@environment.getProperty('file.extension')" var="extension"></spring:eval>
 </head>
-
 <main id="main">
+	<input type="hidden" value=${extension} id="file-extension">
 	<div class="title">
 		<h1>배치 관리</h1>
 	</div>
@@ -64,19 +64,19 @@
 										<span>자동실행</span>
 									</td>
 									<td>
-										<select name="autoExcnYn" value="${param.autoExcnYn}">
-											<option value="">All</option>
-											<option value="Y">Yes</option>
-											<option value="N">No</option>
+										<select name="autoExcnYn">
+											<option value="" <c:if test="${param.autoExcnYn eq ''}">selected</c:if>>All</option>
+											<option value="Y" <c:if test="${param.autoExcnYn eq 'Y'}">selected</c:if>>Yes</option>
+											<option value="N" <c:if test="${param.autoExcnYn eq 'N'}">selected</c:if>>No</option>
 										</select>
 									</td>
 									<td>
 										<span>사용유무</span>
 									</td>
 									<td>
-										<select name="useYn" value="${param.useYn}">
-											<option value="Y">Yes</option>
-											<option value="N">No</option>
+										<select name="useYn">
+											<option value="Y" <c:if test="${param.useYn eq 'Y'}">selected</c:if>>Yes</option>
+											<option value="N" <c:if test="${param.useYn eq 'N'}">selected</c:if>>No</option>
 										</select>
 									</td>
 								</tr>
@@ -109,18 +109,20 @@
 								<div class="group-id">
 									<span>${group.batGrpId}</span>
 								</div>
-								<div class="group-nm">
+								<div class="group-nm" title="${group.batGrpNm}">
 									<span>${group.batGrpNm}</span>
 								</div>
-								<div class="group-host">
+								<div class="group-host" title="${group.hostNm}(${group.hostIp})">
 									<span id="${group.hostId}">${group.hostNm}(${group.hostIp})</span>
 								</div>
-								<div class="group-cron">
-									<span> <c:if test="${empty group.cronDsc}">
-										${group.cron}
-								</c:if> <c:if test="${not empty group.cronDsc}">
-										${group.cronDsc}
-									</c:if></span>
+								<c:if test="${empty group.cronDsc}">
+										<c:set var="cron" value="${group.cron}" />
+								</c:if>
+								<c:if test="${not empty group.cronDsc}">
+										<c:set var="cron" value="${group.cronDsc}" />
+								</c:if>
+								<div class="group-cron" title="${cron}">
+									<span>${cron}</span>
 								</div>
 								<div class="group-conn">
 									<c:if test="${group.conn == 'on'}">

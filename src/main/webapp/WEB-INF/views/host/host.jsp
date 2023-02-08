@@ -70,7 +70,7 @@
 						<span>${host.hostId}</span>
 					</div>
 					<div>
-						<input type="text" name="hostNm" value="${host.hostNm}" readonly="readonly">
+						<input type="text" name="hostNm" value="${host.hostNm}" title="${host.hostNm}" readonly="readonly">
 					</div>
 					<div>
 						<input id="error-update-hostIp" type="text" name="hostIp" value="${host.hostIp}" readonly="readonly">

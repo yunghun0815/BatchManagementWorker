@@ -5,6 +5,22 @@
  * ex) <span id="error-hostIp"></span>
  */
  
+
+$(function(){
+	// 프로퍼티 읽어와 등록 가능 배치 파일 확장자 업데이트
+	let fileExtension = $("#file-extension").val().split(',');
+	let fileRegExp = ''; 
+	fileExtension.forEach((i, index) => {
+		if(fileExtension.length != index+1){
+			fileRegExp += '.' + i + '|';
+		}else{
+			fileRegExp += '.' + i + '$';
+		}
+	})
+	regexp['file']['regexp'] = new RegExp(fileRegExp);
+	regexp['file']['message'] = '등록 가능 확장자는 ' + $("#file-extension").val() + '입니다';
+});
+
 // 유효성 검사용 정규표현식
 export const regexp = {
 	'blank': {

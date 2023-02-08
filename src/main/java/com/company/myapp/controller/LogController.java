@@ -187,4 +187,10 @@ public class LogController {
 		chart.put("total", logService.getAllCountJob(date));
 		return chart;
 	}
+	
+	@ResponseBody
+	@GetMapping("/running/check")
+	public String runningCheck(String batGrpLogId) {
+		return logService.getStcdByGrpLogId(batGrpLogId);
+	}
 }

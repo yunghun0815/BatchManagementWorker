@@ -35,7 +35,7 @@ function getPath(path){
 				  button: "확인"
 			});
 		}
-	let view = `<h3>` + path + `</h3>`;
+	let view = `<h3><input id="current-path" type="text" value="` + path + `"></h3>`;
 	   
 	// 이전 경로 가져옴
 	let idxP = path.lastIndexOf("\\");
@@ -84,6 +84,10 @@ function getPath(path){
 	 
 	 
 	 $("#file-explorer").html(view);
+	 $("#current-path").keyup(function(e){
+		console.log("test");
+		if(e.keyCode == 13) getPath($(this).val());
+	});
 	},
 	error: function(error){
 	 alert(error);

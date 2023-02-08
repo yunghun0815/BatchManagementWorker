@@ -44,3 +44,10 @@
 #file-explorer h3 {
 	padding-left: 25px;
 }
+
+#file-explorer input{
+	width: 96%;
+    height: 35px;
+    font-size: 25px;
+    font-weight: bold;
+}

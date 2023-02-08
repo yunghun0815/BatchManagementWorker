@@ -4,6 +4,17 @@
  */
 
 $(function(){
+	$(".group-nm").tooltip();
+	$(".group-host").tooltip();
+	$(".group-cron").tooltip();
+	
+	$("#cron-guide").click(function(){
+		if($("#cron-guide-img").css("display") == 'none'){
+			$("#cron-guide-img").show();
+		}else{
+			$("#cron-guide-img").hide();
+		}
+	})
 	
 	/* group별 프로그램 목록 출력 Event */
 	const group = $(".group");
@@ -213,6 +224,7 @@ function initModal(){
 	const grpId = $(".sub-content .grp").prop("id");
 	$(".modal input").val("");
 	$("#insert-batch-program input[name=batGrpId]").val(grpId);
+	$(".error-message").html("");
 }
 
 /* 프로그램 관련 함수 */
@@ -245,8 +257,8 @@ function getPrmList(grpId, method, use){
 						let obj = result[i];
 						view += `<li class="d-flex program">
 									<div class="program-id"><span>` + obj['batPrmId'] + `</span></div>
-									<div class="program-nm"><span>` + obj['batPrmNm'] + `</span></div>
-									<div class="program-path"><span>` + obj['path'] + `</span></div>
+									<div class="program-nm" title="` + obj['batPrmNm'] + `"><span>` + obj['batPrmNm'] + `</span></div>
+									<div class="program-path" title="` + obj['path'] + `"><span>` + obj['path'] + `</span></div>
 									<div class="program-active">
 										<div onmouseenter="iconMouseOver(this)" onmouseleave="iconMouseLeave(this)" onclick="getUpdatePrmInfo(this)"
 											data-bs-toggle="modal" data-bs-target="#detail-batch-program">
@@ -270,6 +282,9 @@ function getPrmList(grpId, method, use){
 				if(use==false) btn = ``;
 				btnWrap.append(btn);
 			}
+			
+			$(".program-nm").tooltip();
+			$(".program-path").tooltip();
 		},
 		error: function(request,status,error){
 			alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
@@ -606,14 +621,17 @@ function checkHealth(btn){
 
 function hidePath(conn){
 	if(conn==true){
+		$("input[name='path']").css("padding-right","95px");
 		$(".path-btn").show();
-		$("input[name=path]").attr("readonly", true);
+		$("input[name=path]").attr("placeholder", "");
+	//	$("input[name=path]").attr("readonly", true);
 		$("#detail-batch-program input[name=path]").addClass("onlyread");
 	}else{
 		$(".path-btn").hide();
-		$("input[name=path]").attr("readonly", false);
+	//	$("input[name=path]").attr("readonly", false);
 		$("#detail-batch-program input[name=path]").removeClass("onlyread");
 		$("input[name=path]").attr("placeholder", "직접 경로 입력");
+		$("input[name='path']").css("padding-right","0px");
 	}
 }
 
