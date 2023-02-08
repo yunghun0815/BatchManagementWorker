@@ -52,29 +52,28 @@
 	</select>  
 	  
 	<select id="getBatPrmLogList" parameterType="Pager" resultType="BatPrmLog">
-		SELECT 
-			rnum,
-			bat_grp_log_id as batGrpLogId,
-			bat_grp_rty_cnt as batGrpRtyCnt,
-			bat_prm_id as batPrmId,
-			param,
-			bat_prm_st_cd as batPrmStCd,
-			rslt_msg as rsltMsg,
-			bat_bgng_dt as batBgngDt,
-			bat_end_dt as batEndDt,
-			excn_ord as excnOrd
+		SELECT rnum,
+			   bat_grp_log_id as batGrpLogId,
+		 	   bat_grp_rty_cnt as batGrpRtyCnt,
+			   bat_prm_id as batPrmId,
+			   param,
+			   bat_prm_st_cd as batPrmStCd,
+			   rslt_msg as rsltMsg,
+			   bat_bgng_dt as batBgngDt,
+			   bat_end_dt as batEndDt,
+			   excn_ord as excnOrd
 		FROM (
-			SELECT 
-				ROWNUM as rnum, bat_grp_log_id, bat_grp_rty_cnt, bat_prm_id, param, bat_prm_st_cd
-				rslt_msg, bat_bgng_dt, bat_end_dt, excn_ord
-			FROM (
-				SELECT 
-					bat_grp_log_id, bat_grp_rty_cnt, bat_prm_id, param, bat_prm_st_cd
-					rslt_msg, bat_bgng_dt, bat_end_dt, excn_ord
-				FROM
+			   SELECT 
+				      ROWNUM as rnum, bat_grp_log_id, bat_grp_rty_cnt, bat_prm_id, param, bat_prm_st_cd
+				      rslt_msg, bat_bgng_dt, bat_end_dt, excn_ord
+			   FROM (
+				   SELECT 
+					   bat_grp_log_id, bat_grp_rty_cnt, bat_prm_id, param, bat_prm_st_cd
+					   rslt_msg, bat_bgng_dt, bat_end_dt, excn_ord
+				   FROM
 					bat_prm_log
 				ORDER BY 
-					last_mdfcn_dttm DESC					
+					last_mdfcn_dttm, bat_grp_log_id DESC					
 			)
 			WHERE rownum &lt;= #{endRowNo}				
 		)
@@ -231,7 +230,7 @@
 	</insert>
 	
 	<select id="getRtyBatGrpLogListByLogId" parameterType="String" resultType="BatGrpLog">
-		SELECT
+		SELECT /* LogMapper.getRtyBatGrpLogListByLogId */
 		    bat_grp_log_id as batGrpLogId,
 		    bat_grp_rty_cnt as batGrpRtyCnt,
 		    bat_grp_id as batGrpId,
@@ -281,7 +280,7 @@
 	            (SELECT bat_grp_log_id, MAX(bat_grp_rty_cnt) FROM bat_grp_log GROUP BY (bat_grp_log_id))
 				<if test="batGrpLogId != null">
 					AND
-						bat_grp_log_id like '%'||#{batGrpLogId}||'%'	
+						bat_grp_log_id like #{batGrpLogId}||'%'	
 				</if>		
 				<if test="batGrpId != null">
 					AND
@@ -346,15 +345,15 @@
 		        	l.bat_grp_id = g.bat_grp_id
 		        WHERE 
 	            	(bat_grp_log_id, bat_grp_rty_cnt)
-	       	 	IN 
-	            	(SELECT bat_grp_log_id, MAX(bat_grp_rty_cnt) FROM bat_grp_log GROUP BY (bat_grp_log_id))
+	       	 		IN 
+	            		(SELECT bat_grp_log_id, MAX(bat_grp_rty_cnt) FROM bat_grp_log GROUP BY (bat_grp_log_id))
 				<if test="log.batGrpLogId != null">
-					AND
-						bat_grp_log_id like '%'||#{log.batGrpLogId}||'%'	
+				AND
+					bat_grp_log_id like '%'||#{log.batGrpLogId}||'%'	
 				</if>		
 				<if test="log.batGrpNm != null">
-					AND
-						bat_grp_nm like '%'||#{log.batGrpNm}||'%'	
+				AND
+					bat_grp_nm like '%'||#{log.batGrpNm}||'%'	
 				</if>		
 				<if test="log.batGrpStCd != null">
 					AND
@@ -387,7 +386,7 @@
 				ORDER BY
 				<choose>
 					<when test="log.filter == 'batBgngDtASC'">
-						bat_bgng_dt  				
+						bat_bgng_dt, bat_grp_log_id   				
 					</when>
 					<when test="log.filter == 'batBgngDtDESC'">
 						bat_bgng_dt DESC  				
