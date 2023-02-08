@@ -15,7 +15,7 @@
 <script type="text/javascript" src="/js/common/main.js"></script>
 
 
-<!-- 버전 2 (특정 버전) -->
+
 </head>
 <main id="main">
 	<div class="title">
