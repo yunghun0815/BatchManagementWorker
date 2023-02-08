@@ -84,20 +84,28 @@
 				cutoutPercentage : 70,
 				animation : {
 					onProgress : function() {
-						this.chart.ctx.font = "bold 1.2em Verdana";
-						this.chart.ctx.textBaseline = "middle";
+						this.ctx.font = "bold 1.2em Verdana";
+						this.ctx.textBaseline = "middle";
 						if (statusRate < 10)
-							this.chart.ctx.fillText(statusRate + "%", 85, 50);
+							this.ctx.fillText(statusRate + "%", 85, 50);
 						else if (statusRate == 100)
-							this.chart.ctx.fillText(statusRate + "%", 68, 50);
+							this.ctx.fillText(statusRate + "%", 68, 50);
 						else
-							this.chart.ctx.fillText(statusRate + "%", 76, 50);
+							this.ctx.fillText(statusRate + "%", 76, 50);
 					}
 				}
 			}
 		});
 	}
 	function makeTotalChart(ctx, type, labels, data, total) {
+		const sumData = data.reduce((a,b)=> a+b);
+		let borderWidth = 2;
+		data.forEach((result) => {
+			if(result == sumData) borderWidth = 0;
+			
+			
+		});
+		
 		var myChart = new Chart(ctx, {
 			plugins: [ChartDataLabels],
 			type : type,
@@ -106,7 +114,8 @@
 				datasets : [ {
 					label : labels,
 					data : data,
-					backgroundColor : [ "#076df8", "#e60012", "#686868" ]
+					backgroundColor : [ "#076df8", "#e60012", "#686868" ],
+					borderWidth: borderWidth
 				} ]
 			},
 			options : {
@@ -114,12 +123,9 @@
 				cutoutPercentage : 55,
 				animation : {
 					onProgress : function() {
-						this.chart.ctx.font = "1.4em Verdana";
-						this.chart.ctx.textBaseline = "middle";
-						this.chart.ctx.fillText("전체 Job의 수 :", 215, 170);
-						this.chart.ctx.font = "bold 1.2em Verdana";
-						this.chart.ctx.textBaseline = "middle";
-						this.chart.ctx.fillText(total, 278, 205);
+						this.ctx.fillText("Total Jobs :" + total, 265, 170);
+						this.ctx.font = "bold 1.2em Verdana";
+						this.ctx.textBaseline = "middle";
 					}
 				},
 				plugins: {
@@ -132,10 +138,17 @@
 					datalabels: { //datalebels 플러그인 세팅
 						formatter: function(value, context){
 							var idx = context.dataIndex;
-							
-							return context.chart.data.labels[idx] + value;
+							if(value>0){
+								return context.chart.data.labels[idx] + ":" + value;
+							}else{
+								return '';
+							}
 						},
-						align: 'top',
+						align: 'middle',
+						color: 'white',
+						font: {
+							weight: 'bold'
+						}
 					}
 				}
 			}

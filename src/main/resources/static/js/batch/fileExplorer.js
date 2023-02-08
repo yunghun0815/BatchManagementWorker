@@ -54,7 +54,6 @@ function getPath(path){
 		if(lastPath == '') lastPath = "/";
 		// 이전 경로가 C: 면 C:\\로 변경
 		if(lastPath == 'C:') lastPath = 'C:\\\\';
-		console.log(path);
 		// 현재 폴더가 C드라이브면 이전폴더 없앰
 		if(path != '/'){
 			view += `
@@ -68,8 +67,14 @@ function getPath(path){
 		 // 폴더 생성
 		 result['dir'].forEach((dir)=>{
 			 let idxD = dir.lastIndexOf("\\");
-			 let realDir = dir.substring(idxD+1);
-			 dir = dir.replaceAll("\\", "\\\\");
+			 let realDir = '';
+			 if(idxD == -1){
+				 idxD = dir.lastIndexOf("/");
+				 realDir = dir.substring(idxD+1);
+			 }else{
+				 realDir = dir.substring(idxD+1);
+				 dir = dir.replaceAll("\\", "\\\\");
+			 }
 			 view += `
 			 	<div class="exp-box" onclick="activeExpBox(this)" ondblclick="getPath('`+ dir +`')">
 					<img class="exp-img" src="/image/fileExplorer/folder.png"><br>
@@ -81,9 +86,14 @@ function getPath(path){
 		 // 파일 생성
 		 result['file'].forEach((file)=>{
 			 let idxF = file.lastIndexOf("\\");
-			 let realFile = file.substring(idxF+1);
-			 file = file.replaceAll("\\", "\\\\");
-			 
+			 let realFile = '';
+			 if(idxF == -1){
+				 idxF = file.lastIndexOf("/");
+				 realFile = file.substring(idxF+1);
+			 }else{
+				 realFile = file.substring(idxF+1)
+				 file = file.replaceAll("\\", "\\\\");
+			 }
 			 view += `
 			 	<div class="exp-box" onclick="activeExpBox(this)" ondblclick="selectFile('`+ file +`')">
 					<img class="exp-img" src="/image/fileExplorer/file.png"><br>
@@ -99,7 +109,7 @@ function getPath(path){
 			if(e.keyCode == 13) getPath($(this).val());
 		});
 	
-		$("exp-name").tooltip();
+		//$(".exp-name").tooltip();
 	},
 	error: function(error){
 	 alert(error);

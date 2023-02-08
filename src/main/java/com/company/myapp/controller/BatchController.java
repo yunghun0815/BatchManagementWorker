@@ -134,7 +134,6 @@ public class BatchController {
 	@ResponseBody
 	@PostMapping("/group/update")
 	public List<ObjectError> updateBatGrp(@Valid BatGrp vo, BindingResult result) {
-		System.out.println("!!!!!!!!!!!!!!!!!!!! 업데이트 시작" + vo);
 		if(result.hasErrors()) {
 			return result.getAllErrors();
 		}
