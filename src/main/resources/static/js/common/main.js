@@ -64,6 +64,7 @@
 		let statusRate = Math.round(data[0] / (data[0] + data[1]) * 100)
 
 		var myChart = new Chart(ctx, {
+			plugins: [ChartDataLabels],
 			type : type,
 			data : {
 				labels : [ status, "" ],
@@ -73,74 +74,174 @@
 					backgroundColor : [ color, back ]
 				} ]
 			},
+			
+			
+			
 			options : {
-				tooltips : {
-					enabled : false
-				},
 				responsive : false,
-				legend : {
-					display : false
-				},
-				cutoutPercentage : 70,
 				animation : {
 					onProgress : function() {
-						this.chart.ctx.font = "bold 1.2em Verdana";
-						this.chart.ctx.textBaseline = "middle";
+						this.ctx.font = "bold 0.8em Verdana";
+						this.ctx.textBaseline = "middle";
 						if (statusRate < 10)
-							this.chart.ctx.fillText(statusRate + "%", 85, 50);
+							this.ctx.fillText(statusRate + "%", 89, 50);
 						else if (statusRate == 100)
-							this.chart.ctx.fillText(statusRate + "%", 68, 50);
+							this.ctx.fillText(statusRate + "%", 78, 50);
 						else
-							this.chart.ctx.fillText(statusRate + "%", 76, 50);
-					}
-				}
-			}
-		});
-	}
-	function makeTotalChart(ctx, type, labels, data, total) {
-		var myChart = new Chart(ctx, {
-			plugins: [ChartDataLabels],
-			type : type,
-			data : {
-				labels : labels,
-				datasets : [ {
-					label : labels,
-					data : data,
-					backgroundColor : [ "#076df8", "#e60012", "#686868" ]
-				} ]
-			},
-			options : {
-				responsive : false,
-				cutoutPercentage : 55,
-				animation : {
-					onProgress : function() {
-						this.chart.ctx.font = "1.4em Verdana";
-						this.chart.ctx.textBaseline = "middle";
-						this.chart.ctx.fillText("전체 Job의 수 :", 215, 170);
-						this.chart.ctx.font = "bold 1.2em Verdana";
-						this.chart.ctx.textBaseline = "middle";
-						this.chart.ctx.fillText(total, 278, 205);
+							this.ctx.fillText(statusRate + "%", 82, 50);
 					}
 				},
 				plugins: {
-					legend: { //범례 사용 안함
-						display : false
-					},
-					tooltip: { //기존 툴팁 사용 안함
-						enabled : false
-					},
-					datalabels: { //datalebels 플러그인 세팅
-						formatter: function(value, context){
-							var idx = context.dataIndex;
-							
-							return context.chart.data.labels[idx] + value;
-						},
-						align: 'top',
-					}
-				}
+					
+					cutoutPercentage : 10,
+					
+				   legend: { //범례 사용 안함
+				      display:false
+				   },
+				   tooltip: { //기존 툴팁 사용 안함
+				      enabled : false
+				   },
+				   datalabels: { //datalebels 플러그인 세팅
+			          display: false,
+			          
+			          listeners: {
+				          click: function(context, event) {
+				           
+				            context.hovered = false;
+				            return true;
+				          },
+				          enter: function(context, event) {
+				           
+				            context.hovered = false;
+				            return true;
+				          },
+				          leave: function(context, event) {
+				           
+				            context.hovered = false;
+				            return true;
+				          }
+				      }
+				   }
+			   	}
+				   
 			}
+			
+			
+			
+			
 		});
 	}
+	function makeTotalChart(ctx, type, labels, data, total) {
+      const sumData = data.reduce((a,b)=> a+b);
+      let borderWidth = 2;
+      data.forEach((result) => {
+         if(result == sumData) borderWidth = 0;
+         
+         
+      });
+      
+      var myChart = new Chart(ctx, {
+         plugins: [ChartDataLabels],
+         type : type,
+         data : {
+            labels : labels,
+            datasets : [ {
+               label : labels,
+               data : data,
+               backgroundColor : [ "#076df8", "#e60012", "#686868" ],
+               borderWidth: borderWidth
+            } ]
+         },
+         options : {
+            responsive : false,
+            cutoutPercentage : 55,
+            animation : {
+               onProgress : function() {
+                  this.ctx.fillText("Total Jobs :" + total, 227, 175);
+                  this.ctx.font = "bold 1.2em Verdana";
+                  this.ctx.textBaseline = "middle";
+               }
+            },
+            plugins: {
+               legend: { //범례 사용 안함
+                  position : 'right',
+					offsetY : 0,
+					height : 230,
+               },
+               tooltip: { //기존 툴팁 사용 안함
+                  enabled : false
+               },
+               datalabels: { //datalebels 플러그인 세팅
+                  formatter: function(value, context){
+                     var idx = context.dataIndex;
+                     if(value>0){
+                        return context.chart.data.labels[idx] + ":" + value;
+                     }else{
+                        return '';
+                     }
+                  },
+                  align: 'middle',
+                  color: 'white',
+                  font: {
+                     weight: 'bold'
+                  }
+               }
+            }
+         }
+      });
+   }
+/*function makeTotalChart(ctx, type, labels, data, total) {
+      var myChart = new Chart(ctx, {
+         plugins: [ChartDataLabels],
+         type : type,
+         data : {
+            labels : labels,
+            datasets : [ {
+               label : labels,
+               data : data,
+               backgroundColor : [ "#076df8", "#e60012", "#686868" ]
+            } ]
+         },
+         options : {
+            responsive : false,
+            cutoutPercentage : 55,
+            animation : {
+               onProgress : function() {
+                  this.ctx.textBaseline = "middle";
+                  this.ctx.fillText("전체 Job의 수 :", 265, 170);
+                  this.ctx.font = "bold 1.2em Verdana";
+                  this.ctx.textBaseline = "middle";
+                  this.ctx.fillText(total, 278, 205);
+               }
+            },
+            plugins: {
+               legend: { //범례 사용 안함
+                  position : 'right',
+					offsetY : 0,
+					height : 230,
+               },
+               tooltip: { //기존 툴팁 사용 안함
+                  enabled : false
+               },
+               datalabels: { //datalebels 플러그인 세팅
+                  formatter: function(value, context){
+                     var idx = context.dataIndex;
+                     if(value>0){
+                        return context.chart.data.labels[idx] + ":" + value;
+                     }else{
+                        return '';
+                     }
+                  },
+                  align: 'middle',
+                  color: 'white',
+                  font: {
+                     weight: 'bold'
+                  }
+               }
+            }
+         }
+      });
+   }*/
 	function makeChart(date) {
 		
 		$.ajax({

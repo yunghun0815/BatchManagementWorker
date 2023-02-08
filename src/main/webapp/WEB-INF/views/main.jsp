@@ -9,14 +9,14 @@
 <head>
 <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
 <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
-<script
-	src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@3.0.0/dist/chart.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
 
 <script type="text/javascript" src="/js/common/main.js"></script>
 
 
-<!-- 버전 2 (특정 버전) -->
+
 </head>
 <main id="main">
 	<div class="title">
