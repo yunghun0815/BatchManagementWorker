@@ -62,6 +62,9 @@ public class JobService implements IJobService {
 		for(BatGrp vo: batGrpList) {
 			if(vo.getAutoExcnYn().equals("Y") && batchService.getBatPrmList(vo.getBatGrpId()).size()!=0) {
 				addJob(vo.getBatGrpId());
+				String msg = vo.getBatGrpId() + " 그룹을 자동실행 상태로 변경하였습니다.";
+				log.info(msg);
+				webSocketManagement.sendLog("INFO", msg);
 			}
 		}
 	}

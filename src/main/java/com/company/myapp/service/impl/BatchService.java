@@ -188,9 +188,7 @@ public class BatchService implements IBatchService {
 
 	@Override
 	public boolean checkGrpNm(String batGrpNm) {
-		vo = new BatGrp();
-		vo.setBatGrpNm(batGrpNm);
-		if(batchDao.getTotalGroupNum(vo) < 1) return true;
+		if(batchDao.checkGrpNm(batGrpNm) < 1) return true;
 		return false;
 	}
 }

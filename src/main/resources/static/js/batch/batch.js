@@ -677,7 +677,7 @@ function checkName(type){
 		url: "/batch/checkName?grpNm=" + name.val(),
 		type: "GET",
 		success: function(result){
-			if(result==true || beforeName == name){
+			if(result==true || beforeName.val() == name.val()){
 				name.removeClass("incorrect");
 				name.addClass("correct");
 				check.val("check");
