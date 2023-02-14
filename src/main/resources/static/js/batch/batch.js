@@ -2,6 +2,7 @@
 /**
  * 배치 관련 자바스크립트
  */
+//import * as util from '../util.js';
 
 $(function(){
 	$(".group-nm").tooltip();
@@ -222,9 +223,11 @@ function readProgramInfo(prmId){
 // 프로그램 등록 클릭 시 모달 초기화
 function initModal(){
 	const grpId = $(".sub-content .grp").prop("id");
-	$(".modal input").val("");
+	$(".modal input:not(table tr:last-child() input)").val("");
 	$("#insert-batch-program input[name=batGrpId]").val(grpId);
 	$(".error-message").html("");
+	$("input").removeClass("incorrect");
+	$("input").removeClass("correct");
 }
 
 /* 프로그램 관련 함수 */
@@ -433,6 +436,7 @@ function prmDelete(btn){
 
 /* 모달창 Event */
 function getUpdateGrpInfo(btn){
+	initModal();
 	const grpId = $(btn).parent().siblings(".group-id").text();
 	 readGroupInfo(grpId);
 } 
@@ -503,7 +507,8 @@ function changeCron(type){
 	var mon = '*';	//선택x
 	var week = '?'; 
 	const target = $("#" + type + "-batch-group");
-	const method = $("input[name=cycle]:checked").val();
+	const method =  target.find("input[name=cycle]:checked").val();
+	console.log(method);
 	var cron = '';
 	var cronDsc = '';
 	if(method == "1") {	//일자반복
@@ -661,32 +666,6 @@ function rollback(btn){
 					location.reload();
 				})
 			}
-		}
-	});
-}
-
-function checkName(type){
-	const target = $("#" + type + "-batch-group");
-	var name = target.find("input[name=batGrpNm]");
-	var warning = $("#error-" + type + "-batGrpNm");
-	var check = target.find("input[name=checkGrpNm]");
-	var beforeName = '';
-	if(type="detail") beforeName = target.find("input[name=hiddenBatGrpNm]");
-	warning.empty()
-	$.ajax({
-		url: "/batch/checkName?grpNm=" + name.val(),
-		type: "GET",
-		success: function(result){
-			if(result==true || beforeName.val() == name.val()){
-				name.removeClass("incorrect");
-				name.addClass("correct");
-				check.val("check");
-			}
-			else{
-				name.removeClass("correct");
-				name.addClass("incorrect");
-				warning.html('이미 존재하는 그룹명입니다.')
-			} 
 		}
 	});
 }

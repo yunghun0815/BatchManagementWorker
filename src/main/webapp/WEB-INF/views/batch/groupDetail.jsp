@@ -22,7 +22,7 @@
 						<th>그룹명</th>
 						<td style="width: 80%;">
 							<input name="batGrpNm" class="readwrite form-control inactive" type="text" disabled>
-							<button type="button" class="duplication-btn" onclick="checkName('detail')">중복 확인</button>
+							<button type="button" class="duplication-btn">중복 확인</button>
 							<span id="error-detail-batGrpNm" class="error-message"></span>
 							<input name="hiddenBatGrpNm" class="readwrite form-control inactive" type="hidden" disabled>
 							<input type="hidden" name="checkGrpNm" value="check">
