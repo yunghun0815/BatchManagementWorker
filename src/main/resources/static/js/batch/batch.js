@@ -111,11 +111,14 @@ $(function(){
 	});
 	
 	$("input[name='cycle']:not(:checked)").next().next().find("input, select").attr("disabled", true);
-		
+	$("input[name='cycle']:not(:checked)").parent().find("input[name='selectCron']").attr("disabled", true);
+	
 	$("input[name='cycle']").change(function(){
+		console.log($(this).val());
 		$(this).parent().find("input, select").attr("disabled", true);
 		$("input[name='cycle']").removeAttr("disabled");
 		$(this).next().next().find("input, select").removeAttr("disabled");
+		if($(this).val() == 3) $(this).parent().find("input[name='selectCron']").removeAttr("disabled"); 
 		$(this).siblings().find("select[name=cycleMF]").attr("disabled", true);
 		$(this).siblings().find("input[name=cycleDay]").attr("disabled", true);
 		
