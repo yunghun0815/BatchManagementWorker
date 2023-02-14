@@ -117,7 +117,7 @@ public class BatchServer {
 			json.put("cmd", CommandCode.RUN.getCode());
 			json.put("message", jsonArray);
 			String sendDataStr = json.toString();
-
+			System.out.println(jsonArray.get(0).getAdminEmail()[0]);
 			// Agent 서버로 데이터 전송 후 연결 종료
 			dos.writeUTF(sendDataStr);
 			dos.flush();
