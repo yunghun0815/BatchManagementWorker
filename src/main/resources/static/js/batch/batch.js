@@ -503,7 +503,7 @@ function changeCron(type){
 	var mon = '*';	//선택x
 	var week = '?'; 
 	const target = $("#" + type + "-batch-group");
-	const method = $("input[name=cycle]:checked").val();
+	const method = target.find("input[name=cycle]:checked").val();
 	var cron = '';
 	var cronDsc = '';
 	if(method == "1") {	//일자반복

@@ -2,16 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.company.myapp.dao.IBatchDao">
   
-<!--   <select id="getTotalGroupNum" resultType="int">
-    SELECT 
-    	count(*) 
-    FROM 
-    	bat_grp 
-    WHERE 
-    	use_yn='Y'
-  </select>
-  
-  <select id="getTotalSearchNum" parameterType="BatGrp" resultType="int"> -->
+
   <select id="getTotalGroupNum" parameterType="BatGrp" resultType="int">
   	SELECT 
 			count(*)
@@ -51,42 +42,7 @@
 	</if>
   </select>
   
-<!--   <select id="getBatGrpListByPage" parameterType="Pager" resultType="BatGrp">
-  	SELECT 
-  		   b.rnum,
-  		   b.bat_grp_id as "batGrpId", 
-    	   b.bat_grp_nm as "batGrpNm", 
-    	   b.bat_grp_dsc as "batGrpDsc", 
-    	   b.host_id as "hostId", 
-    	   h.host_nm as "hostNm", 
-    	   h.host_ip as "hostIp", 
-    	   h.host_pt as "hostPt", 
-    	   b.auto_excn_yn as "autoExcnYn", 
-    	   b.cron as "cron",
-    	   b.cron_dsc as "cronDsc"
-	FROM ( 
-	  SELECT ROWNUM as rnum, bat_grp_id, bat_grp_nm, bat_grp_dsc, host_id, auto_excn_yn, cron, cron_dsc, use_yn 
-      FROM ( 
-      	SELECT 
-      		bat_grp_id, 
-      		bat_grp_nm, 
-      		bat_grp_dsc, 
-      		host_id, 
-      		auto_excn_yn, 
-      		cron,
-      		cron_dsc,
-      		use_yn
-        FROM 
-        	bat_grp 
-        WHERE use_yn='Y'
-        ORDER BY bat_grp_id desc
-        ) 
-      WHERE rownum &lt;= #{endRowNo}
-    ) b LEFT OUTER JOIN host h ON b.host_id=h.host_id 
-	WHERE b.use_yn='Y' and b.rnum &gt;= #{startRowNo}
-  </select>
-  
-    <select id="searchBatGrp" parameterType="map" resultType="BatGrp"> -->
+
     <select id="getBatGrpListByPage" parameterType="map" resultType="BatGrp">
   	SELECT 
 			b.rnum,
