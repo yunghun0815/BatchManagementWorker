@@ -2,6 +2,7 @@
 /**
  * 배치 관련 자바스크립트
  */
+//import * as util from '../util.js';
 
 $(function(){
 	$(".group-nm").tooltip();
@@ -110,11 +111,14 @@ $(function(){
 	});
 	
 	$("input[name='cycle']:not(:checked)").next().next().find("input, select").attr("disabled", true);
-		
+	$("input[name='cycle']:not(:checked)").parent().find("input[name='selectCron']").attr("disabled", true);
+	
 	$("input[name='cycle']").change(function(){
+		console.log($(this).val());
 		$(this).parent().find("input, select").attr("disabled", true);
 		$("input[name='cycle']").removeAttr("disabled");
 		$(this).next().next().find("input, select").removeAttr("disabled");
+		if($(this).val() == 3) $(this).parent().find("input[name='selectCron']").removeAttr("disabled"); 
 		$(this).siblings().find("select[name=cycleMF]").attr("disabled", true);
 		$(this).siblings().find("input[name=cycleDay]").attr("disabled", true);
 		
@@ -222,9 +226,11 @@ function readProgramInfo(prmId){
 // 프로그램 등록 클릭 시 모달 초기화
 function initModal(){
 	const grpId = $(".sub-content .grp").prop("id");
-	$(".modal input").val("");
+	$(".modal input:not(table tr:last-child() input)").val("");
 	$("#insert-batch-program input[name=batGrpId]").val(grpId);
 	$(".error-message").html("");
+	$("input").removeClass("incorrect");
+	$("input").removeClass("correct");
 }
 
 /* 프로그램 관련 함수 */
@@ -433,6 +439,7 @@ function prmDelete(btn){
 
 /* 모달창 Event */
 function getUpdateGrpInfo(btn){
+	initModal();
 	const grpId = $(btn).parent().siblings(".group-id").text();
 	 readGroupInfo(grpId);
 } 
@@ -661,32 +668,6 @@ function rollback(btn){
 					location.reload();
 				})
 			}
-		}
-	});
-}
-
-function checkName(type){
-	const target = $("#" + type + "-batch-group");
-	var name = target.find("input[name=batGrpNm]");
-	var warning = $("#error-" + type + "-batGrpNm");
-	var check = target.find("input[name=checkGrpNm]");
-	var beforeName = '';
-	if(type="detail") beforeName = target.find("input[name=hiddenBatGrpNm]");
-	warning.empty()
-	$.ajax({
-		url: "/batch/checkName?grpNm=" + name.val(),
-		type: "GET",
-		success: function(result){
-			if(result==true || beforeName == name){
-				name.removeClass("incorrect");
-				name.addClass("correct");
-				check.val("check");
-			}
-			else{
-				name.removeClass("correct");
-				name.addClass("incorrect");
-				warning.html('이미 존재하는 그룹명입니다.')
-			} 
 		}
 	});
 }

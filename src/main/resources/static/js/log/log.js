@@ -63,7 +63,7 @@ function toggleProgram(e){
 							</tr>
 							<tr>
 								<th>파라미터</th>
-								<td>` + batPrmLog['param'] + `</td>
+								<td> ${batPrmLog['param'] == null ? '' : batPrmLog['param']} </td>
 							</tr>
 							<tr>
 								<th>배치시작시간</th>

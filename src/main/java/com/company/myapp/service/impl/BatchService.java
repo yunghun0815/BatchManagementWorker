@@ -44,10 +44,7 @@ public class BatchService implements IBatchService {
 	public List<BatGrp> getBatGrpList(Pager pager) {
 		vo = new BatGrp();
 		vo.setUseYn("Y");
-		System.out.println(vo.toString());
-		System.out.println(pager.getEndRowNo() + "/////" + pager.getStartRowNo());
 		List<BatGrp> batGrpList = batchDao.getBatGrpListByPage(pager, vo);
-		System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&" + batGrpList);
 		return batGrpList;
 	}
 
@@ -191,9 +188,7 @@ public class BatchService implements IBatchService {
 
 	@Override
 	public boolean checkGrpNm(String batGrpNm) {
-		vo = new BatGrp();
-		vo.setBatGrpNm(batGrpNm);
-		if(batchDao.getTotalGroupNum(vo) < 1) return true;
+		if(batchDao.checkGrpNm(batGrpNm) < 1) return true;
 		return false;
 	}
 }

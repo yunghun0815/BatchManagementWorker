@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 import lombok.Getter;
@@ -24,11 +25,10 @@ import lombok.ToString;
 public class BatGrp {
 	private String batGrpId;	// 배치 그룹 아이디
 	
-	@NotBlank(message = "그룹명을 입력해주세요.")
-	@Size(min = 1, max = 50, message = "그룹명은 50자를 넘을 수 없습니다.")
+	@Pattern(regexp = "^[ㄱ-ㅎ|가-힣|a-z|A-Z|0-9| ]{1,50}$", message = "50자 이하의 한글, 영어, 숫자만 사용 가능합니다.")
 	private String batGrpNm;	// 배치 그룹명
 	
-	@Size(min = 0, max = 2000, message = "설명은 2000자를 넘을 수 없습니다.")
+	@Size(min = 0, max = 1300, message = "설명은 1300자를 넘을 수 없습니다.")
 	private String batGrpDsc;	// 배치 그룹 설명
 	private String hostId;		// 호스트 아이디
 	private String autoExcnYn;	// 자동 실행 유무

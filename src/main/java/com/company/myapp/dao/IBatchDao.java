@@ -58,6 +58,6 @@ public interface IBatchDao {
 
 	public void rollbackProgram(String batGrpId);
 
-	//public int checkGrpNm(String batGrpNm);
+	public int checkGrpNm(String batGrpNm);
 	
 }

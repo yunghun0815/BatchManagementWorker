@@ -89,7 +89,7 @@
 							</table>
 						</form>
 					</div>
-					<button class="insert-grp-btn" data-bs-toggle="modal" data-bs-target="#insert-batch-group">+</button>
+					<button class="insert-grp-btn" data-bs-toggle="modal" data-bs-target="#insert-batch-group" onclick="initModal()">+</button>
 				</div>
 			</h3>
 			<div class="main-list">

@@ -30,8 +30,7 @@ public class Host {
    @Min(value = 0, message = "포트번호를 확인해주세요.")
    private int hostPt;	// 호스트 포트		
    
-   @Size(min = 1, max = 50, message = "호스트명은 50자를 넘을 수 없습니다.")
-   @NotBlank(message = "호스트명을 입력해주세요.")   
+   @Pattern(regexp = "^[ㄱ-ㅎ|가-힣|a-z|A-Z|0-9| ]{1,50}$", message = "50자 이하의 한글, 영어, 숫자만 사용 가능합니다.")
    private String hostNm;	// 호스트명         
    
    private String useYn; // 사용유무         

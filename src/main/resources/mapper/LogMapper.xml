@@ -194,15 +194,23 @@
 	        SELECT 
 	            bat_grp_log_id, max(bat_grp_rty_cnt)
 	        FROM 
-	            bat_grp_log 
+	            bat_grp_log l 
+	        JOIN
+	        	bat_grp g
+	        ON
+	        	l.bat_grp_id = g.bat_grp_id	    
 	        <trim prefix="WHERE" prefixOverrides="AND">
 				<if test="batGrpLogId != null">
 					AND
 						bat_grp_log_id like #{batGrpLogId}||'%'	
 				</if>		
+				<if test="batGrpNm != null">
+					AND
+						bat_grp_nm like '%'||#{batGrpNm}||'%'	
+				</if>	
 				<if test="batGrpId != null">
 					AND
-						bat_grp_id like '%'||#{batGrpId}||'%'	
+						l.bat_grp_id like '%'||#{batGrpId}||'%'	
 				</if>		
 				<if test="batGrpStCd != null">
 					AND
@@ -237,7 +245,7 @@
 				<if test="(batBgngDtStart == null and batBgngDtEnd == null and batEndDtStart == null and batEndDtEnd == null) 
 						or (batBgngDtStart == '' and batBgngDtEnd == '' and batEndDtStart == '' and batEndDtEnd == '')">
 					AND
-						to_char(last_mdfcn_dttm, 'yyyymmdd') >= to_char(sysdate-7, 'yyyymmdd')
+						to_char(l.last_mdfcn_dttm, 'yyyymmdd') >= to_char(sysdate-7, 'yyyymmdd')
 				</if>
 				</trim>
 			GROUP BY

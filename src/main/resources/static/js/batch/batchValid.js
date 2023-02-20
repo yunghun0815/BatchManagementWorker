@@ -209,6 +209,14 @@ $(function(){
 			}
 		});
 	})
+	
+	$(".duplication-btn").click(function(){
+		let type = 'detail';
+		if($(this).prop("id") == "duplication-insert-btn"){
+			type="insert"			
+		}
+		checkName(type);
+	});
 }) 
 function cycleCheck(method, type){
 	var error = false;
@@ -244,4 +252,33 @@ function cycleCheck(method, type){
 		if(target.find("input[name=selectCron]").val()=='') error=true;
 	}
 	return error;	
+}
+
+function checkName(type){
+	let field = type+"-batGrpNm";
+	const target = $("#" + type + "-batch-group");
+	var name = target.find("input[name=batGrpNm]");
+	var warning = $("#error-" + type + "-batGrpNm");
+	var check = target.find("input[name=checkGrpNm]");
+	var beforeName = '';
+	if(type="detail") beforeName = target.find("input[name=hiddenBatGrpNm]");
+	warning.empty()
+	$.ajax({
+		url: "/batch/checkName?grpNm=" + name.val(),
+		type: "GET",
+		success: function(result){
+			if(result==true || beforeName.val() == name.val()){
+				if(util.browserValid(field, "blank", name.val())){
+					name.removeClass("incorrect");
+					name.addClass("correct");
+					check.val("check");	
+				}
+			}
+			else{
+				name.removeClass("correct");
+				name.addClass("incorrect");
+				warning.html('이미 존재하는 그룹명입니다.')
+			}
+		}
+	});
 }
